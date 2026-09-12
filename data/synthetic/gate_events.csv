@@ -1,0 +1,5 @@
+id,source_type,timestamp,flight_id,gate_id,state,queue_estimate,gate_ready
+gate-1,SYNTHETIC,2026-09-12 10:00:00,flight-1,C8,PREPARING,30,True
+gate-2,SYNTHETIC,2026-09-12 10:00:00,flight-2,C8,PREPARING,30,True
+gate-3,SYNTHETIC,2026-09-12 10:00:00,flight-3,C8,PREPARING,30,True
+gate-4,SYNTHETIC,2026-09-12 10:00:00,flight-4,C8,PREPARING,30,True

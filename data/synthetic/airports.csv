@@ -1,0 +1,2 @@
+id,source_type,iata,icao,airport_name,city,country,latitude,longitude,timezone
+demo-airport,SYNTHETIC,TWT,ZZTW,TimeTwin Illustrative Terminal,Illustrative,TH,13.69,100.75,Asia/Bangkok

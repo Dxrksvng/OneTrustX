@@ -1,0 +1,5 @@
+id,source_type,flight_number,airline,origin,destination,aircraft_type,scheduled_departure,estimated_departure,actual_departure,scheduled_arrival,estimated_arrival,gate,stand,status,delay_reason
+flight-1,SYNTHETIC,TT401,Synthetic Airways,TWT,X01,ASSUMPTION: narrow-body,2026-09-12 11:35:00,2026-09-12 11:35:00,,,,C8,S1,SCHEDULED,Synthetic departure wave
+flight-2,SYNTHETIC,TT402,Synthetic Airways,TWT,X02,ASSUMPTION: narrow-body,2026-09-12 11:40:00,2026-09-12 11:40:00,,,,C8,S2,SCHEDULED,Synthetic departure wave
+flight-3,SYNTHETIC,TT403,Synthetic Airways,TWT,X03,ASSUMPTION: narrow-body,2026-09-12 11:45:00,2026-09-12 11:45:00,,,,C8,S3,SCHEDULED,Synthetic departure wave
+flight-4,SYNTHETIC,TT404,Synthetic Airways,TWT,X04,ASSUMPTION: narrow-body,2026-09-12 11:50:00,2026-09-12 11:50:00,,,,C8,S4,SCHEDULED,Synthetic departure wave

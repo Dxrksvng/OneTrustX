@@ -1,0 +1,29 @@
+id,source_type,flight_id,activity,planned_start,planned_end,actual_start,actual_end,status,actor
+handling-1-cleaning,SYNTHETIC,flight-1,cleaning,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-1-catering,SYNTHETIC,flight-1,catering,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-1-refuelling,SYNTHETIC,flight-1,refuelling,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-1-baggage loading,SYNTHETIC,flight-1,baggage loading,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-1-boarding,SYNTHETIC,flight-1,boarding,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-1-door closing,SYNTHETIC,flight-1,door closing,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-1-pushback,SYNTHETIC,flight-1,pushback,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-cleaning,SYNTHETIC,flight-2,cleaning,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-catering,SYNTHETIC,flight-2,catering,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-refuelling,SYNTHETIC,flight-2,refuelling,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-baggage loading,SYNTHETIC,flight-2,baggage loading,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-boarding,SYNTHETIC,flight-2,boarding,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-door closing,SYNTHETIC,flight-2,door closing,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-2-pushback,SYNTHETIC,flight-2,pushback,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-cleaning,SYNTHETIC,flight-3,cleaning,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-catering,SYNTHETIC,flight-3,catering,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-refuelling,SYNTHETIC,flight-3,refuelling,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-baggage loading,SYNTHETIC,flight-3,baggage loading,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-boarding,SYNTHETIC,flight-3,boarding,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-door closing,SYNTHETIC,flight-3,door closing,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-3-pushback,SYNTHETIC,flight-3,pushback,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-cleaning,SYNTHETIC,flight-4,cleaning,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-catering,SYNTHETIC,flight-4,catering,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-refuelling,SYNTHETIC,flight-4,refuelling,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-baggage loading,SYNTHETIC,flight-4,baggage loading,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-boarding,SYNTHETIC,flight-4,boarding,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-door closing,SYNTHETIC,flight-4,door closing,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler
+handling-4-pushback,SYNTHETIC,flight-4,pushback,2026-09-12 10:20:00,2026-09-12 10:35:00,,,PLANNED,synthetic-handler

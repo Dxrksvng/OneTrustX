@@ -1,0 +1,5 @@
+id,source_type,timestamp,flight_id,latitude,longitude,altitude,ground_speed,heading,vertical_rate
+position-1,SYNTHETIC,2026-09-12 10:00:00,flight-1,13.61,100.7,10000.0,200.0,90.0,0.0
+position-2,SYNTHETIC,2026-09-12 10:00:00,flight-2,13.62,100.7,10000.0,200.0,90.0,0.0
+position-3,SYNTHETIC,2026-09-12 10:00:00,flight-3,13.629999999999999,100.7,10000.0,200.0,90.0,0.0
+position-4,SYNTHETIC,2026-09-12 10:00:00,flight-4,13.639999999999999,100.7,10000.0,200.0,90.0,0.0

@@ -1,0 +1,112 @@
+{
+  "version": 1,
+  "objective": "Build and verify Airport TimeTwin end-to-end, including the MotionSites-inspired UX/UI and PostgreSQL Compose demo.",
+  "created_at": "2026-09-12T17:15:54.148491+00:00",
+  "project_directory": "/Users/jswvn/projects/airport-timetwin",
+  "status": "mvp_verified",
+  "requirements": [
+    {
+      "name": "Source, schema, deterministic seed and public contextual adapters",
+      "status": "verified",
+      "evidence": "docs/deliverables.md; PostgreSQL migration and public-retrieval-manifest.json"
+    },
+    {
+      "name": "Queue forecast, what-if simulation, recommendations, graph and Safe Time",
+      "status": "verified",
+      "evidence": "16 backend tests; scripts/verify_live.py"
+    },
+    {
+      "name": "Operations, passenger and source-provenance UX",
+      "status": "verified",
+      "evidence": "5 browser tests on Docker at http://localhost:8080"
+    },
+    {
+      "name": "Audit, concurrent decisions and synthetic outcome measurement",
+      "status": "verified",
+      "evidence": "PostgreSQL live checks including 200/409 concurrent result and persisted measurement"
+    },
+    {
+      "name": "Documentation and synthetic evaluation",
+      "status": "verified",
+      "evidence": "docs/evaluation.md; docs/acceptance-results.json; docs/deliverables.md"
+    },
+    {
+      "name": "All aspirational accuracy targets",
+      "status": "implemented",
+      "evidence": "Assessment is implemented; targets are not all met. See docs/acceptance-results.json."
+    }
+  ],
+  "scope_changes": [
+    "MotionSites-inspired UX refinement",
+    "Create reusable project-autopilot skill; installed and validated"
+  ],
+  "assumptions": [],
+  "decisions": [
+    "Keep operational inputs synthetic; public feeds are contextual only",
+    "No ML promotion while independent validation is unavailable",
+    "Preserve existing user files and Docker volumes during disk recovery"
+  ],
+  "checks": [
+    {
+      "name": "backend",
+      "result": "16 passed"
+    },
+    {
+      "name": "frontend unit",
+      "result": "2 passed"
+    },
+    {
+      "name": "Playwright on Docker",
+      "result": "5 passed"
+    },
+    {
+      "name": "format/lint/build",
+      "result": "passed"
+    },
+    {
+      "name": "PostgreSQL migration and JSONB",
+      "result": "passed"
+    },
+    {
+      "name": "concurrent actions and outcome measurement",
+      "result": "passed"
+    },
+    {
+      "name": "npm audit",
+      "result": "0 reported advisories"
+    },
+    {
+      "name": "local Markdown links",
+      "result": "all resolve"
+    }
+  ],
+  "services": [
+    {
+      "name": "Production frontend",
+      "url": "http://localhost:8080",
+      "container": "airport-timetwin-frontend-1"
+    },
+    {
+      "name": "FastAPI",
+      "url": "http://localhost:8000/docs",
+      "container": "airport-timetwin-api-1"
+    },
+    {
+      "name": "PostgreSQL",
+      "port": 55432,
+      "container": "airport-timetwin-db-1"
+    },
+    {
+      "name": "Vite development preview",
+      "url": "http://localhost:5173"
+    }
+  ],
+  "blockers": [],
+  "next_actions": [],
+  "limitations": [
+    "Protected airport integrations are conceptual",
+    "Confidence is heuristic and not calibrated",
+    "Some synthetic model targets remain unmet",
+    "Demo RBAC is local-only; production identity is not implemented"
+  ]
+}

@@ -1,0 +1,20 @@
+[
+  {
+    "source_type": "REAL_PUBLIC",
+    "source_url": "https://api.open-meteo.com/v1/forecast?latitude=13.69&longitude=100.75&hourly=temperature_2m,precipitation,wind_speed_10m,wind_gusts_10m,visibility,weather_code&forecast_days=1",
+    "retrieved_at": "2026-09-12T17:07:32.906413+00:00",
+    "stale": false
+  },
+  {
+    "source_type": "REAL_PUBLIC",
+    "source_url": "https://opensky-network.org/api/states/all?lamin=12&lomin=99&lamax=15&lomax=102",
+    "retrieved_at": "2026-09-12T17:07:33.569199+00:00",
+    "stale": false
+  },
+  {
+    "source_type": "REAL_PUBLIC",
+    "source_url": "https://davidmegginson.github.io/ourairports-data/airports.csv",
+    "retrieved_at": "2026-09-12T17:07:31.837303+00:00",
+    "stale": false
+  }
+]

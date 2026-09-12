@@ -1,0 +1,5 @@
+id,source_type,timestamp,flight_id,bag_count_expected,bag_checked,bag_screened,bag_sorted,bag_loaded,bag_unloaded,bag_on_belt
+bags-1,SYNTHETIC,2026-09-12 10:00:00,flight-1,110,90,85,80,60,0,0
+bags-2,SYNTHETIC,2026-09-12 10:00:00,flight-2,110,90,85,80,60,0,0
+bags-3,SYNTHETIC,2026-09-12 10:00:00,flight-3,110,90,85,80,60,0,0
+bags-4,SYNTHETIC,2026-09-12 10:00:00,flight-4,110,90,85,80,60,0,0

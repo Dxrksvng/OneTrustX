@@ -1,0 +1,1 @@
+{"source_type":"ASSUMPTION","queue_mae_max_min":5,"congestion_recall_min":0.8,"warning_lead_min":15,"require_positive_passenger_minutes_saved":true,"require_lower_p95":true,"promote_ml":false}

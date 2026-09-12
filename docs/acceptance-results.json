@@ -1,0 +1,46 @@
+{
+  "source_type": "SIMULATED",
+  "notice": "Simulated MVP Result \u2014 Not actual airport performance.",
+  "engine": "fluid",
+  "targets": {
+    "source_type": "ASSUMPTION",
+    "queue_mae_max_min": 5,
+    "congestion_recall_min": 0.8,
+    "warning_lead_min": 15,
+    "require_positive_passenger_minutes_saved": true,
+    "require_lower_p95": true,
+    "promote_ml": false
+  },
+  "checks": [
+    {
+      "horizon_min": 15,
+      "mae": 2.2009594639311714,
+      "mae_pass": true,
+      "recall": 0.9893891597361629,
+      "recall_pass": true,
+      "lead_time_min": 14.0,
+      "lead_time_pass": false
+    },
+    {
+      "horizon_min": 30,
+      "mae": 4.574763226527571,
+      "mae_pass": true,
+      "recall": 0.979065098938916,
+      "recall_pass": true,
+      "lead_time_min": 29.0,
+      "lead_time_pass": true
+    },
+    {
+      "horizon_min": 60,
+      "mae": 10.335530624654504,
+      "mae_pass": false,
+      "recall": 0.9480929165471752,
+      "recall_pass": true,
+      "lead_time_min": 58.0,
+      "lead_time_pass": true
+    }
+  ],
+  "all_model_targets_met": false,
+  "ml_promoted": false,
+  "interpretation": "Synthetic benchmark only; unmet targets remain visible and require further validation/improvement."
+}

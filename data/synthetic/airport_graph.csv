@@ -1,0 +1,17 @@
+id,source_type,from_node,to_node,distance_m,walking_time_min,accessible,direction,capacity
+edge-0,SYNTHETIC,Entrance,Check-in A,195.0,3.0,True,FORWARD,120
+edge-1,SYNTHETIC,Entrance,Check-in B,260.0,4.0,True,FORWARD,120
+edge-2,SYNTHETIC,Check-in A,Bag Drop,130.0,2.0,True,FORWARD,120
+edge-3,SYNTHETIC,Check-in B,Bag Drop,130.0,2.0,True,FORWARD,120
+edge-4,SYNTHETIC,Bag Drop,Food C,130.0,2.0,True,FORWARD,120
+edge-5,SYNTHETIC,Food C,Security A,130.0,2.0,True,FORWARD,120
+edge-6,SYNTHETIC,Food C,Security B,325.0,5.0,True,FORWARD,120
+edge-7,SYNTHETIC,Security A,Immigration,130.0,2.0,True,FORWARD,120
+edge-8,SYNTHETIC,Security B,Immigration,195.0,3.0,True,FORWARD,120
+edge-9,SYNTHETIC,Immigration,Retail,130.0,2.0,True,FORWARD,120
+edge-10,SYNTHETIC,Retail,C8,130.0,2.0,True,FORWARD,120
+edge-11,SYNTHETIC,Retail,E7,1625.0,25.0,True,FORWARD,120
+edge-12,SYNTHETIC,Retail,E7,1170.0,18.0,False,FORWARD,120
+edge-13,SYNTHETIC,C8,Exit,325.0,5.0,True,FORWARD,120
+edge-14,SYNTHETIC,E7,Exit,390.0,6.0,True,FORWARD,120
+edge-15,SYNTHETIC,Baggage Reclaim,Exit,260.0,4.0,True,FORWARD,120

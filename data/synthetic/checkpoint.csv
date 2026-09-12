@@ -1,0 +1,7 @@
+id,source_type,checkpoint_type,terminal,zone,maximum_lanes
+security-a,SYNTHETIC,SECURITY,Illustrative T1,A,5
+security-b,SYNTHETIC,SECURITY,Illustrative T1,B,3
+checkin-a,SYNTHETIC,CHECKIN,Illustrative T1,A,4
+bag-drop,SYNTHETIC,BAG_DROP,Illustrative T1,A,3
+immigration,SYNTHETIC,IMMIGRATION,Illustrative T1,I,4
+boarding,SYNTHETIC,BOARDING,Illustrative T1,C8,2
