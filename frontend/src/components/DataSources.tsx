@@ -1,3 +1,4 @@
+import { text } from "../i18n";
 import { useEffect, useState } from "react";
 import { Database, ExternalLink, RefreshCw } from "lucide-react";
 import { api } from "../services/api";
@@ -20,114 +21,137 @@ export default function DataSources() {
       <section className="panel">
         <div className="panel-heading">
           <div>
-            <h2>Know what supports the decision.</h2>
+            <h2>{text("Know what supports the decision.")}</h2>
             <p>
-              Public context and synthetic operations have different purposes.
+              {text(
+                " Public context and synthetic operations have different purposes. ",
+              )}
             </p>
           </div>
           <Database size={21} />
         </div>
         <div className="source-explanation">
-          <strong>Operations are synthetic. Outcomes are simulated.</strong>
+          <strong>
+            {text("Operations are synthetic. Outcomes are simulated.")}
+          </strong>
           <p>
-            Queues, passenger journeys, staffing, baggage and flight fixtures
-            come from a deterministic local generator. Public aircraft positions
-            do not provide passenger counts or queue measurements.
+            {text(
+              " Queues, passenger journeys, staffing, baggage and flight fixtures come from a deterministic local generator. Public aircraft positions do not provide passenger counts or queue measurements. ",
+            )}
           </p>
         </div>
         <div className="source-matrix">
-          {[
+          {text(
             [
-              "SYNTHETIC",
-              "Flights · 580 anonymous journeys · checkpoint flows",
-              "Deterministic fixtures, never airport records",
-            ],
-            [
-              "SIMULATED",
-              "Forecasts · what-if outcomes · Safe Time",
-              "Calculated by the simulation and routing engines",
-            ],
-            [
-              "ASSUMPTION",
-              "Terminal layout · processing rates · confidence",
-              "Explicit modelling choices, not validated airport facts",
-            ],
-            [
-              "REAL_PUBLIC",
-              "Airport metadata · weather · aircraft states",
-              "Cached public context, kept separate from operations",
-            ],
-            [
-              "DERIVED",
-              "Transformed values with source lineage",
-              "Reserved for source-based features; no causal proof",
-            ],
-          ].map(([type, scope, note]) => (
-            <div key={type}>
-              <span className="tiny-tag">{type}</span>
-              <strong>
-                {scope}
-                <small>{note}</small>
-              </strong>
-            </div>
-          ))}
+              [
+                "SYNTHETIC",
+                "Flights · 580 anonymous journeys · checkpoint flows",
+                "Deterministic fixtures, never airport records",
+              ],
+              [
+                "SIMULATED",
+                "Forecasts · what-if outcomes · Safe Time",
+                "Calculated by the simulation and routing engines",
+              ],
+              [
+                "ASSUMPTION",
+                "Terminal layout · processing rates · confidence",
+                "Explicit modelling choices, not validated airport facts",
+              ],
+              [
+                "REAL_PUBLIC",
+                "Airport metadata · weather · aircraft states",
+                "Cached public context, kept separate from operations",
+              ],
+              [
+                "DERIVED",
+                "Transformed values with source lineage",
+                "Reserved for source-based features; no causal proof",
+              ],
+            ].map(([type, scope, note]) => (
+              <div key={type}>
+                <span className="tiny-tag">{text(type)}</span>
+                <strong>
+                  {text(scope)}
+                  <small>{text(note)}</small>
+                </strong>
+              </div>
+            )),
+          )}
         </div>
       </section>
       <section className="panel section-gap">
         <div className="panel-heading">
           <div>
-            <h2>Public feed provenance</h2>
+            <h2>{text("Public feed provenance")}</h2>
             <p>
-              Refresh reads the local cache; it does not silently fetch live
-              operational data.
+              {text(
+                " Refresh reads the local cache; it does not silently fetch live operational data. ",
+              )}
             </p>
           </div>
           <button onClick={load}>
             <RefreshCw size={14} />
-            Refresh status
+            {text(" Refresh status ")}
           </button>
         </div>
-        {error && (
-          <p className="error" role="alert">
-            {error}
-          </p>
+        {text(
+          error && (
+            <p className="error" role="alert">
+              {text(error)}
+            </p>
+          ),
         )}
-        {!data && !error && <p role="status">Loading source metadata…</p>}
-        {data &&
-          Object.entries(data.feeds).map(([name, value]) => {
-            const feed = value as any;
-            return (
-              <div className="source-feed" key={name}>
-                <div>
-                  <strong>{name.replaceAll("_", " ")}</strong>
-                  <small>
-                    {feed.retrieved_at
-                      ? "Retrieved " +
-                        new Date(feed.retrieved_at).toLocaleString()
-                      : "No successful retrieval"}
-                  </small>
+        {text(
+          !data && !error && (
+            <p role="status">{text("Loading source metadata…")}</p>
+          ),
+        )}
+        {text(
+          data &&
+            Object.entries(data.feeds || {}).map(([name, value]) => {
+              const feed = value as any;
+              return (
+                <div className="source-feed" key={name}>
+                  <div>
+                    <strong>
+                      {text(name.replaceAll("_", " "))}
+                      {text(" · ")}
+                      {text(feed.provider)}
+                    </strong>
+                    <small>
+                      {text(
+                        feed.retrieved_at
+                          ? "Retrieved " +
+                              new Date(feed.retrieved_at).toLocaleString()
+                          : "No successful retrieval",
+                      )}
+                    </small>
+                  </div>
+                  <span className="tiny-tag">{text(feed.source_type)}</span>
+                  <span className={feed.stale ? "risk-tag" : "neutral-tag"}>
+                    {text(feed.stale ? "CACHE STALE" : "CACHE FRESH")}
+                  </span>
+                  {text(
+                    feed.documentation_url && (
+                      <a
+                        href={feed.documentation_url}
+                        target="_blank"
+                        rel="noreferrer"
+                        aria-label={"Open " + name + " source"}
+                      >
+                        <ExternalLink size={15} />
+                      </a>
+                    ),
+                  )}
                 </div>
-                <span className="tiny-tag">{feed.source_type}</span>
-                <span className={feed.stale ? "risk-tag" : "neutral-tag"}>
-                  {feed.stale ? "CACHE STALE" : "CACHE FRESH"}
-                </span>
-                {feed.source_url && (
-                  <a
-                    href={feed.source_url}
-                    target="_blank"
-                    rel="noreferrer"
-                    aria-label={"Open " + name + " source"}
-                  >
-                    <ExternalLink size={15} />
-                  </a>
-                )}
-              </div>
-            );
-          })}
+              );
+            }),
+        )}
         <p className="note">
-          A stale or unavailable public feed never becomes a fresh synthetic
-          measurement. These feeds do not determine operational confidence in
-          this MVP.
+          {text(
+            " A stale or unavailable public feed never becomes a fresh synthetic measurement. These feeds do not determine operational confidence in this MVP. ",
+          )}
         </p>
       </section>
     </>

@@ -1,0 +1,13 @@
+{
+  "source_name": "uk_caa",
+  "source_url": "https://www.caa.co.uk/data-and-analysis/uk-aviation-market/airports/uk-airport-data/uk-airport-data-2025/annual-2025/",
+  "retrieved_at": "2026-09-12T22:40:35.034496+00:00",
+  "source_geography": "Source discovery",
+  "source_period": "2025",
+  "license_or_terms": "Official public website; review original terms",
+  "source_type": "REAL_PUBLIC",
+  "checksum": "112b68b64885b85bbb4bd719afe22aa5f18dc21cc0cded3dc01b868d052d5eea",
+  "bytes": 41726,
+  "status": "CACHED",
+  "content_type": "text/html; charset=utf-8"
+}

@@ -12,3 +12,13 @@ data/raw/*
 !data/raw/.gitkeep
 
 *.tsbuildinfo
+
+.DS_Store
+
+# Reproducible official downloads are local offline assets, not source-code payloads.
+data/external/*/*
+!data/external/*/*.provenance.json
+data/normalized/*.csv
+data/cache/
+.project-autopilot/
+*.pyc

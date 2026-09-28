@@ -1,0 +1,18 @@
+{
+  "source_name": "cbp",
+  "source_url": "https://awt.cbp.gov/api/waitTime",
+  "retrieved_at": "2026-09-12T23:30:31.044485+00:00",
+  "source_geography": "US / SFO",
+  "source_period": "2025-01",
+  "license_or_terms": "CBP public airport wait report; immigration benchmark only",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": {
+    "Id": "SFO",
+    "FromDate": "2025-01-01",
+    "ToDate": "2025-01-31"
+  },
+  "checksum": "c44f00e99aa31c2024aad4127560e8fac8e5e278bd321fdfc352756109935753",
+  "bytes": 695518,
+  "status": "CACHED",
+  "content_type": "application/json; charset=utf-8"
+}

@@ -1,0 +1,18 @@
+{
+  "source_name": "cbp",
+  "source_url": "https://awt.cbp.gov/api/waitTime",
+  "retrieved_at": "2026-09-12T23:30:29.111441+00:00",
+  "source_geography": "US / LAX",
+  "source_period": "2025-03",
+  "license_or_terms": "CBP public airport wait report; immigration benchmark only",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": {
+    "Id": "LAX",
+    "FromDate": "2025-03-01",
+    "ToDate": "2025-03-31"
+  },
+  "checksum": "c759d61d29904f4f4501bbf675e7feb99cae680bf30350b7c4d77646dc4892ed",
+  "bytes": 669789,
+  "status": "CACHED",
+  "content_type": "application/json; charset=utf-8"
+}

@@ -8,6 +8,19 @@ ANCHOR = datetime(2026, 9, 12, 10, 0, tzinfo=UTC)
 
 def seed(db):
     if db.get(DemoState, 1):
+        # Upgrade only known synthetic fixture fields; never replace external data.
+        for i in range(1, 5):
+            flight = db.get(MODELS["flights"], f"flight-{i}")
+            if flight and flight.source_type == "SYNTHETIC":
+                flight.flight_number = f"DEMO{400 + i}"
+                flight.airline = "MODELLED SCENARIO"
+                flight.origin = "BKK"
+                flight.destination = ["SIN", "CNX", "HKT", "HKG"][i - 1]
+                flight.gate = ["C8", "D4", "E3", "F2"][i - 1]
+                gate = db.get(MODELS["gate_events"], f"gate-{i}")
+                if gate:
+                    gate.gate_id = flight.gate
+        db.commit()
         return
 
     def add(table, id, **kw):
@@ -32,14 +45,14 @@ def seed(db):
         add(
             "flights",
             f"flight-{i}",
-            flight_number=f"TT{400 + i}",
-            airline="Synthetic Airways",
-            origin="TWT",
-            destination=f"X{i:02}",
+            flight_number=f"DEMO{400 + i}",
+            airline="MODELLED SCENARIO",
+            origin="BKK",
+            destination=["SIN", "CNX", "HKT", "HKG"][i - 1],
             aircraft_type="ASSUMPTION: narrow-body",
             scheduled_departure=ANCHOR + timedelta(minutes=90 + i * 5),
             estimated_departure=ANCHOR + timedelta(minutes=90 + i * 5),
-            gate="C8",
+            gate=["C8", "D4", "E3", "F2"][i - 1],
             stand=f"S{i}",
             status="SCHEDULED",
             delay_reason="Synthetic departure wave",
@@ -74,7 +87,7 @@ def seed(db):
             f"gate-{i}",
             timestamp=ANCHOR,
             flight_id=f"flight-{i}",
-            gate_id="C8",
+            gate_id=["C8", "D4", "E3", "F2"][i - 1],
             state="PREPARING",
             queue_estimate=30,
             gate_ready=True,

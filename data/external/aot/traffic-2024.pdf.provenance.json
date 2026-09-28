@@ -1,0 +1,11 @@
+{
+  "source_name": "aot",
+  "source_url": "https://www.airportthai.co.th/wp-content/uploads/2025/06/%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%B2%E0%B8%93%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%88%E0%B8%A3%E0%B8%B2%E0%B8%88%E0%B8%A3%E0%B8%97%E0%B8%B2%E0%B8%87%E0%B8%AD%E0%B8%B2%E0%B8%81%E0%B8%B2%E0%B8%A8%E0%B8%82%E0%B8%AD%E0%B8%87-%E0%B8%97%E0%B8%AD%E0%B8%97.%E0%B8%9B%E0%B8%B5-2567-Airport-Traffic-Report-2024.pdf",
+  "retrieved_at": "2026-09-13T03:17:39.435425+00:00",
+  "source_geography": "TH / AOT airports",
+  "source_period": "2024",
+  "license_or_terms": "AOT public annual traffic report",
+  "source_type": null,
+  "status": "UNAVAILABLE",
+  "error": "HTTP Error 404: Not Found"
+}

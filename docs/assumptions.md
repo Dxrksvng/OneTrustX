@@ -19,3 +19,11 @@ Simulated MVP Result — Not actual airport performance.
 - Evaluation history is synthetic and shares queue mechanics with the baseline. Synthetic accuracy is not evidence of airport deployment performance. ML candidates are not promoted automatically.
 
 Root-cause contribution percentages use a two-factor Shapley decomposition of simulated +30 wait relative to normal demand/five lanes. This is model counterfactual attribution, not empirical causal proof. The reference counterfactual does not imply staffing feasibility as an action.
+
+## Revised deterministic demo
+
+Fresh session starts with Security A 12 min now, 18 min at +15, 39 min at +30 and 28.88 min at +60. Security A assumed arrivals are 11.2, 19.2, 9 and 1.6 pax/min in successive 15-minute periods. Four lanes process 2 pax/min/lane. Forecast confidence 80% is an uncalibrated heuristic; bounds are assumptions.
+
+The 580-passenger four-flight representative cohort is not all simulated network demand. Initial queue and other arrivals are explicitly shown separately. Domestic cohorts bypass immigration; international cohorts include it. Routes/gates and 145 passengers per modelled flight are not BKK telemetry or a commercial schedule.
+
+Staff/lane minutes cover the complete simulated queue drain window and two staff per open lane. No automatic claim of resource savings is made: extra lanes can use more staff time. Replayed measurement uses 97% of planned service capacity, a deterministic assumption, not observed airport performance. No CO2 savings are claimed.

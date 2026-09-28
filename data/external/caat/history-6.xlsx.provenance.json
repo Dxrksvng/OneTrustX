@@ -1,0 +1,14 @@
+{
+  "source_name": "caat",
+  "source_url": "https://www.caat.or.th/wp-content/uploads/2025/02/Air-Transport-Daily-4-Feb-25.xlsx",
+  "retrieved_at": "2026-09-12T23:44:15.799835+00:00",
+  "source_geography": "TH",
+  "source_period": "Dates in workbook",
+  "license_or_terms": "CAAT preliminary public statistics",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": null,
+  "checksum": "d72da7b6dbd362a7e4845eb68e9c0e9e21eaa645aca7967349bd6c006bc86cba",
+  "bytes": 82623,
+  "status": "CACHED",
+  "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+}

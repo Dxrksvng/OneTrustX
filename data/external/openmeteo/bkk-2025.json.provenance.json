@@ -1,0 +1,13 @@
+{
+  "source_name": "openmeteo",
+  "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=13.6811&longitude=100.747002&start_date=2025-01-01&end_date=2025-12-31&hourly=temperature_2m%2Crelative_humidity_2m%2Cprecipitation%2Crain%2Cweather_code%2Cpressure_msl%2Ccloud_cover%2Cwind_speed_10m%2Cwind_direction_10m%2Cwind_gusts_10m&timezone=Asia%2FBangkok",
+  "retrieved_at": "2026-09-12T22:36:01.977110+00:00",
+  "source_geography": "TH / BKK",
+  "source_period": "2025-01-01/2025-12-31",
+  "license_or_terms": "CC BY 4.0; https://open-meteo.com/en/terms",
+  "source_type": "REAL_PUBLIC",
+  "checksum": "7ba99256649ad57430efa799e471646566b03c0740bce85fdaa671f5f0739ddd",
+  "bytes": 545908,
+  "status": "CACHED",
+  "content_type": "application/json; charset=utf-8"
+}

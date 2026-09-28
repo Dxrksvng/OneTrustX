@@ -1,0 +1,14 @@
+{
+  "source_name": "uk_caa",
+  "source_url": "https://www.caa.co.uk/Documents/Download/24007/87fb7670-4e10-4aeb-942d-509238aa25a1/17551",
+  "retrieved_at": "2026-09-12T23:30:13.656581+00:00",
+  "source_geography": "UK",
+  "source_period": "2025",
+  "license_or_terms": "UK CAA public statistics; https://www.caa.co.uk/our-work/about-us/terms-and-conditions/",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": null,
+  "checksum": "0b96d31d7b51ecf7f1159516c3984aa6b91f99e66603a86b2d8b6333689d417e",
+  "bytes": 7031,
+  "status": "CACHED",
+  "content_type": "text/csv"
+}

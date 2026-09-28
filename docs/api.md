@@ -34,3 +34,12 @@ Interactive OpenAPI: http://localhost:8000/docs. Machine schema: `/openapi.json`
 Errors: 403 missing mutation role; 404 missing entity; 409 stale, duplicate or superseded action; 422 invalid/infeasible input; 429 rate limited; 503 unready database or unconfigured non-demo identity. GET analytics may persist predictions: this is intentional for MVP auditability, and should move to scheduled materialization at scale.
 
 Every simulated response is labelled. UUID IDs identify predictions, recommendations, events and results. Opaque fixture strings identify synthetic flights and passengers. A decision never commands an airport system. Decision approval and state change commit in one PostgreSQL transaction with a row lock.
+
+Additional experience endpoints:
+
+- `GET /api/flights/{id}/operations`: flight plus stored ground handling,
+  baggage events and gate events; 404 for an unknown flight.
+- `GET /api/evaluation`: bundled offline synthetic evaluation report; 503 if missing.
+
+Simulation series expose `arrivals_a`, `arrivals_b`, `served_a`, `served_b` and
+`served` (actual simulated departures that minute, not available capacity).

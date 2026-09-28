@@ -1,3 +1,5 @@
+from app import public_models  # noqa: F401
+from app import trust_models  # noqa: F401
 from alembic import context
 
 from app import models  # noqa: F401

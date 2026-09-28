@@ -361,3 +361,126 @@ CREATE TABLE intervention_results (
 ;
 
 CREATE INDEX ix_intervention_results_timestamp ON intervention_results (timestamp);
+
+-- Public data and isolated demo sessions (migrations 002/003)
+
+CREATE TABLE demo_sessions (
+	id VARCHAR(64) NOT NULL,
+	peak BOOLEAN NOT NULL,
+	lanes INTEGER NOT NULL,
+	redirect FLOAT NOT NULL,
+	gate VARCHAR(10) NOT NULL,
+	updated_at TIMESTAMP WITH TIME ZONE NOT NULL,
+	version INTEGER NOT NULL,
+	stale BOOLEAN NOT NULL,
+	PRIMARY KEY (id)
+)
+
+;
+
+CREATE TABLE public_datasets (
+	id VARCHAR(100) NOT NULL,
+	source_name VARCHAR(50) NOT NULL,
+	source_url VARCHAR(1000) NOT NULL,
+	retrieved_at TIMESTAMP WITH TIME ZONE NOT NULL,
+	source_geography VARCHAR(100) NOT NULL,
+	source_period VARCHAR(100),
+	source_type VARCHAR(30) NOT NULL,
+	checksum VARCHAR(64) NOT NULL,
+	records INTEGER NOT NULL,
+	missing_percent FLOAT,
+	duplicate_percent FLOAT,
+	date_from VARCHAR(40),
+	date_to VARCHAR(40),
+	granularity VARCHAR(40),
+	license_or_terms VARCHAR(500),
+	PRIMARY KEY (id)
+)
+
+;
+
+CREATE TABLE public_flights (
+	id VARCHAR(64) NOT NULL,
+	dataset_id VARCHAR(100) NOT NULL,
+	flight_date VARCHAR(10),
+	airline VARCHAR(10),
+	flight_number VARCHAR(10),
+	origin VARCHAR(10),
+	destination VARCHAR(10),
+	scheduled_departure VARCHAR(10),
+	departure_delay FLOAT,
+	arrival_delay FLOAT,
+	taxi_out FLOAT,
+	taxi_in FLOAT,
+	cancelled FLOAT,
+	diverted FLOAT,
+	distance FLOAT,
+	carrier_delay FLOAT,
+	weather_delay FLOAT,
+	nas_delay FLOAT,
+	security_delay FLOAT,
+	late_aircraft_delay FLOAT,
+	source_type VARCHAR(30) NOT NULL,
+	source_row INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY(dataset_id) REFERENCES public_datasets (id)
+)
+
+;
+CREATE INDEX ix_public_flights_flight_date ON public_flights (flight_date);
+CREATE INDEX ix_public_flights_origin ON public_flights (origin);
+
+CREATE TABLE public_observations (
+	id VARCHAR(64) NOT NULL,
+	dataset_id VARCHAR(100) NOT NULL,
+	airport VARCHAR(100),
+	date VARCHAR(30),
+	metric VARCHAR(80),
+	category VARCHAR(80),
+	value FLOAT,
+	unit VARCHAR(30),
+	source_type VARCHAR(30) NOT NULL,
+	source_row INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY(dataset_id) REFERENCES public_datasets (id)
+)
+
+;
+CREATE INDEX ix_public_observations_dataset_id ON public_observations (dataset_id);
+CREATE INDEX ix_public_observations_metric ON public_observations (metric);
+CREATE INDEX ix_public_observations_date ON public_observations (date);
+CREATE INDEX ix_public_observations_airport ON public_observations (airport);
+
+CREATE TABLE public_queues (
+	id VARCHAR(64) NOT NULL,
+	dataset_id VARCHAR(100) NOT NULL,
+	airport VARCHAR(10),
+	terminal VARCHAR(100),
+	date VARCHAR(10),
+	hour VARCHAR(20),
+	average_wait FLOAT,
+	max_wait FLOAT,
+	us_average_wait FLOAT,
+	us_max_wait FLOAT,
+	non_us_average_wait FLOAT,
+	non_us_max_wait FLOAT,
+	passengers INTEGER,
+	flights INTEGER,
+	booths INTEGER,
+	excluded INTEGER,
+	bucket_0_15 INTEGER,
+	bucket_16_30 INTEGER,
+	bucket_31_45 INTEGER,
+	bucket_46_60 INTEGER,
+	bucket_61_90 INTEGER,
+	bucket_91_120 INTEGER,
+	bucket_121_plus INTEGER,
+	source_type VARCHAR(30) NOT NULL,
+	source_row INTEGER,
+	PRIMARY KEY (id),
+	FOREIGN KEY(dataset_id) REFERENCES public_datasets (id)
+)
+
+;
+CREATE INDEX ix_public_queues_airport ON public_queues (airport);
+CREATE INDEX ix_public_queues_date ON public_queues (date);

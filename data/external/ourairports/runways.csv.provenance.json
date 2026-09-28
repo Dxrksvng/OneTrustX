@@ -1,0 +1,13 @@
+{
+  "source_name": "ourairports",
+  "source_url": "https://davidmegginson.github.io/ourairports-data/runways.csv",
+  "retrieved_at": "2026-09-12T22:35:57.967007+00:00",
+  "source_geography": "GLOBAL",
+  "source_period": "Current snapshot",
+  "license_or_terms": "Public domain; https://ourairports.com/data/",
+  "source_type": "REAL_PUBLIC",
+  "checksum": "69454a043e1c90bb8ddee81fbc0f6bbf28f48c715e9d9470390e2089886e8e8c",
+  "bytes": 3964061,
+  "status": "CACHED",
+  "content_type": "text/csv; charset=utf-8"
+}

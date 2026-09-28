@@ -1,0 +1,14 @@
+{
+  "source_name": "caat",
+  "source_url": "https://www.caat.or.th/wp-content/uploads/2024/09/Air-Transport-Statistics-Daily-17-Sep-24.xlsx",
+  "retrieved_at": "2026-09-12T23:44:31.157770+00:00",
+  "source_geography": "TH",
+  "source_period": "Dates in workbook",
+  "license_or_terms": "CAAT preliminary public statistics",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": null,
+  "checksum": "f634836e8712efb378f0af76290b1144d693ebe09b694f8dd6784c585207054c",
+  "bytes": 78569,
+  "status": "CACHED",
+  "content_type": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+}

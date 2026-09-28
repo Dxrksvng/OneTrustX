@@ -66,3 +66,36 @@ airport-timetwin/
 ```
 
 Modules are intentionally small; a later service split must follow measured scaling needs. PostgreSQL is the supported Compose database; SQLite is used only for isolated tests and optional local development.
+
+## Public-data foundation (September 2026 upgrade)
+
+```mermaid
+flowchart LR
+  official[CAAT / OurAirports / Open-Meteo / BTS / CBP / UK CAA] --> fetch[Bounded scheduled ingestion]
+  fetch --> raw[Checksummed offline source cache]
+  raw --> normalize[CSV normalization + source-row lineage]
+  normalize --> pg[(PostgreSQL public tables)]
+  pg --> aggregate[Server-side historical aggregates]
+  aggregate --> ui[Overview / Sources / Performance]
+  assumptions[Modelled BKK checkpoint configuration] --> engine[Deterministic queue engine]
+  cbp[External CBP benchmark evaluation] -. plausibility only .-> engine
+  engine --> options[Simulate + compare feasible options]
+  options --> human[Human approval / rejection / override]
+  human --> journey[Session-scoped passenger re-plan]
+  human --> audit[Idempotent decision lifecycle + replay measurement]
+```
+
+No third-party request is made by `/api/data/context` or `/api/data/catalog`. Public data provides historical context and external evaluation; it is not a substitute for missing BKK checkpoint telemetry. Current CBP analysis is concurrent hourly wait estimation, not a forward security forecast. No ML candidate is promoted.
+
+```mermaid
+erDiagram
+  PUBLIC_DATASETS ||--o{ PUBLIC_OBSERVATIONS : contains
+  PUBLIC_DATASETS ||--o{ PUBLIC_FLIGHTS : contains
+  PUBLIC_DATASETS ||--o{ PUBLIC_QUEUES : contains
+  DEMO_SESSIONS ||--o{ OPERATIONAL_EVENTS : scopes
+  OPERATIONAL_EVENTS ||--o{ PREDICTIONS : explains
+  PREDICTIONS ||--o{ RECOMMENDATIONS : supports
+  RECOMMENDATIONS ||--o| INTERVENTION_RESULTS : measures
+```
+
+Demo event/session linkage is recorded in event metadata; public lineage uses normalized foreign keys. Session UUID is a demo isolation mechanism, not a production authentication credential.

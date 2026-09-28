@@ -85,3 +85,15 @@ class Audit(Base):
     actual_outcome = Column(Float, nullable=True)
     prediction_error = Column(Float, nullable=True)
     result = Column(String(200), nullable=False)
+
+
+class DemoSession(Base):
+    __tablename__ = "demo_sessions"
+    id = Column(String(64), primary_key=True)
+    peak = Column(Boolean, nullable=False, default=True)
+    lanes = Column(Integer, nullable=False, default=4)
+    redirect = Column(Float, nullable=False, default=0)
+    gate = Column(String(10), nullable=False, default="C8")
+    updated_at = Column(T, nullable=False, default=now)
+    version = Column(Integer, nullable=False, default=1)
+    stale = Column(Boolean, nullable=False, default=False)

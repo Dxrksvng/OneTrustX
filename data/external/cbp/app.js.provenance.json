@@ -1,0 +1,13 @@
+{
+  "source_name": "cbp",
+  "source_url": "https://awt.cbp.gov/assets/index-q3vn69oe.js",
+  "retrieved_at": "2026-09-12T22:40:24.910663+00:00",
+  "source_geography": "Source discovery",
+  "source_period": "2025",
+  "license_or_terms": "Official public website; review original terms",
+  "source_type": "REAL_PUBLIC",
+  "checksum": "7cbfbd017f5fdb38909d282a522f132957cb32cee8b4ba57e61480607241815e",
+  "bytes": 1765739,
+  "status": "CACHED",
+  "content_type": "text/javascript"
+}

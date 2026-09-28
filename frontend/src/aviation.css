@@ -1,0 +1,602 @@
+/* Aviation brand layer. Status colours remain operational, not decorative. */
+:root {
+  --green: #183c59;
+  --border: #dce2e8;
+  --muted: #5c6b7b;
+  color: #172e43;
+  background: #f3f5f7;
+}
+.sidebar {
+  background: #10283d;
+  color: #edf2f6;
+}
+.brand-light {
+  color: #d8e3ed;
+}
+.brand-icon {
+  color: #d1b684;
+  border-color: #786d58;
+  background: transparent;
+  border-radius: 4px;
+}
+.workspace,
+.profile {
+  border-color: #344c61;
+}
+.workspace small,
+.mode small,
+.profile small,
+.nav-label {
+  color: #b2c1ce;
+}
+.airport-icon {
+  color: #d3dfeb;
+  border-color: #53687a;
+}
+.nav {
+  color: #c1cfdb;
+  border-radius: 4px;
+}
+.nav.active {
+  background: #223f57;
+  color: white;
+  box-shadow: inset 2px 0 #cbb184;
+}
+.nav:hover {
+  background: #29465d;
+}
+.nav-dot {
+  background: #d1b684;
+}
+.avatar {
+  background: #34516a;
+  border-color: #60798e;
+  color: white;
+}
+.topbar {
+  background: #fff;
+  backdrop-filter: none;
+}
+.content {
+  max-width: 1800px;
+  margin: auto;
+}
+h1 {
+  letter-spacing: -0.9px;
+  font-weight: 700;
+}
+.eyebrow {
+  color: #526b80;
+  letter-spacing: 2px;
+  font-size: 10px;
+}
+.subtitle,
+.panel-heading p,
+.note,
+.metric p {
+  color: #5c6b7b;
+}
+.panel,
+.metric {
+  border-color: #dce2e8;
+  border-radius: 6px;
+  box-shadow: 0 2px 8px #142d4405;
+}
+.metric:after {
+  background: #b9c8d5;
+  height: 1px;
+}
+.metric-label {
+  color: #566b7d;
+  font-size: 10px;
+}
+button {
+  color: #24445e;
+  border-radius: 4px;
+}
+button:hover {
+  background: #edf2f6;
+}
+.primary {
+  background: #183c59;
+  color: white;
+  border-color: #183c59;
+}
+.primary:hover:not(:disabled) {
+  background: #244e6f;
+  box-shadow: none;
+  transform: none;
+}
+.secondary {
+  background: white;
+  color: #24445e;
+}
+.tag,
+.tiny-tag {
+  background: #f1f4f7;
+  color: #526578;
+  border-color: #d6dfe7;
+}
+.copilot {
+  background: #edf2f6;
+}
+.passenger-card {
+  background: white;
+  box-shadow: 0 16px 48px #18334b12;
+}
+.passenger-top {
+  border-color: #ccd7df;
+}
+.passenger-disclaimer,
+.journey-breakdown dt {
+  color: #5c6b7b;
+}
+.safe-time:after {
+  background: #f3f5f7;
+}
+.audit-row pre {
+  background: #f1f4f7;
+}
+.audit-icon {
+  background: #e9eff4;
+  color: #3c5c75;
+}
+.loading {
+  color: #24445e;
+}
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation: none !important;
+    transition: none !important;
+    scroll-behavior: auto !important;
+  }
+}
+.landing {
+  background: #f7f7f4;
+  color: #173047;
+  font-size: 15px;
+}
+.landing-nav {
+  min-height: 96px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 6%;
+  border-bottom: 1px solid #d9dfe2;
+}
+.landing-brand {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  text-decoration: none;
+  letter-spacing: 1px;
+}
+.landing-brand svg {
+  color: #9a7a46;
+}
+.landing nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+.landing nav a {
+  text-decoration: none;
+  font-size: 13px;
+}
+.landing-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  background: #16384f;
+  color: white !important;
+  text-decoration: none;
+  padding: 17px 23px;
+  border-radius: 2px;
+  font-size: 13px;
+}
+.landing-hero {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  min-height: 690px;
+}
+.hero-copy {
+  padding: 85px 8% 65px 12%;
+}
+.hero-copy h1 {
+  font-size: clamp(48px, 5.4vw, 84px);
+  line-height: 1.07;
+  letter-spacing: -3px;
+  margin: 28px 0;
+}
+.hero-copy em {
+  font-family: Georgia, serif;
+  color: #957745;
+  font-weight: 400;
+}
+.hero-copy p {
+  max-width: 460px;
+  color: #5d6e7a;
+  font-size: 16px;
+  line-height: 1.9;
+}
+.hero-actions {
+  display: flex;
+  align-items: center;
+  gap: 23px;
+  margin: 32px 0;
+}
+.hero-actions > a:last-child {
+  font-size: 12px;
+}
+.hero-copy > small {
+  font-size: 9px;
+  letter-spacing: 1px;
+  color: #627280;
+}
+.hero-terminal {
+  background: linear-gradient(140deg, #263e50, #0d2233);
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+}
+.hero-terminal svg {
+  width: 100%;
+  margin-top: -60px;
+}
+.hero-caption {
+  position: absolute;
+  bottom: 35px;
+  left: 35px;
+  right: 35px;
+  color: #e3eaf0;
+  border-top: 1px solid #658091;
+  padding-top: 22px;
+}
+.hero-caption span {
+  font-size: 9px;
+  letter-spacing: 2px;
+  color: #c7b487;
+}
+.hero-caption strong {
+  display: block;
+  font-size: 21px;
+  margin: 12px 0;
+}
+.hero-caption p {
+  font-size: 12px;
+  color: #aebdca;
+}
+.terminal-path {
+  animation: terminal-stream 24s linear infinite;
+}
+@keyframes terminal-stream {
+  to {
+    stroke-dashoffset: -180;
+  }
+}
+.landing-principles {
+  padding: 80px 6%;
+  display: grid;
+  grid-template-columns: 1.15fr repeat(3, 1fr);
+  gap: 35px;
+}
+.landing-principles h2 {
+  font-size: 30px;
+  line-height: 1.4;
+  margin-top: 20px;
+}
+.landing-principles > a {
+  text-decoration: none;
+  border-left: 1px solid #d5dde2;
+  padding-left: 25px;
+}
+.landing-principles > a > svg {
+  color: #9a7a46;
+}
+.landing-principles h3 {
+  margin: 24px 0 12px;
+}
+.landing-principles p {
+  font-size: 13px;
+  color: #5d6e7a;
+  margin-bottom: 20px;
+}
+.landing-close {
+  background: #e9eef1;
+  text-align: center;
+  padding: 75px 20px;
+}
+.landing-close h2 {
+  font-size: 40px;
+  margin: 20px;
+}
+.landing-close p {
+  margin-bottom: 25px;
+}
+.landing footer {
+  padding: 28px 6%;
+  display: flex;
+  justify-content: space-between;
+  font-size: 12px;
+}
+.reveal-panel {
+  margin-bottom: 24px;
+}
+.comparison-reveal {
+  position: relative;
+  height: 190px;
+  margin-top: 20px;
+  overflow: hidden;
+}
+.reveal-state {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+.reveal-state.after {
+  background: #e2efeb;
+  color: #1e594b;
+}
+.reveal-state.before {
+  background: #f4e7dc;
+  color: #874a2c;
+}
+.reveal-state span {
+  font-size: 10px;
+  letter-spacing: 1px;
+}
+.reveal-state strong {
+  font-size: 48px;
+}
+.reveal-state strong small {
+  font-size: 16px;
+}
+.reveal-divider {
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  border-left: 2px solid white;
+  display: flex;
+  align-items: center;
+  color: #19374b;
+  font-size: 25px;
+}
+.reveal-panel label {
+  display: block;
+  margin-top: 15px;
+}
+.reveal-panel input {
+  display: block;
+  width: 100%;
+  accent-color: #183c59;
+}
+.future-range {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  padding: 12px 25px;
+  font-size: 11px;
+}
+.future-range input {
+  flex: 1;
+  min-width: 0;
+  accent-color: #183c59;
+}
+.guided {
+  border: 1px solid #bdac88;
+  background: #f5f0e5;
+  padding: 20px;
+  margin-bottom: 24px;
+}
+.guided h2 {
+  margin-bottom: 8px;
+}
+.guided progress {
+  width: 100%;
+  accent-color: #183c59;
+  margin: 14px 0;
+}
+.guided button {
+  margin-right: 10px;
+}
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.data-table th,
+.data-table td {
+  text-align: left;
+  padding: 14px 10px;
+  border-bottom: 1px solid #dce2e8;
+  font-size: 12px;
+}
+.page-extra {
+  margin-bottom: 24px;
+}
+.page-extra h2 {
+  margin: 15px 0;
+}
+.flight-search {
+  width: 100%;
+  padding: 12px;
+  margin: 15px 0;
+  border: 1px solid #dce2e8;
+}
+.extra-scroll {
+  overflow: auto;
+}
+.flow-visual {
+  width: 100%;
+  min-height: 240px;
+}
+.flight-drawer {
+  margin-top: 20px;
+  padding: 20px;
+  background: #eef3f6;
+}
+.landing a:focus-visible {
+  outline: 3px solid #9a7a46;
+  outline-offset: 5px;
+}
+@media (max-width: 900px) {
+  .landing-nav {
+    flex-wrap: wrap;
+    gap: 20px;
+  }
+  .landing nav {
+    gap: 15px;
+  }
+  .landing-hero {
+    grid-template-columns: 1fr;
+  }
+  .hero-copy {
+    padding: 50px 7%;
+  }
+  .hero-terminal {
+    min-height: 420px;
+  }
+  .hero-terminal svg {
+    max-height: 470px;
+  }
+  .landing-principles {
+    grid-template-columns: 1fr 1fr;
+  }
+  .hero-actions {
+    flex-wrap: wrap;
+  }
+  .landing-close h2 {
+    font-size: 30px;
+  }
+}
+@media (max-width: 520px) {
+  .landing nav {
+    flex-wrap: wrap;
+  }
+  .landing-principles {
+    grid-template-columns: 1fr;
+  }
+  .landing footer {
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .terminal-path {
+    animation: none;
+  }
+}
+.sidebar {
+  overflow-y: auto;
+}
+.sidebar-bottom {
+  padding-top: 25px;
+}
+.nav {
+  padding: 10px 12px;
+}
+.copilot-launch {
+  position: fixed;
+  right: 24px;
+  bottom: 22px;
+  z-index: 25;
+}
+.copilot-dialog {
+  position: fixed;
+  inset: 0 0 0 auto;
+  margin: 0;
+  width: min(480px, 100%);
+  max-height: 100vh;
+  height: 100vh;
+  max-width: 100%;
+  border: 0;
+  border-left: 1px solid #cbd6df;
+  padding: 24px;
+  background: #f4f7f9;
+  color: #183c59;
+}
+.copilot-dialog::backdrop {
+  background: #10283d60;
+}
+.copilot-dialog .copilot {
+  display: block;
+  margin-top: 25px;
+}
+.copilot-dialog .copilot form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-top: 20px;
+}
+.copilot-dialog .copilot-heading {
+  flex-wrap: wrap;
+}
+.copilot-dialog input {
+  width: 100%;
+  min-width: 0;
+}
+.copilot-dialog .copilot-answer {
+  white-space: pre-wrap;
+}
+.airport-scene {
+  background: #152f42;
+}
+.checkpoint-inspector {
+  background: #122b3d;
+}
+.scene-topline {
+  color: #c1d0dc;
+}
+.scene-topline > span:first-child {
+  color: #cbd8e1;
+}
+.collapse-nav {
+  background: transparent;
+  color: #bdcbd7;
+  border: 0;
+  justify-content: flex-start;
+  font-size: 11px;
+  margin-bottom: 12px;
+}
+.collapse-nav:hover {
+  background: #29465d;
+}
+.collapse-nav span {
+  letter-spacing: 1px;
+}
+@media (min-width: 981px) {
+  .sidebar-collapsed .sidebar {
+    width: 76px;
+    padding: 25px 12px;
+  }
+  .sidebar-collapsed .main {
+    margin-left: 76px;
+    width: calc(100% - 76px);
+  }
+  .sidebar-collapsed .sidebar .brand > span,
+  .sidebar-collapsed .workspace,
+  .sidebar-collapsed .sidebar-bottom,
+  .sidebar-collapsed .nav-text,
+  .sidebar-collapsed .nav-dot,
+  .sidebar-collapsed .collapse-nav span {
+    display: none;
+  }
+  .sidebar-collapsed .nav {
+    justify-content: center;
+  }
+  .sidebar-collapsed .brand {
+    padding: 0;
+    margin-bottom: 30px;
+  }
+}
+@media (max-width: 980px) {
+  .collapse-nav {
+    display: none;
+  }
+}

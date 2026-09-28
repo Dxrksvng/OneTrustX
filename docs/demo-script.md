@@ -12,3 +12,13 @@ Simulated MVP Result — Not actual airport performance.
 8. Test stale feed. Passenger guidance is marked stale; simulation and recommendation actions are blocked. Refresh feed or Reset demo restores the synthetic source freshness.
 
 CLI: `cd backend && uv run python ../scripts/run_demo.py` while the API is running. This performs the peak decision, resets the passenger vignette, and prints calculated before/after values.
+
+## Guided website walkthrough
+
+Open `/demo` and choose **Start / restart guided demo**. The approximately
+three-minute sequence uses nine stages with 20-second dwell periods. Pause or
+use Next step for a live presentation. It runs real deterministic APIs and
+records the synthetic accepted decision. A separate reset before the passenger
+stages restores the reproducible Safe Time 34 → 11 scenario; the UI states this
+reset explicitly. Audit history survives both resets. Shared demo users can
+interfere with the scenario; version/stale checks stop invalid acceptance.

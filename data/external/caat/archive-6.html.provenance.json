@@ -1,0 +1,14 @@
+{
+  "source_name": "caat",
+  "source_url": "https://www.caat.or.th/publication-category/air-tran-stat-daily/page/6/",
+  "retrieved_at": "2026-09-12T23:44:13.389763+00:00",
+  "source_geography": "TH",
+  "source_period": "Historical archive",
+  "license_or_terms": "CAAT public statistics",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": null,
+  "checksum": "b058a45537c631209d58bebc851a1e3df069117aa78aa67a8be0b90d32736d15",
+  "bytes": 221863,
+  "status": "CACHED",
+  "content_type": "text/html; charset=UTF-8"
+}

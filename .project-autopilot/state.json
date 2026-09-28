@@ -2,8 +2,8 @@
   "version": 1,
   "objective": "Build and verify Airport TimeTwin end-to-end, including the MotionSites-inspired UX/UI and PostgreSQL Compose demo.",
   "created_at": "2026-09-12T17:15:54.148491+00:00",
-  "project_directory": "/Users/jswvn/projects/airport-timetwin",
-  "status": "mvp_verified",
+  "project_directory": "/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/airport-timetwin",
+  "status": "public_preview_upgrade_verified",
   "requirements": [
     {
       "name": "Source, schema, deterministic seed and public contextual adapters",
@@ -34,11 +34,23 @@
       "name": "All aspirational accuracy targets",
       "status": "implemented",
       "evidence": "Assessment is implemented; targets are not all met. See docs/acceptance-results.json."
+    },
+    {
+      "name": "Aviation landing, URL views, guided automatic demo, comparison reveal, contextual copilot, accessible motion",
+      "status": "verified",
+      "evidence": "10 Playwright tests on Docker; 18 backend tests; 2 frontend unit tests; migration 001 head"
+    },
+    {
+      "name": "Executive reference reconstruction and team handoff/public preview",
+      "status": "verified",
+      "evidence": "docs/executive-ui.md; docs/team-handoff.md; public preview tests"
     }
   ],
   "scope_changes": [
     "MotionSites-inspired UX refinement",
-    "Create reusable project-autopilot skill; installed and validated"
+    "Create reusable project-autopilot skill; installed and validated",
+    "Complete routed aviation UX, landing, guided demo, comparison reveal, flight/flow/performance views",
+    "Aviation Executive Operations: latest consolidated references, top navigation, canonical routes, strategy workspace and restrained photographic landing"
   ],
   "assumptions": [],
   "decisions": [
@@ -78,6 +90,14 @@
     {
       "name": "local Markdown links",
       "result": "all resolve"
+    },
+    {
+      "name": "2026-09-13 relocated project verification",
+      "result": "18 backend, 2 frontend, 10 browser tests passed; lint/format/build passed; migration 001 head; live concurrent decisions and measurement passed"
+    },
+    {
+      "name": "Executive fidelity + public preview",
+      "result": "13 local browser tests and 2 public URL tests passed; report/health HTTP 200; source routes and presentation tools verified"
     }
   ],
   "services": [
@@ -97,8 +117,10 @@
       "container": "airport-timetwin-db-1"
     },
     {
-      "name": "Vite development preview",
-      "url": "http://localhost:5173"
+      "name": "Temporary public preview",
+      "url": "https://vice-lie-wanting-writer.trycloudflare.com",
+      "container": "airport-timetwin-share",
+      "requires": "Mac + Docker running; URL may change on tunnel restart"
     }
   ],
   "blockers": [],
@@ -107,6 +129,32 @@
     "Protected airport integrations are conceptual",
     "Confidence is heuristic and not calibrated",
     "Some synthetic model targets remain unmet",
-    "Demo RBAC is local-only; production identity is not implemented"
-  ]
+    "Demo RBAC is local-only; production identity is not implemented",
+    "No additional user operational dataset found in relocated project; three public context caches verified present",
+    "Forecast timeline selects supported discrete horizons; no unsupported interpolated forecast estimates",
+    "Airport photography and terminal twin are generated approximations, not exact source assets; data remains model-derived or synthetic"
+  ],
+  "current_scope": "Real public cache + PostgreSQL aggregation + fidelity + site-wide Thai/English",
+  "upgrade": {
+    "backend_tests": 23,
+    "frontend_unit_tests": 2,
+    "public_flight_records": 504884,
+    "cbp_source_rows": 12186,
+    "weather_hours": 8760,
+    "remaining": [],
+    "limits": [
+      "AOT and TSA observations unavailable",
+      "BKK checkpoint calibration not claimed",
+      "hero retains approved generated asset"
+    ],
+    "browser_tests": 7,
+    "migration": "003",
+    "public_url": "https://selected-enquiries-celebrities-golf.trycloudflare.com/overview",
+    "report": "docs/upgrade-review.md",
+    "future_gaps": [
+      "AOT/TSA acquisition unavailable",
+      "No calibrated BKK security telemetry",
+      "Pixel-level visual differences documented"
+    ]
+  }
 }

@@ -270,3 +270,17 @@ JSONB is limited to operational_events.metadata: versioned input/output snapshot
 | prediction_error | FLOAT | True | Observed minus predicted mean wait, signed minutes |
 | result | VARCHAR(200) | True | result |
 | timestamp | DATETIME | True | UTC record timestamp |
+
+## Public tables
+
+| Table | Grain | Important fields |
+|---|---|---|
+| public_datasets | one source extract | URL, retrieval time, geography, period, raw SHA256, record count, missing/duplicate rates, terms |
+| public_observations | one published metric/cell | dataset FK, source row, airport, date, category, metric, value, unit |
+| public_flights | one BTS flight | US geography through dataset FK, flight date, carrier/code, airports, times/delays, taxi, cancellation/diversion and delay causes |
+| public_queues | one CBP terminal/hour | US airport, terminal, hour, waits, passengers, flights, booths, wait buckets, exclusions |
+| demo_sessions | one browser demo session | UUID, scenario version, explicit stale flag, lanes, routing and gate |
+
+`REAL_PUBLIC` marks published source records. `DERIVED_REAL` marks calculated external benchmark statistics. `MODELLED` marks scenario flights and process assumptions. `ASSUMPTION` marks illustrative topology/service parameters. `SIMULATED` marks what-if forecasts and replay outcomes. Legacy `SYNTHETIC` records remain labelled as such for compatibility; they are never relabelled as real.
+
+Observation counts in the quality report are source rows, not the expanded metric-cell count in SQL. Missing source cells remain null. Historical weather is provider reanalysis, not direct airport observations. CAAT revisions remain separately attributable and are deduplicated in aggregate responses.

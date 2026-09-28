@@ -1,0 +1,14 @@
+{
+  "source_name": "aot",
+  "source_url": "https://corporatestrategy.airportthai.co.th/ats/%E0%B8%A3%E0%B8%B2%E0%B8%A2%E0%B8%87%E0%B8%B2%E0%B8%99%E0%B8%9B%E0%B8%A3%E0%B8%B4%E0%B8%A1%E0%B8%B2%E0%B8%93%E0%B8%81%E0%B8%B2%E0%B8%A3%E0%B8%82%E0%B8%99%E0%B8%AA%E0%B9%88%E0%B8%87/",
+  "retrieved_at": "2026-09-12T23:44:32.434238+00:00",
+  "source_geography": "TH",
+  "source_period": "Archive",
+  "license_or_terms": "Official AOT published reports",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": null,
+  "checksum": "8b1876f136031493e16dd07a31e51b59b85d1cee35e1f5fe0b278849c08e4781",
+  "bytes": 122257,
+  "status": "CACHED",
+  "content_type": "text/html; charset=UTF-8"
+}

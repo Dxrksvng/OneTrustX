@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <title>Airport TimeTwin: Data Provenance and Demo Methodology</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+  <link rel="stylesheet" href="pdf-th.css" />
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">Airport TimeTwin: Data Provenance and Demo
+Methodology</h1>
+</header>
+<h1 id="airport-timetwin">Airport TimeTwin</h1>
+<h2 id="เอกสารทมา-การสรางขอมล-demo-และการประเมนความนาเชอถอ">เอกสารที่มา
+การสร้างข้อมูล Demo และการประเมินความน่าเชื่อถือ</h2>
+<p><strong>ฉบับสำหรับ Hackathon · 15 กันยายน 2026</strong></p>
+<p>เอกสารนี้อธิบายว่าระบบ Airport TimeTwin ใช้ข้อมูลอะไร ข้อมูลมาจากไหน
+ข้อมูลจริงถูกใช้ในบทบาทใด ข้อมูลใดเป็นข้อมูลจำลอง วิธีสร้างสถานการณ์ Demo
+และระดับความน่าเชื่อถือที่ควรอ้างอิง</p>
+<h2 id="บทสรปสำหรบกรรมการ">1. บทสรุปสำหรับกรรมการ</h2>
+<p>Airport TimeTwin เป็น <strong>decision-support prototype</strong>
+สำหรับทดลองผลของมาตรการจัดการผู้โดยสารในสนามบิน เช่น การเปิดเลนสำรอง การ
+redirect ผู้โดยสาร และการเปลี่ยนเส้นทางไป Gate
+ระบบไม่ได้อ้างว่าเป็นระบบพยากรณ์คิวสุวรรณภูมิจาก telemetry จริง</p>
+<p>ข้อมูลในระบบแบ่งเป็นห้าประเภท:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>ประเภท</th>
+<th>ความหมาย</th>
+<th>ตัวอย่าง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>REAL_PUBLIC</code></td>
+<td>ข้อมูลจริงจากแหล่งสาธารณะ</td>
+<td>OurAirports, Open-Meteo, BTS, CBP, CAAT, UK CAA</td>
+</tr>
+<tr>
+<td><code>SYNTHETIC</code></td>
+<td>แถวข้อมูลที่สร้างขึ้นเพื่อเป็น fixture/demo</td>
+<td>เที่ยวบิน คิว เลน ผู้โดยสาร และเหตุการณ์</td>
+</tr>
+<tr>
+<td><code>ASSUMPTION</code></td>
+<td>ค่าที่สมมติเพื่อให้แบบจำลองทำงาน</td>
+<td>service rate, terminal topology, staff limit</td>
+</tr>
+<tr>
+<td><code>DERIVED</code></td>
+<td>ค่าที่คำนวณต่อจากข้อมูลต้นทาง</td>
+<td>weather feature, aggregate</td>
+</tr>
+<tr>
+<td><code>SIMULATED</code></td>
+<td>ผลลัพธ์จากการรัน engine</td>
+<td>forecast, wait, recommendation, Safe Time</td>
+</tr>
+</tbody>
+</table>
+<p>หน้าเว็บ production ที่ deploy อยู่ในปัจจุบันใช้ backend demo แบบ
+<code>SYNTHETIC/SIMULATED</code> เป็นหลัก ข้อมูลสาธารณะถูกจัดเก็บและออกแบบไว้เป็น
+public context/benchmark แต่ยังไม่ถูกใช้แทน checkpoint telemetry จริงของ
+BKK</p>
+<p>ข้อสรุปด้านความน่าเชื่อถือ: ระบบน่าเชื่อถือในฐานะ
+<strong>การสาธิตกลไกการตัดสินใจและการจำลองแบบ reproducible</strong>
+แต่ยังไม่น่าเชื่อถือพอที่จะอ้างตัวเลขคิวหรือผลประโยชน์จริงของสนามบินจนกว่าจะ calibrate
+และ validate กับข้อมูล aggregate จากสนามบินจริง</p>
+<h2 id="คำถามทระบบกำลงแก">2. คำถามที่ระบบกำลังแก้</h2>
+<p>โจทย์ไม่ใช่การบอกว่า “คิวจริงตอนนี้เท่าไร” แต่คือ:</p>
+<blockquote>
+<p>ถ้าเกิด arrival wave และเรามีทรัพยากรจำกัด
+ควรเปรียบเทียบมาตรการใดก่อนให้ผู้ปฏิบัติงานตัดสินใจ</p>
+</blockquote>
+<p>ระบบจึงต้องรักษา demand เดียวกัน แล้วทดลองทางเลือกหลายแบบ เช่น No Action,
+เปิดเลน, redirect และมาตรการผสม เพื่อให้เห็น trade-off ระหว่าง wait reduction,
+staff, walking และ feasibility</p>
+<h2 id="แหลงขอมลจรงและเหตผลทนำมาใช">3. แหล่งข้อมูลจริงและเหตุผลที่นำมาใช้</h2>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>แหล่งอ้างอิง</th>
+<th>บทบาทในระบบ</th>
+<th>ขอบเขตที่ห้ามสรุปเกินจริง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Airport metadata</td>
+<td><a href="https://ourairports.com/data/">OurAirports</a></td>
+<td>airport/runway reference</td>
+<td>ไม่ใช่ passenger telemetry</td>
+</tr>
+<tr>
+<td>Historical weather</td>
+<td><a href="https://open-meteo.com/en/docs">Open-Meteo</a></td>
+<td>context และ weather feature</td>
+<td>เป็น model/reanalysis ไม่ใช่ METAR sensor</td>
+</tr>
+<tr>
+<td>Aircraft states</td>
+<td><a
+href="https://openskynetwork.github.io/opensky-api/rest.html">OpenSky
+REST API</a></td>
+<td>aircraft movement context</td>
+<td>ไม่ใช่ boarding, queue หรือ passenger count</td>
+</tr>
+<tr>
+<td>BTS flights</td>
+<td><a href="https://transtats.bts.gov/">US BTS TranStats</a></td>
+<td>external flight benchmark</td>
+<td>เป็นข้อมูล US domestic ไม่ใช่ตารางบิน BKK</td>
+</tr>
+<tr>
+<td>CBP wait times</td>
+<td><a href="https://awt.cbp.gov/">CBP Airport Wait Times</a></td>
+<td>external immigration benchmark</td>
+<td>ไม่ใช่ Security service rate ของ BKK</td>
+</tr>
+<tr>
+<td>Thailand aviation statistics</td>
+<td><a href="https://www.caat.or.th/">CAAT</a></td>
+<td>historical public aviation context</td>
+<td>coverage ไม่ต่อเนื่องและไม่ใช่ checkpoint telemetry</td>
+</tr>
+<tr>
+<td>UK airport statistics</td>
+<td><a href="https://www.caa.co.uk/data-and-analysis/">UK CAA</a></td>
+<td>external scale/traffic context</td>
+<td>ไม่ใช่ข้อมูลปฏิบัติการของไทย</td>
+</tr>
+</tbody>
+</table>
+<p>รายงานที่บันทึกจำนวน records, period, missingness, URL และ checksum อยู่ใน
+<a href="data-quality-report.md">Data Quality Report</a> ตัวอย่างชุดข้อมูลที่ถูก
+normalize คือ BTS 504,884 records, CBP 12,186 observations, Open-Meteo
+BKK 8,760 hourly records และ OurAirports 145 records ตามรายงานของ
+repository</p>
+<p>ข้อมูลจริงเหล่านี้ไม่ถูกนำมาใส่ชื่อใหม่เป็นข้อมูล BKK และไม่ถูกใช้เพื่ออ้างว่าโมเดลผ่านการ
+validate แล้ว หาก fetch public source ล้มเหลว ระบบต้องเก็บ stale marker
+หรือใช้ fallback ที่ติดป้าย synthetic แทนการ relabel เป็น real</p>
+<h3 id="เหตผลและระดบความนาเชอถอของแตละแหลง">3.1
+เหตุผลและระดับความน่าเชื่อถือของแต่ละแหล่ง</h3>
+<table>
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>แหล่ง</th>
+<th>ความน่าเชื่อถือของแหล่ง</th>
+<th>เหตุผลที่เลือก</th>
+<th>วิธีใช้ที่เหมาะสม</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>OurAirports</td>
+<td>สูงสำหรับ metadata; ไม่ใช่ operational truth</td>
+<td>เป็นฐานข้อมูลสาธารณะที่มี airport/runway reference และดาวน์โหลดซ้ำได้</td>
+<td>ใช้ตรวจชื่อสนามบิน พิกัด runway และ reference data</td>
+</tr>
+<tr>
+<td>Open-Meteo</td>
+<td>สูงสำหรับ historical weather model/reanalysis; ไม่เท่ากับ sensor</td>
+<td>API มีช่วงเวลา หน่วย และพิกัดชัดเจน เหมาะกับ context ที่ reproducible</td>
+<td>ใช้เป็น weather context และ feature ที่ต้องติด lineage</td>
+</tr>
+<tr>
+<td>OpenSky</td>
+<td>สูงสำหรับ aircraft state ที่ provider เห็น; coverage ไม่สมบูรณ์</td>
+<td>ให้ state vector แบบ time-stamped และมี API อ้างอิงชัด</td>
+<td>ใช้ movement context เท่านั้น ไม่ใช้แทน manifest หรือ queue</td>
+</tr>
+<tr>
+<td>BTS</td>
+<td>สูงสำหรับ US air-carrier reporting; ไม่เกี่ยวกับ BKK โดยตรง</td>
+<td>มีข้อมูลจำนวนมากและโครงสร้าง historical เหมาะกับ external benchmark</td>
+<td>ใช้ศึกษารูปแบบเที่ยวบินและวิธีประเมิน ไม่ใช้เป็น BKK schedule</td>
+</tr>
+<tr>
+<td>CBP</td>
+<td>สูงสำหรับ US immigration wait reports; ไม่ใช่ security BKK</td>
+<td>มี observations รายชั่วโมงและเหมาะกับ benchmark wait distribution</td>
+<td>ใช้เป็น plausibility benchmark ภายนอกเท่านั้น</td>
+</tr>
+<tr>
+<td>CAAT</td>
+<td>สูงในฐานะแหล่งสถิติการบินไทยทางการ; coverage/ความสดมีข้อจำกัด</td>
+<td>เป็นแหล่งไทยที่ใกล้บริบทมากที่สุดในชุด public ที่เข้าถึงได้</td>
+<td>ใช้ aggregate aviation context โดยรักษา period และ missingness</td>
+</tr>
+<tr>
+<td>UK CAA</td>
+<td>สูงสำหรับสถิติ UK ที่เผยแพร่โดยหน่วยงานกำกับ</td>
+<td>ใช้เทียบ scale และ pattern ของสนามบินที่มีข้อมูลเปิด</td>
+<td>ใช้ external context ไม่ใช่ parameter ของ BKK</td>
+</tr>
+</tbody>
+</table>
+<p>ความน่าเชื่อถือของแหล่งข้อมูลไม่ได้แปลว่าค่าที่นำไปใช้ตอบโจทย์ BKK จะถูกต้องโดยอัตโนมัติ
+ความถูกต้องต้องพิจารณา <strong>ความตรงกับกระบวนการ (process match),
+geography, period, units, freshness และ missingness</strong> ด้วย
+นี่คือเหตุผลที่ระบบไม่ใช้ CBP หรือ BTS เป็นตัวแทนของ Security checkpoint
+สุวรรณภูมิ</p>
+<h2 id="dataset-demo-ทสรางขน">4. Dataset Demo ที่สร้างขึ้น</h2>
+<p>ข้อมูล demo อยู่ใน <code>data/synthetic/</code> และสร้างจาก seed/model
+ภายใน repository ได้แก่:</p>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>Dataset</th>
+<th>สิ่งที่เก็บ</th>
+<th>สถานะ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>flights.csv</code></td>
+<td>เที่ยวบิน TT401–TT404, gate, เวลาออก</td>
+<td>synthetic fixture</td>
+</tr>
+<tr>
+<td><code>checkpoint.csv</code></td>
+<td>Security A/B, จำนวนเลนสูงสุด, terminal/zone</td>
+<td>synthetic + assumption</td>
+</tr>
+<tr>
+<td><code>passenger_flow.csv</code></td>
+<td>arrivals, departures, queue, wait, P95</td>
+<td>generated simulation fixture</td>
+</tr>
+<tr>
+<td><code>passenger_journey.csv</code></td>
+<td>ผู้โดยสารนิรนาม เส้นทาง และ gate</td>
+<td>synthetic</td>
+</tr>
+<tr>
+<td><code>lane_status.csv</code></td>
+<td>สถานะเลน</td>
+<td>synthetic</td>
+</tr>
+<tr>
+<td><code>baggage_events.csv</code>, <code>gate_events.csv</code>,
+<code>ground_handling.csv</code></td>
+<td>เหตุการณ์การปฏิบัติการ</td>
+<td>synthetic</td>
+</tr>
+<tr>
+<td><code>airport_graph.csv</code></td>
+<td>โหนดและ edge สำหรับ routing</td>
+<td>illustrative topology</td>
+</tr>
+<tr>
+<td><code>recommendations.csv</code></td>
+<td>ทางเลือกและคะแนน</td>
+<td>derived from engine</td>
+</tr>
+<tr>
+<td><code>training.csv</code></td>
+<td>ประวัติ queue/arrivals/lanes</td>
+<td>deterministic synthetic history</td>
+</tr>
+</tbody>
+</table>
+<p>ไม่มีชื่อจริง เลขหนังสือเดินทาง หมายเลขเที่ยวบินจริง หรือ itinerary จริง
+ข้อมูลผู้โดยสารทั้งหมดเป็น anonymous fixture เพื่อเล่า scenario</p>
+<h2 id="วธสรางขอมล-demo-ตงแตตนจนจบ">5. วิธีสร้างข้อมูล Demo ตั้งแต่ต้นจนจบ</h2>
+<h3 id="กำหนด-scenario-seed">5.1 กำหนด scenario seed</h3>
+<p>scenario หลักใช้ seed <code>42</code> และ frozen demo clock 17:00
+ICT:</p>
+<ul>
+<li>Security A มี queue เริ่มต้น 96 คน</li>
+<li>Security B มี queue เริ่มต้น 12 คน</li>
+<li>Security A เปิด 4 จาก 5 lanes</li>
+<li>Security B เปิด 3 lanes</li>
+<li>service rate สมมติ 2 คนต่อนาทีต่อเลน</li>
+<li>reserve staff สูงสุด 4 คน</li>
+<li>redirect สูงสุด 30%</li>
+<li>มีเที่ยวบินจำลอง 4 เที่ยวและ representative cohort 580 คน</li>
+</ul>
+<p>ค่าทั้งหมดเป็น assumptions ที่ระบุไว้ใน <a
+href="assumptions.md">Assumptions</a> ไม่ใช่ข้อมูลจากระบบสนามบิน</p>
+<h3 id="สราง-arrival-profile">5.2 สร้าง arrival profile</h3>
+<p>ในช่วง peak ระบบกำหนด arrivals ของ Security A เป็น 11.2 คนต่อนาทีในช่วงต้น,
+19.2 ในช่วง peak สูงสุด, 9 ในช่วงถัดไป และ 1.6 ในช่วงท้าย ส่วนช่วงปกติใช้ 5 คนต่อนาที
+การใช้ seed เดิมทำให้ผลลัพธ์ reproducible</p>
+<h3 id="คำนวณ-queue-แบบ-minute-step">5.3 คำนวณ queue แบบ
+minute-step</h3>
+<p>ทุกหนึ่งนาที engine คำนวณ:</p>
+<pre class="text"><code>Q(t+1) = max(0, Q(t) + arrivals(t) - lanes(t) × service_rate)</code></pre>
+<p>ตัวอย่างค่าประมาณ +30 นาทีของ Security A:</p>
+<pre class="text"><code>(96 + 30 × (15.2 - 8)) / 8 = 39 นาที</code></pre>
+<p>เลข 8 มาจาก 4 lanes × 2 คนต่อนาที ไม่ใช่ค่าที่วัดจากสนามบินจริง</p>
+<h3 id="จำลอง-fifo-cohorts">5.4 จำลอง FIFO cohorts</h3>
+<p>ผู้โดยสารถูกเก็บเป็น cohort ตามเวลาเข้าคิว ระบบให้บริการแบบ FIFO และคำนวณ
+average wait, passenger-weighted P95, peak queue, passenger-minutes,
+throughput และ unresolved queue จน queue drain หรือครบ horizon 600
+นาที</p>
+<p>การ drain ต่อเกิน 60
+นาทีมีจุดประสงค์ป้องกันไม่ให้ผลลัพธ์ดูดีเพราะตัดผู้โดยสารที่ยังรออยู่ออกจากช่วงวัด</p>
+<h3 id="ทดลอง-intervention">5.5 ทดลอง intervention</h3>
+<p>ทุกทางเลือกใช้ demand และ initial queue ชุดเดียวกัน แล้วเปลี่ยนเฉพาะ
+action:</p>
+<ol type="1">
+<li>No Action</li>
+<li>เปิด reserve lane</li>
+<li>redirect ผู้โดยสารบางส่วนไป Security B</li>
+<li>เปิด lane และ redirect พร้อมกัน</li>
+<li>เพิ่ม staff หรือ delay wave ใน what-if simulation</li>
+</ol>
+<p>ระบบตรวจ resource constraint เช่น reserve staff, จำนวน lane สูงสุด,
+redirect cap และ queue ที่ยังไม่ถูก drain หากไม่ผ่านจะติดป้าย
+<code>infeasible</code></p>
+<h3 id="ใหคะแนนทางเลอก">5.6 ให้คะแนนทางเลือก</h3>
+<p>คะแนนใช้สูตรที่เปิดเผยและปรับน้ำหนักได้:</p>
+<pre class="text"><code>score = wait reduction
+      + 0.01 × passenger-minutes saved
+      + 50 × risk reduction
+      - additional staff
+      - walking penalty
+      - 0.001 × cost proxy</code></pre>
+<p>recommendation จึงเป็นผลจาก constrained weighted comparison
+ไม่ใช่คำตอบจาก LLM โดยตรง</p>
+<h3 id="สราง-passenger-route-และ-safe-time">5.7 สร้าง passenger route และ
+Safe Time</h3>
+<p>terminal graph เป็น directed graph ที่สร้างขึ้นเอง เช่น Food C → Security B
+→ Immigration → Retail → Gate C8 ระบบใช้ walking time, processing time,
+boarding deadline และ buffer เพื่อคำนวณ Safe Time การเปลี่ยน Gate E7
+เพิ่มเวลาเดินตาม edge ที่สมมติไว้</p>
+<h2 id="หลกการททำให-demo-ดสมเหตสมผล">6. หลักการที่ทำให้ Demo ดูสมเหตุสมผล</h2>
+<p>ความสมเหตุสมผลของ Demo มาจาก consistency และ transparency
+ไม่ใช่การอ้างว่าเป็น observation จริง:</p>
+<ul>
+<li>scenario เดิมให้ผลเดิมด้วย seed เดิม</li>
+<li>conservation check ตรวจ arrivals = served + unresolved queue</li>
+<li>ทุก intervention รันบน demand เดียวกัน</li>
+<li>resource limit ทำให้ action ที่ทำไม่ได้ถูก reject</li>
+<li>P95 เป็น passenger-weighted FIFO wait</li>
+<li>stale data ลด confidence และ block mutation</li>
+<li>สูตรคะแนนและ assumptions แสดงต่อผู้ใช้</li>
+<li>UI แยก <code>REAL_PUBLIC</code>, <code>SYNTHETIC</code>,
+<code>ASSUMPTION</code> และ <code>SIMULATED</code></li>
+<li>decision มี human accept/reject/override และ audit trail</li>
+</ul>
+<h2 id="เชอถอไดมากนอยแคไหน">7. เชื่อถือได้มากน้อยแค่ไหน</h2>
+<table>
+<colgroup>
+<col style="width: 33%" />
+<col style="width: 33%" />
+<col style="width: 33%" />
+</colgroup>
+<thead>
+<tr>
+<th>คำถาม</th>
+<th>ระดับความน่าเชื่อถือ</th>
+<th>เหตุผล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Queue mechanics ทำงานตามสูตรหรือไม่</td>
+<td>สูง</td>
+<td>สมการชัดเจนและทดสอบ conservation ได้</td>
+</tr>
+<tr>
+<td>เปรียบเทียบทางเลือกอย่างยุติธรรมหรือไม่</td>
+<td>สูง</td>
+<td>ใช้ demand/initial condition เดียวกัน</td>
+</tr>
+<tr>
+<td>ข้อมูล public มีแหล่งอ้างอิงหรือไม่</td>
+<td>สูงในฐานะ public context</td>
+<td>มี URL, period, provenance และ checksum</td>
+</tr>
+<tr>
+<td>ตัวเลขคิว BKK เป็นค่าจริงหรือไม่</td>
+<td>ต่ำ</td>
+<td>ไม่มี BKK checkpoint telemetry</td>
+</tr>
+<tr>
+<td>ค่าความแม่นยำของ forecast</td>
+<td>ยังสรุปไม่ได้</td>
+<td>evaluation ส่วนใหญ่เป็น synthetic และ confidence ยัง heuristic</td>
+</tr>
+<tr>
+<td>ใช้ควบคุมสนามบินจริงได้หรือไม่</td>
+<td>ไม่ได้</td>
+<td>ยังขาด identity, telemetry, safety case และ validation</td>
+</tr>
+</tbody>
+</table>
+<p>รายงาน evaluation ของ synthetic history อาจมี MAE/RMSE ดี เพราะ
+generator และ evaluator ใช้กลไกใกล้กัน ผลดังกล่าวยืนยันความสอดคล้องของ code path
+ได้ แต่ไม่ใช่หลักฐานว่า forecast แม่นในสนามบินจริง</p>
+<h2 id="ถาตองการเปลยนเปนขอมลจรง">8. ถ้าต้องการเปลี่ยนเป็นข้อมูลจริง</h2>
+<p>แผนที่เหมาะสมคือ:</p>
+<ol type="1">
+<li>ขอข้อมูล aggregate แบบไม่ระบุตัวบุคคลจากสนามบิน: queue length, arrivals/5
+min, departures/5 min, open lanes, service rate และ timestamps</li>
+<li>เก็บ source, timestamp, airport/terminal, units, schema version และ
+quality flags ทุกแถว</li>
+<li>แยก train/validation/test ตามเวลา ห้าม random shuffle</li>
+<li>calibrate arrival profile, service rate, walking time และ resource
+limits จาก historical observation</li>
+<li>วัด MAE, RMSE, P95 error, interval coverage, false alarm และ lead
+time บนเหตุการณ์จริง</li>
+<li>ทดสอบ peak, lane closure, gate change และ disruption ที่มี ground
+truth</li>
+<li>เริ่ม shadow mode ให้ระบบแนะนำอย่างเดียว และให้ operator ตรวจทุก
+action</li>
+<li>เปรียบเทียบกับ baseline เช่น persistence และ moving average</li>
+<li>ค่อยเลื่อนไป pilot ที่ human-approved หลัง validation ผ่าน</li>
+</ol>
+<p>ยังไม่ควรใช้ข้อมูล CBP หรือ BTS แทน BKK checkpoint data เพราะเป็นคนละสนามบิน
+คนละกระบวนการ และคนละ distribution</p>
+<h2 id="ขอความทควรใชในการนำเสนอ-hackathon">9. ข้อความที่ควรใช้ในการนำเสนอ
+Hackathon</h2>
+<p>ข้อความที่ถูกต้อง:</p>
+<blockquote>
+<p>Airport TimeTwin ใช้ public aviation data เพื่อสร้าง context และใช้
+deterministic synthetic scenario
+เพื่อสาธิตการเปรียบเทียบมาตรการจัดการคิวอย่างโปร่งใส เนื่องจาก checkpoint telemetry
+จริงของ BKK ไม่เปิดเผย ระบบจึงพิสูจน์ decision workflow, constraints และ
+auditability ก่อน ไม่ได้อ้างความแม่นยำของสนามบินจริง</p>
+</blockquote>
+<p>ข้อความที่ไม่ควรใช้:</p>
+<ul>
+<li>“โมเดลทำนายคิวสุวรรณภูมิได้จริง”</li>
+<li>“ลดเวลารอได้ 21 นาทีจริง”</li>
+<li>“ผ่านการ validate กับสนามบินแล้ว”</li>
+<li>“ใช้ข้อมูล passenger จริงของ BKK”</li>
+</ul>
+<h2 id="รายการอางอง">10. รายการอ้างอิง</h2>
+<ol type="1">
+<li>Airport TimeTwin, <a href="data-sources.md">Data sources and
+provenance matrix</a></li>
+<li>Airport TimeTwin, <a href="data-quality-report.md">Data Quality
+Report</a></li>
+<li>Airport TimeTwin, <a href="assumptions.md">Assumptions and known
+limitations</a></li>
+<li>Airport TimeTwin, <a href="architecture.md">Architecture and
+implementation contract</a></li>
+<li><a href="https://ourairports.com/data/">OurAirports open
+data</a></li>
+<li><a href="https://open-meteo.com/en/docs">Open-Meteo
+documentation</a></li>
+<li><a
+href="https://openskynetwork.github.io/opensky-api/rest.html">OpenSky
+REST API</a></li>
+<li><a href="https://transtats.bts.gov/">US BTS TranStats</a></li>
+<li><a href="https://awt.cbp.gov/">US CBP Airport Wait Times</a></li>
+<li><a href="https://www.caat.or.th/">CAAT</a></li>
+<li><a href="https://www.caa.co.uk/data-and-analysis/">UK Civil Aviation
+Authority data</a></li>
+</ol>
+<p><strong>สถานะเอกสาร:</strong> เอกสารนี้แยกข้อเท็จจริงจากข้อสมมติอย่างชัดเจน
+และไม่ควรใช้เป็น approval สำหรับการ deploy ในสนามบินจริงโดยไม่มี data owner,
+security review, operational validation และ safety governance</p>
+</body>
+</html>

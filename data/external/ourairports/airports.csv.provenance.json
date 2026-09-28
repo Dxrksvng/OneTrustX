@@ -1,0 +1,13 @@
+{
+  "source_name": "ourairports",
+  "source_url": "https://davidmegginson.github.io/ourairports-data/airports.csv",
+  "retrieved_at": "2026-09-12T22:35:50.547774+00:00",
+  "source_geography": "GLOBAL",
+  "source_period": "Current snapshot",
+  "license_or_terms": "Public domain; https://ourairports.com/data/",
+  "source_type": "REAL_PUBLIC",
+  "checksum": "8c9ccbdf132213042cb7b4ed64d3383ea29541972584c2878a4e17fd111843c2",
+  "bytes": 12721713,
+  "status": "CACHED",
+  "content_type": "text/csv; charset=utf-8"
+}

@@ -20,8 +20,9 @@ services:
       DEMO_MODE: ${DEMO_MODE:-true}
       DATA_MODE: ${DATA_MODE:-synthetic}
       PUBLIC_CACHE_DIR: /public-cache
+      DATA_ROOT: /datasets
       CORS_ORIGINS: http://localhost:8080,http://localhost:5173
-    volumes: ["../data/raw:/public-cache:ro"]
+    volumes: ["../data/raw:/public-cache:ro", "../data:/datasets:ro"]
     ports: ["127.0.0.1:8000:8000"]
     depends_on:
       db: {condition: service_healthy}

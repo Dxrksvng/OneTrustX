@@ -52,8 +52,8 @@ def test_safe_time_gate_change():
 
 
 def test_accessibility():
-    assert graph(True)["Retail"]["E7"]["walking_time_min"] == 25
-    assert graph(False)["Retail"]["E7"]["walking_time_min"] == 18
+    assert graph(True)["Retail Concourse"]["E7"]["walking_time_min"] == 25
+    assert graph(False)["Retail Concourse"]["E7"]["walking_time_min"] == 18
     assert (
         journey(Scenario(gate="E7"), False)["walking_time_min"]
         < journey(Scenario(gate="E7"), True)["walking_time_min"]
@@ -77,3 +77,18 @@ def test_root_cause_model_attribution_conserves_wait_change():
     assert sum(d["contribution_percent"] for d in result["drivers"]) == 100
     assert result["drivers"][0]["rank"] == "PRIMARY"
     assert root_causes(Scenario(lanes=0))["available"] is False
+
+
+def test_series_reports_actual_departures_and_checkpoint_mass_balance():
+    result = simulate(Scenario())
+    qa, qb = 96.0, 12.0
+    for point in result["series"]:
+        assert point["served"] == pytest.approx(point["served_a"] + point["served_b"])
+        assert point["queue_a"] == pytest.approx(
+            qa + point["arrivals_a"] - point["served_a"], abs=0.02
+        )
+        assert point["queue_b"] == pytest.approx(
+            qb + point["arrivals_b"] - point["served_b"], abs=0.02
+        )
+        qa, qb = point["queue_a"], point["queue_b"]
+    assert result["series"][-1]["served"] < 14

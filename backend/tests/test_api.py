@@ -141,7 +141,7 @@ def test_public_context_and_timezone(client):
         "+00:00"
     )
     passenger = client.get("/api/passenger/anon-0001/journey").json()
-    assert passenger["flight_number"] == "TT402"
+    assert passenger["flight_number"] == "DEMO402"
 
 
 def test_repeated_closures_fail_safely(client):
@@ -159,7 +159,19 @@ def test_repeated_closures_fail_safely(client):
 def test_copilot_uses_active_lanes_and_demand(client):
     client.post("/api/demo/event", json={"event": "reset"}, headers=H)
     answer = client.post("/api/copilot/query", json={"question": "Why the queue?"}).json()["answer"]
-    assert "normal" in answer and "5.0 passengers" in answer
+    assert "peak" in answer and "passengers" in answer
     client.post("/api/demo/event", json={"event": "lane-closure"}, headers=H)
     answer = client.post("/api/copilot/query", json={"question": "Why the queue?"}).json()["answer"]
     assert "3 open lanes provide 6" in answer
+
+
+def test_flight_operations_and_evaluation(client):
+    flight = client.get("/api/flights").json()[0]
+    data = client.get(f"/api/flights/{flight['id']}/operations").json()
+    assert data["source_type"] == "SYNTHETIC"
+    assert len(data["ground_handling"]) == 7
+    assert all(x["flight_id"] == flight["id"] for x in data["ground_handling"])
+    assert client.get("/api/flights/missing/operations").status_code == 404
+    report = client.get("/api/evaluation").json()
+    assert len(report["results"]) >= 9
+    assert all(x["source_type"] == "SIMULATED" for x in report["results"])

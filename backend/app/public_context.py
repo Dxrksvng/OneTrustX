@@ -34,6 +34,16 @@ def context():
                 record["age_seconds"] = age
             except (ValueError, OSError):
                 record["status"] = "INVALID CACHE — FALLBACK"
+        record["provider"] = {
+            "airports": "OurAirports",
+            "weather": "Open-Meteo",
+            "aircraft_positions": "OpenSky Network",
+        }[name]
+        record["documentation_url"] = {
+            "airports": "https://ourairports.com/data/",
+            "weather": "https://open-meteo.com/en/docs",
+            "aircraft_positions": "https://openskynetwork.github.io/opensky-api/rest.html",
+        }[name]
         feeds[name] = record
     return {
         "data_mode": os.getenv("DATA_MODE", "synthetic"),

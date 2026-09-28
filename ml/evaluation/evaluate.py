@@ -75,6 +75,7 @@ for horizon in [15, 30, 60]:
             "congestion_precision": float(precision),
             "congestion_recall": float(recall),
             "f1": float(f1),
+            "false_alarm_rate": float(np.sum((p > 30) & (truth <= 30)) / max(1, np.sum(truth <= 30))),
             "median_detected_lead_time_min": float(np.median(leads)) if leads else None,
             "detected_onsets": len(leads),
             "total_onsets": len(actual_onsets),

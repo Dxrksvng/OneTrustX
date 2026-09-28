@@ -1,0 +1,13 @@
+{
+  "source_name": "cbp",
+  "source_url": "https://awt.cbp.gov/api/waitTime",
+  "retrieved_at": "2026-09-12T23:09:20.709389+00:00",
+  "source_geography": "source discovery",
+  "source_period": "2025",
+  "license_or_terms": "Official public data",
+  "source_type": "REAL_PUBLIC",
+  "checksum": "71cc33a3953ac2821c386329e6d8adc7b6690b8d5e89b4b9436a82213d21a421",
+  "bytes": 10063,
+  "status": "CACHED",
+  "content_type": "application/json; charset=utf-8"
+}

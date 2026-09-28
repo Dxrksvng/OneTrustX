@@ -13,7 +13,7 @@ test("main dashboard has a useful loading and failure state", async () => {
     vi.fn().mockRejectedValue(new Error("Feed unavailable")),
   );
   render(<App />);
-  expect(screen.getByText("Airport TimeTwin")).toBeTruthy();
+  expect(screen.getByText("One TrustX")).toBeTruthy();
   expect(await screen.findByText("Feed unavailable")).toBeTruthy();
   fireEvent.click(screen.getByRole("button", { name: "Retry connection" }));
   expect(fetch).toHaveBeenCalled();

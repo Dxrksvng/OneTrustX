@@ -20,8 +20,9 @@ def client(monkeypatch):
     factory = sessionmaker(engine, expire_on_commit=False)
     monkeypatch.setattr(main, "Session", factory)
 
-    def db():
+    def db(request: __import__("fastapi").Request):
         with factory() as session:
+            session.info["demo_session"] = request.headers.get("X-Demo-Session", "legacy")
             yield session
 
     main.app.dependency_overrides[get_db] = db

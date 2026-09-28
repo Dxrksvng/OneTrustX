@@ -1,0 +1,18 @@
+{
+  "source_name": "cbp",
+  "source_url": "https://awt.cbp.gov/api/waitTime",
+  "retrieved_at": "2026-09-12T23:30:19.324237+00:00",
+  "source_geography": "US / JFK",
+  "source_period": "2025-02",
+  "license_or_terms": "CBP public airport wait report; immigration benchmark only",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": {
+    "Id": "JFK",
+    "FromDate": "2025-02-01",
+    "ToDate": "2025-02-28"
+  },
+  "checksum": "729e597a646366a6937a73a59cbc36a9cb03ef9e5861140a594714dbe54b1892",
+  "bytes": 1637229,
+  "status": "CACHED",
+  "content_type": "application/json; charset=utf-8"
+}

@@ -18,10 +18,13 @@ EDGES = [
     ("Food C", "Security B", 5, True),
     ("Security A", "Immigration", 2, True),
     ("Security B", "Immigration", 3, True),
-    ("Immigration", "Retail", 2, True),
-    ("Retail", "C8", 2, True),
-    ("Retail", "E7", 25, True),
-    ("Retail", "E7", 18, False),
+    ("Immigration", "Retail Concourse", 2, True),
+    ("Retail Concourse", "C8", 2, True),
+    ("Retail Concourse", "E7", 25, True),
+    ("Retail Concourse", "E7", 18, False),
+    ("Retail Concourse", "D4", 6, True),
+    ("Retail Concourse", "E3", 9, True),
+    ("Retail Concourse", "F2", 12, True),
     ("C8", "Exit", 5, True),
     ("E7", "Exit", 6, True),
     ("Baggage Reclaim", "Exit", 4, True),
@@ -53,7 +56,7 @@ def risk(wait):
 
 @dataclass
 class Scenario:
-    peak: bool = False
+    peak: bool = True
     lanes: int = 4
     redirect: float = 0.0
     gate: str = "C8"
@@ -63,7 +66,10 @@ class Scenario:
 
 def arrivals(peak=True):
     # 17:00–17:30: 15.2 pax/min. Queue 96 + 456 - 240 = 312; wait 312/8 = 39.
-    return [15.2 if peak and t < 30 else (9 if peak and t < 45 else 5) for t in range(60)]
+    return [
+        (11.2 if t < 15 else 19.2 if t < 30 else 9 if t < 45 else 1.6) if peak else 5.0
+        for t in range(60)
+    ]
 
 
 def queue_step(queue, demand, lanes, rate=2.0, minutes=1):
@@ -74,7 +80,15 @@ def queue_step(queue, demand, lanes, rate=2.0, minutes=1):
     return max(0, queue + demand - served), served
 
 
-def simulate(s: Scenario, lanes=None, redirect=None, staff=0, delay=0, enforce_staff=True):
+def simulate(
+    s: Scenario,
+    lanes=None,
+    redirect=None,
+    staff=0,
+    delay=0,
+    enforce_staff=True,
+    throughput_factor=1.0,
+):
     lanes = s.lanes if lanes is None else lanes
     redirect = s.redirect if redirect is None else redirect
     if (
@@ -99,18 +113,20 @@ def simulate(s: Scenario, lanes=None, redirect=None, staff=0, delay=0, enforce_s
     peak_q = sum(queues)
     overflow = 0.0
     added = 0.0
-    capacities = [lanes * 2 + staff * 0.25, 6.0]
+    capacities = [(lanes * 2 + staff * 0.25) * throughput_factor, 6.0 * throughput_factor]
     initial = sum(queues)
     for t in range(600):
         a = demands[t] if t < 60 else 0.0
         b = 3.0 if t < 60 else 0.0
         incoming = [a * (1 - redirect), b + a * redirect]
         added += sum(incoming)
+        departed = [0.0, 0.0]
         for j in range(2):
             if incoming[j]:
                 cohorts[j].append([float(t), incoming[j]])
             queues[j] += incoming[j]
             budget = min(queues[j], capacities[j])
+            departed[j] = budget
             served_total += budget
             queues[j] -= budget
             while budget > 1e-8 and cohorts[j]:
@@ -135,7 +151,11 @@ def simulate(s: Scenario, lanes=None, redirect=None, staff=0, delay=0, enforce_s
                     "wait_a": round(queues[0] / capacities[0], 2) if capacities[0] else None,
                     "wait_b": round(queues[1] / 6, 2),
                     "arrivals": round(sum(incoming), 2),
-                    "served": round(sum(capacities), 2),
+                    "served": round(sum(departed), 2),
+                    "arrivals_a": round(incoming[0], 2),
+                    "arrivals_b": round(incoming[1], 2),
+                    "served_a": round(departed[0], 2),
+                    "served_b": round(departed[1], 2),
                 }
             )
         if t >= 59 and sum(queues) < 1e-7:
@@ -163,9 +183,16 @@ def simulate(s: Scenario, lanes=None, redirect=None, staff=0, delay=0, enforce_s
         "walking_penalty": round(walking / total, 2),
         "additional_staff": max(0, lanes - s.lanes) * 2 + staff,
         "cost_proxy": max(0, lanes - s.lanes) * 120 + staff * 60 + redirect * 100,
-        "missed_flight_risk": round(
+        "high_risk_journey_share": round(
             sum(w for v, w in zip(waits, weights, strict=True) if v > 35) / total, 4
         ),
+        "active_lane_minutes": (lanes + 3) * (t + 1),
+        "staff_minutes": ((lanes + 3) * 2 + staff) * (t + 1),
+        "measurement_window_min": t + 1,
+        "resource_definition": "Both checkpoints staffed until cohort drain; two staff per lane. No early lane shutdown optimization. ASSUMPTION",
+        "additional_walking_minutes": round(walking, 2),
+        "walking_per_redirected_passenger": 4 if redirect else 0,
+        "infrastructure_expansion_required": "None for these lane/redirection interventions; existing spare lane assumed",
         "risk_definition": "ASSUMPTION: share of cohort waits exceeding a 35-minute checkpoint budget; not a flight-specific probability",
         "confidence": 0.35 if s.stale else 0.8,
         "confidence_type": "ASSUMPTION — heuristic, uncalibrated",
@@ -206,7 +233,7 @@ def compare(s, weights=None):
         r["score"] = round(
             weights["wait"] * ((base["average_wait"] or 0) - (r["average_wait"] or 0))
             + weights["minutes"] * gain
-            + weights["risk"] * (base["missed_flight_risk"] - r["missed_flight_risk"])
+            + weights["risk"] * (base["high_risk_journey_share"] - r["high_risk_journey_share"])
             - weights["staff"] * r["additional_staff"]
             - weights["walking"] * r["walking_penalty"]
             - weights["cost"] * r["cost_proxy"],
@@ -222,7 +249,7 @@ def compare(s, weights=None):
         if s.stale
         else "No feasible option within reserve staffing and queue-drain constraints."
         if not best["feasible"]
-        else f"{best['name']} has the highest feasible weighted score ({best['score']}); includes both security queues, reserve staffing, and extra walking.",
+        else f"{best['name']} offers the best configured trade-off across delay reduction, reserve staffing and extra walking within feasible constraints.",
         "source_type": "SIMULATED",
         "notice": LABEL,
     }
@@ -237,7 +264,7 @@ def forecast(s):
         for h in [15, 30, 60]:
             row = sim["series"][h - 1]
             val = row[f"wait_{key}"]
-            spread = (0.35 if s.stale else 0.15) * (val or 0) + 2
+            spread = 0.08 * (val or 0) + 0.5
             points.append(
                 {
                     "horizon": h,
@@ -272,14 +299,36 @@ def forecast(s):
     return out
 
 
-def journey(s, accessible=True, current="Food C", weight="travel_time", deadline_minutes=64):
+def journey(
+    s,
+    accessible=True,
+    current="Food C",
+    weight="travel_time",
+    deadline_minutes=64,
+    international=True,
+):
     g = graph(accessible)
+    if not international:
+        g.remove_node("Immigration")
+        for checkpoint, duration in [("Security A", 4), ("Security B", 5)]:
+            g.add_edge(
+                checkpoint,
+                "Retail Concourse",
+                walking_time_min=duration,
+                walking_distance_m=duration * 65,
+                accessible=True,
+                capacity=120,
+                direction="FORWARD",
+            )
     waits = {"Security A": 12.0, "Security B": 2.0, "Immigration": 6.0}
     # Use arrival-time forecast when peak is active; choose the fastest eligible security route.
     if s.peak or s.lanes != 4 or s.redirect:
         sim = simulate(s)
         waits.update(
-            {"Security A": sim["series"][1]["wait_a"], "Security B": sim["series"][4]["wait_b"]}
+            {
+                "Security A": sim["series"][1]["wait_a"],
+                "Security B": max(2.0, sim["series"][4]["wait_b"]),
+            }
         )
     for a, b, d in list(g.edges(data=True)):
         if b in waits and waits[b] is None:
@@ -309,12 +358,21 @@ def journey(s, accessible=True, current="Food C", weight="travel_time", deadline
     return {
         "anonymous_passenger_id": "demo-passenger",
         "flight_id": "flight-1",
-        "flight_number": "TT401",
+        "flight_number": "DEMO401",
         "gate": s.gate,
         "current_node": current,
         "boarding_deadline": "18:04",
         "scenario_time": "17:00",
         "path": path,
+        "segments": [
+            {
+                "from": a,
+                "to": b,
+                "walking_min": g[a][b]["walking_time_min"],
+                "processing_min": waits.get(b, 0),
+            }
+            for a, b in zip(path, path[1:], strict=False)
+        ],
         "walking_time_min": walk,
         "processing_time_min": round(processing, 1),
         "remaining_journey_min": round(remaining, 1),
@@ -322,7 +380,9 @@ def journey(s, accessible=True, current="Food C", weight="travel_time", deadline
         "safe_time_min": safe,
         "risk_level": status,
         "accessible_route": accessible,
-        "action": "Proceed now."
+        "action": "Forecast paused. Ask airport staff for current guidance."
+        if s.stale
+        else "Proceed now."
         if safe < 15
         else "Follow your recommended route; check for updates before stopping.",
         "source_type": "SIMULATED",
