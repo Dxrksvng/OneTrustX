@@ -12,7 +12,7 @@ class Base(DeclarativeBase):
 
 DATABASE_URL = os.getenv(
     "DATABASE_URL",
-    "sqlite:////tmp/timetwin.db" if os.getenv("VERCEL") else "sqlite:///./timetwin.db",
+    "sqlite:////tmp/onetrustx.db" if os.getenv("VERCEL") else "sqlite:///./onetrustx.db",
 )
 engine = create_engine(
     DATABASE_URL,

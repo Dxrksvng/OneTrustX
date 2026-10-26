@@ -1,0 +1,346 @@
+{
+  "source_type": "SIMULATED",
+  "seeds": [
+    1,
+    30
+  ],
+  "calibration_version": "baggage-calibration-1.0",
+  "policies": {
+    "PLAN": "Capacity shared equally between flights with bags waiting (assumed baseline; confirm with a handler).",
+    "PRIORITY": "Earliest hold-close first at sorting, transfer and loading (the order One TrustX recommends)."
+  },
+  "definitions": {
+    "detection_lead_min": "Minutes between the first WATCH or AT_RISK status and the first bag missed in the same run.",
+    "flight_precision": "Of flights flagged with bags at risk at any 15-minute check, the share that did miss bags when nothing was changed.",
+    "flight_recall": "Of flights that missed bags, the share flagged beforehand.",
+    "alert_share_of_checks": "Share of 15-minute checks that raised WATCH or AT_RISK. In a scenario where no bag is missed, every one is a false alert."
+  },
+  "limitations": [
+    "Synthetic flights, bags and capacities; not Suvarnabhumi performance.",
+    "The baseline policy is an assumption. A real handler may already prioritise better than PLAN.",
+    "The same simulation produces both the alerts and the truth they are scored against."
+  ],
+  "scenarios": {
+    "BAG-NORMAL": {
+      "name": "Normal operations",
+      "runs": 30,
+      "runs_with_missed_bags": 0,
+      "bags_missed_plan_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "bags_missed_priority_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "transfer_bags_missed_plan_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "transfer_bags_missed_priority_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "detection_lead_min": null,
+      "flights_flagged": 0,
+      "flights_that_missed_bags": 0,
+      "flagged_and_missed": 0,
+      "flight_precision": null,
+      "flight_recall": null,
+      "alert_share_of_checks": 0.0
+    },
+    "BAG-FLOOD-STAFF": {
+      "name": "Flood: ground staff cannot reach the airport",
+      "runs": 30,
+      "runs_with_missed_bags": 30,
+      "bags_missed_plan_policy": {
+        "median": 297.5,
+        "min": 212,
+        "max": 410
+      },
+      "bags_missed_priority_policy": {
+        "median": 142.5,
+        "min": 0,
+        "max": 299
+      },
+      "transfer_bags_missed_plan_policy": {
+        "median": 61.5,
+        "min": 5,
+        "max": 142
+      },
+      "transfer_bags_missed_priority_policy": {
+        "median": 15.5,
+        "min": 0,
+        "max": 80
+      },
+      "detection_lead_min": {
+        "median": 55.0,
+        "min": 25,
+        "max": 125
+      },
+      "flights_flagged": 204,
+      "flights_that_missed_bags": 221,
+      "flagged_and_missed": 186,
+      "flight_precision": 0.91,
+      "flight_recall": 0.84,
+      "alert_share_of_checks": 0.589
+    },
+    "BAG-BHS-FAULT": {
+      "name": "Sortation fault",
+      "runs": 30,
+      "runs_with_missed_bags": 18,
+      "bags_missed_plan_policy": {
+        "median": 7.0,
+        "min": 0,
+        "max": 68
+      },
+      "bags_missed_priority_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "transfer_bags_missed_plan_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 7
+      },
+      "transfer_bags_missed_priority_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "detection_lead_min": {
+        "median": 55.0,
+        "min": 40,
+        "max": 80
+      },
+      "flights_flagged": 46,
+      "flights_that_missed_bags": 26,
+      "flagged_and_missed": 15,
+      "flight_precision": 0.33,
+      "flight_recall": 0.58,
+      "alert_share_of_checks": 0.125
+    },
+    "BAG-LATE-INBOUND": {
+      "name": "Late inbound connections",
+      "runs": 30,
+      "runs_with_missed_bags": 22,
+      "bags_missed_plan_policy": {
+        "median": 16.5,
+        "min": 0,
+        "max": 63
+      },
+      "bags_missed_priority_policy": {
+        "median": 7.5,
+        "min": 0,
+        "max": 40
+      },
+      "transfer_bags_missed_plan_policy": {
+        "median": 16.5,
+        "min": 0,
+        "max": 63
+      },
+      "transfer_bags_missed_priority_policy": {
+        "median": 7.5,
+        "min": 0,
+        "max": 40
+      },
+      "detection_lead_min": {
+        "median": 85.0,
+        "min": 80,
+        "max": 200
+      },
+      "flights_flagged": 52,
+      "flights_that_missed_bags": 33,
+      "flagged_and_missed": 33,
+      "flight_precision": 0.63,
+      "flight_recall": 1.0,
+      "alert_share_of_checks": 0.276
+    },
+    "BAG-STALE-FEED": {
+      "name": "Loading scans stop arriving",
+      "runs": 30,
+      "runs_with_missed_bags": 0,
+      "bags_missed_plan_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "bags_missed_priority_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "transfer_bags_missed_plan_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "transfer_bags_missed_priority_policy": {
+        "median": 0.0,
+        "min": 0,
+        "max": 0
+      },
+      "detection_lead_min": null,
+      "flights_flagged": 0,
+      "flights_that_missed_bags": 0,
+      "flagged_and_missed": 0,
+      "flight_precision": null,
+      "flight_recall": null,
+      "alert_share_of_checks": 0.0
+    }
+  },
+  "scorecard": {
+    "source_type": "SIMULATED",
+    "seeds": [
+      1,
+      30
+    ],
+    "trust": {
+      "fault_injection": {
+        "runs": 60,
+        "scenarios": [
+          "BAG-NORMAL",
+          "BAG-FLOOD-STAFF"
+        ],
+        "fault_catch_rate": {
+          "DUPLICATE": {
+            "injected": 1919,
+            "caught": 1919,
+            "rate": 1.0,
+            "flagged_but_not_injected": 0
+          },
+          "LATE": {
+            "injected": 1956,
+            "caught": 1956,
+            "rate": 1.0,
+            "flagged_but_not_injected": 0
+          },
+          "CORRUPT": {
+            "injected": 1872,
+            "caught": 1872,
+            "rate": 1.0,
+            "flagged_but_not_injected": 0
+          },
+          "UNKNOWN_FLIGHT": {
+            "injected": 1889,
+            "caught": 1889,
+            "rate": 1.0,
+            "flagged_but_not_injected": 0
+          },
+          "MISSING": {
+            "injected": 168,
+            "caught": 168,
+            "rate": 1.0,
+            "flagged_but_not_injected": 0
+          }
+        },
+        "record_fault_catch_rate": 1.0,
+        "clean_records": 87890,
+        "clean_records_rejected": 0,
+        "false_reject_rate": 0.0,
+        "status_checks": 1920,
+        "status_vs_clean_feed": {
+          "raw": {
+            "same": 0.423,
+            "asks_to_verify": 0.171,
+            "different": 0.405
+          },
+          "verified": {
+            "same": 0.622,
+            "asks_to_verify": 0.312,
+            "different": 0.066
+          }
+        }
+      },
+      "provenance": {
+        "parameters": 15,
+        "with_tier_and_source": 15,
+        "coverage_pct": 100.0,
+        "by_tier": {
+          "ASSUMPTION": 11,
+          "BENCHMARK": 1,
+          "DERIVED": 1,
+          "REAL_PUBLIC": 2
+        }
+      }
+    },
+    "operation": {
+      "BAG-FLOOD-STAFF": {
+        "runs": 30,
+        "bags_missed_total_plan": 9082,
+        "bags_missed_total_priority": 4227,
+        "bags_missed_reduction_pct": 53.5,
+        "transfer_bags_missed_total_plan": 1862,
+        "transfer_bags_missed_total_priority": 690,
+        "transfer_bags_missed_reduction_pct": 62.9,
+        "runs_priority_better": 30,
+        "runs_priority_same": 0,
+        "runs_priority_worse": 0,
+        "recommendation_not_worse_pct": 100.0,
+        "decision_window_min": {
+          "median": 80.0,
+          "min": 5,
+          "max": 90
+        },
+        "bags_saved_per_shift_mean": 161.8,
+        "cost_avoided_usd_per_shift_mean": 42077
+      },
+      "BAG-BHS-FAULT": {
+        "runs": 30,
+        "bags_missed_total_plan": 454,
+        "bags_missed_total_priority": 0,
+        "bags_missed_reduction_pct": 100.0,
+        "transfer_bags_missed_total_plan": 10,
+        "transfer_bags_missed_total_priority": 0,
+        "transfer_bags_missed_reduction_pct": 100.0,
+        "runs_priority_better": 18,
+        "runs_priority_same": 12,
+        "runs_priority_worse": 0,
+        "recommendation_not_worse_pct": 100.0,
+        "decision_window_min": {
+          "median": 80,
+          "min": 10,
+          "max": 90
+        },
+        "bags_saved_per_shift_mean": 15.1,
+        "cost_avoided_usd_per_shift_mean": 3935
+      },
+      "BAG-LATE-INBOUND": {
+        "runs": 30,
+        "bags_missed_total_plan": 553,
+        "bags_missed_total_priority": 350,
+        "bags_missed_reduction_pct": 36.7,
+        "transfer_bags_missed_total_plan": 553,
+        "transfer_bags_missed_total_priority": 350,
+        "transfer_bags_missed_reduction_pct": 36.7,
+        "runs_priority_better": 14,
+        "runs_priority_same": 16,
+        "runs_priority_worse": 0,
+        "recommendation_not_worse_pct": 100.0,
+        "decision_window_min": {
+          "median": 85.0,
+          "min": 80,
+          "max": 90
+        },
+        "bags_saved_per_shift_mean": 6.8,
+        "cost_avoided_usd_per_shift_mean": 1759
+      }
+    },
+    "assumptions": {
+      "fault_rate_per_record_fault": 0.02,
+      "missing_blocks_per_run": 3,
+      "usd_per_mishandled_bag": 260,
+      "baseline_policy": "PLAN: capacity shared equally between flights (assumed)"
+    },
+    "not_measured": {
+      "human_coordination_time": "Needs a timed exercise with controllers: same scenario with and without the view, from first alert to an owner accepting the action.",
+      "flight_delay_minutes": "The model counts bags left behind; it does not simulate holding or delaying flights."
+    }
+  },
+  "generated_at": "2026-10-07T19:22:17+00:00"
+}

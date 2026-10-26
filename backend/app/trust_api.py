@@ -4,6 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlalchemy import select
 from sqlalchemy.orm import Session
 
+from . import baggage_flow
 from .db import get_db
 from .trust_models import (
     ExperimentRun,
@@ -179,3 +180,32 @@ def kpi(kpi_id: str, db: Session = Depends(get_db)):
 @router.get("/experiments")
 def experiments(db: Session = Depends(get_db)):
     return [dump(x) for x in db.scalars(select(ExperimentRun).order_by(ExperimentRun.started_at.desc()))]
+
+
+@router.get("/baggage/scenarios")
+def baggage_scenarios():
+    times = [{"at_min": m, "at": baggage_flow.clock(m)} for m in range(60, baggage_flow.HORIZON, 30)]
+    return {"default_scenario": "BAG-NORMAL", "default_at_min": baggage_flow.DEFAULT_AT, "times": times,
+            "scenarios": [{"id": key, **value} for key, value in baggage_flow.SCENARIOS.items()], "source_type": "SYNTHETIC"}
+
+
+@router.get("/baggage/control")
+def baggage_control(scenario: str = "BAG-NORMAL", at: int = baggage_flow.DEFAULT_AT, seed: int = 42, resource_feed: bool = True):
+    if scenario not in baggage_flow.SCENARIOS:
+        raise HTTPException(404, "Baggage scenario not found")
+    if not 0 <= at < baggage_flow.HORIZON or not 1 <= seed <= 1000:
+        raise HTTPException(422, "at or seed out of range")
+    return baggage_flow.control(scenario, at, seed, resource_feed)
+
+
+@router.get("/baggage/calibration")
+def baggage_calibration():
+    return baggage_flow.calibration()
+
+
+@router.get("/baggage/evaluation")
+def baggage_evaluation():
+    result = baggage_flow.stored_evaluation()
+    if not result:
+        raise HTTPException(404, "Run scripts/experiments/run_baggage_evaluation.py first")
+    return result

@@ -6,6 +6,7 @@ from uuid import NAMESPACE_URL, uuid5
 
 from sqlalchemy import select
 
+from . import baggage_flow
 from .trust_models import (
     CommonOperationalState,
     ExperimentRun,
@@ -146,7 +147,9 @@ def shared_state(db, scenario_id="S5", flight_id="flight-1"):
     row = db.scalar(select(CommonOperationalState).where(CommonOperationalState.scenario_id == scenario_id, CommonOperationalState.flight_id == flight_id))
     if not row:
         return None
-    return {"id": row.id, "scenario_id": row.scenario_id, "flight_id": row.flight_id, "readiness_state": row.readiness_state, "blocking_dependency": row.blocking_dependency, "supporting_event_count": row.supporting_event_count, "stakeholder_count": row.stakeholder_count, "conflict_count": row.conflict_count, "confidence": row.confidence, "explanation": row.explanation, "supporting_events": row.supporting_events, "source_type": "DERIVED"}
+    # Computed from the flood scenario's scans and schedule; see baggage_flow.assess.
+    baggage_control = baggage_flow.control("BAG-FLOOD-STAFF")
+    return {"id": row.id, "scenario_id": row.scenario_id, "flight_id": row.flight_id, "readiness_state": row.readiness_state, "blocking_dependency": row.blocking_dependency, "supporting_event_count": row.supporting_event_count, "stakeholder_count": row.stakeholder_count, "conflict_count": row.conflict_count, "confidence": row.confidence, "explanation": row.explanation, "supporting_events": row.supporting_events, "source_type": "DERIVED", "baggage_control": baggage_control}
 
 
 def run_experiment(db, scenario_id, condition, seed=42):

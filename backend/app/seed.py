@@ -34,7 +34,7 @@ def seed(db):
         "demo-airport",
         iata="TWT",
         icao="ZZTW",
-        airport_name="TimeTwin Illustrative Terminal",
+        airport_name="One TrustX Illustrative Terminal",
         city="Illustrative",
         country="TH",
         latitude=13.69,

@@ -6,6 +6,11 @@ def test_trustx_seed_exposes_scenarios_and_shared_state(client):
         assert state.status_code == 200
         assert state.json()["readiness_state"] == "AT_RISK"
         assert state.json()["blocking_dependency"] == "Baggage loading"
+        control = state.json()["baggage_control"]
+        assert control["scenario_id"] == "BAG-FLOOD-STAFF"
+        assert control["bottleneck"]["stage"] == "Loading"
+        assert next(x for x in control["stages"] if x["id"] == "loading")["status"] == "DELAY"
+        assert control["next_action"]["approval"] == "HUMAN_REQUIRED"
 
 
 def test_trustx_recommendation_decision_is_idempotent(client):

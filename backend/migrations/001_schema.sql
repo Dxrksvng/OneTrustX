@@ -1,4 +1,4 @@
--- Airport TimeTwin initial schema; execute on an empty database. Alembic is preferred.
+-- One TrustX initial schema; execute on an empty database. Alembic is preferred.
 
 
 CREATE TABLE airport_graph (
