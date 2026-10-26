@@ -68,7 +68,7 @@ def make_table(lines):
     ]))
     return table
 
-def build(source: Path = SOURCE, output: Path = OUTPUT, title: str = "Airport TimeTwin Data Provenance"):
+def build(source: Path = SOURCE, output: Path = OUTPUT, title: str = "One TrustX Data Provenance"):
     story = []
     lines = source.read_text().splitlines()
     i = 0
@@ -133,7 +133,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("--source", type=Path, default=SOURCE)
     parser.add_argument("--output", type=Path, default=OUTPUT)
-    parser.add_argument("--title", default="Airport TimeTwin · Data provenance and demo methodology")
+    parser.add_argument("--title", default="One TrustX · Data provenance and demo methodology")
     args = parser.parse_args()
     build(args.source, args.output, args.title)
     print(args.output)

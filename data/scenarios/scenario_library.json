@@ -1,0 +1,186 @@
+{
+  "notice": "Simulated MVP Result — Not actual airport performance. Scenario definitions below describe illustrative causal chains calibrated against cited public incident reports; they are design inputs for the synthetic event generator, not a record of SKY ICT or any named airline's internal operations.",
+  "dataset_id": "disaster-scenario-library-v1",
+  "provenance_tiers": {
+    "TIER_A_OFFICIAL": "Civil aviation authority, airport operator, national weather/disaster agency, ICAO/IATA/WHO official statements. Used for REAL_PUBLIC facts: that an event occurred, when, and its officially reported scale.",
+    "TIER_B_INDUSTRY": "Industry bodies (SITA, ACI, Eurocontrol) and benchmark reports. Used for BENCHMARK distributions (e.g. baggage mishandling cost per bag), not for airport-specific telemetry.",
+    "TIER_C_NEWS": "High-quality wire/press reporting (Reuters, AP, Thai PBS). Used for incident timeline and reported impact magnitude, never as sole ground truth.",
+    "TIER_D_ASSUMPTION": "No external source; team-set operating parameter (staff counts, capacities, thresholds) explicitly tagged ASSUMPTION and never presented as a real company's figures."
+  },
+  "scenarios": [
+    {
+      "scenario_id": "SCN-FLOOD-BAGGAGE-001",
+      "name": "flood_baggage_compound",
+      "family": "COMPOUND",
+      "severity_tier": "HIGH",
+      "hero_scenario": true,
+      "hero_scenario_note": "Promoted to the primary/default demo scenario on 2026-10-07 after narrowing the One TrustX pitch to 'Baggage Disruption Recovery' as the hero use case. See docs/decisions/2026-10-07-baggage-disruption-scope-narrowing.md.",
+      "summary": "Heavy rain and urban flooding in Bangkok reduce ground-handling staff availability, which backs up baggage processing and cascades into flight delay and transfer risk.",
+      "causal_chain": [
+        "heavy_rain",
+        "flooded_access_roads",
+        "ground_staff_cannot_reach_airport",
+        "ground_handler_staffing_down",
+        "baggage_processing_capacity_down",
+        "bag_arrival_rate_exceeds_processing_rate",
+        "baggage_backlog_up",
+        "loading_unloading_delay",
+        "turnaround_delay",
+        "flight_delay_or_cancellation",
+        "passenger_disruption",
+        "rebooking_transfer_pressure",
+        "gate_stand_resource_pressure"
+      ],
+      "real_public_context": [
+        {"fact": "CAAT notice on heavy rain and flooding affecting access to Suvarnabhumi and Don Mueang", "date": "2026-09-26", "source": "CAAT announcement", "url": "https://www.caat.or.th/caat-media/218400/"},
+        {"fact": "AOT tracking page for Thai Airways passenger baggage stranded at Suvarnabhumi, 26-29 Sep 2026", "source": "Airports of Thailand", "url": "https://www.airportthai.co.th/"},
+        {"fact": "Thai Airways operational update: cancellations/rescheduling 29 Sep - 3 Oct 2026", "source": "Thai Airways operational update page", "url": "https://www.thaiairways.com/th-th/content/news-and-announcements/operational-update/"},
+        {"fact": "Reported ~5,000 bags stranded at one point during the event (29 Sep 2026)", "source": "Reuters", "url": "https://www.reuters.com/world/asia-pacific/thai-airways-clear-5000-bags-stranded-bangkok-airport-ceo-says-2026-09-29/"},
+        {"fact": "Follow-up reporting: cause cited as a mix of ground-handling staff shortage (flood commute impact) and baggage-cart/tug availability, producing cascading effects across baggage and flight operations", "source": "Khaosod English", "url": "https://www.khaosodenglish.com/featured/2026/09/27/suvarnabhumi-explains-flight-delays-baggage-backlog-amid-floods/amp/"}
+      ],
+      "benchmark_context": [
+        {"metric": "baggage mishandling cost per bag", "value_usd": 260, "source": "Industry benchmark cited in SKY deck / SITA Baggage IT Insights", "tier": "TIER_B_INDUSTRY", "caveat": "Original SKY deck figure (page 1: $60.3B/year, ~$260/bag). Does not reconcile cleanly with SITA's own global totals below; treat as deck-sourced, not independently re-derived."},
+        {"metric": "share of mishandling from transfer bags", "value_pct": 39, "source": "Industry benchmark cited in SKY deck", "tier": "TIER_B_INDUSTRY"},
+        {"metric": "global mishandled bags, 2024", "value": "33.4 million bags mishandled (not permanently lost)", "cost_usd": "~5 billion for 2024", "source": "SITA", "tier": "TIER_B_INDUSTRY", "url": "https://www.sita.aero/pressroom/news-releases/more-air-passengers-than-ever-with-one-of-the-lowest-rates-of-mishandled-baggage-thanks-to-tech-investments/"},
+        {"metric": "global mishandled bags, 2025 (most recent, use this one)", "value": "~24 million bags mishandled", "cost_usd": "~6.3 billion/year", "source": "SITA Baggage IT Insights 2026", "tier": "TIER_B_INDUSTRY", "url": "https://www.sita.aero/about-us/pressroom/news-releases/tech-drove-down-mishandled-bag-rates-by-23-in-2025-but-mishandling-still-costs-the-industry-%246.3-billion-a-year/", "note": "Never say these bags were 'lost' — SITA's figure is mishandled (delayed/damaged/misrouted), and most are recovered."}
+      ],
+      "assumption_parameters": {
+        "normal_ground_staff": 120,
+        "minimum_staff_required": 75,
+        "normal_baggage_capacity_bags_per_hour": 900,
+        "cart_capacity_bags": 40,
+        "recovery_staff_surge": 25,
+        "note": "Illustrative operating parameters for the synthetic model. Not a disclosed staffing or capacity figure of any named airline, ground handler, or airport operator."
+      },
+      "failure_injection_types": ["LATE_EVENT", "MISSING_EVENT", "STALE_SOURCE", "CONTRADICTORY_EVENT"],
+      "trust_x_test_focus": "Whether the shared state correctly flags CAPACITY_DEGRADED from a late/partial staffing update, and whether the recommendation changes once the update arrives versus staying stale."
+    },
+    {
+      "scenario_id": "SCN-GEOPOLITICAL-001",
+      "name": "geopolitical_airspace_closure",
+      "family": "SINGLE",
+      "severity_tier": "HIGH",
+      "summary": "A regional airspace closure or conflict-zone advisory forces route and schedule replanning with short notice.",
+      "causal_chain": [
+        "airspace_closure_or_conflict_zone_advisory",
+        "affected_routes_rerouted_or_grounded",
+        "schedule_replanning",
+        "crew_duty_time_pressure",
+        "fuel_and_diversion_cost_increase",
+        "gate_and_slot_reallocation",
+        "passenger_rebooking_surge"
+      ],
+      "real_public_context": [
+        {"fact": "ICAO maintains conflict zone risk information used by states and operators for route-planning advisories", "source": "ICAO Conflict Zones", "url": "https://www.icao.int/aviation-security-policy-section/Conflict-Zones"}
+      ],
+      "benchmark_context": [],
+      "assumption_parameters": {
+        "affected_route_share_pct": 15,
+        "reroute_fuel_cost_multiplier": 1.25,
+        "note": "Illustrative planning parameters; not a real route-closure event for BKK."
+      },
+      "failure_injection_types": ["CONFLICT", "LATE_EVENT"],
+      "trust_x_test_focus": "Whether conflicting NOTAM/advisory sources are reconciled to one shared routing-risk state before schedule replanning begins."
+    },
+    {
+      "scenario_id": "SCN-FIRE-001",
+      "name": "terminal_utility_fire",
+      "family": "SINGLE",
+      "severity_tier": "CRITICAL",
+      "summary": "A localized fire or utility failure in a terminal zone forces partial evacuation and takes gates/systems offline.",
+      "causal_chain": [
+        "fire_or_utility_fault_detected",
+        "zone_evacuation_or_lockdown",
+        "affected_gates_taken_offline",
+        "passenger_flow_rerouted",
+        "flight_delay_or_diversion",
+        "emergency_services_coordination"
+      ],
+      "real_public_context": [],
+      "benchmark_context": [],
+      "assumption_parameters": {
+        "affected_gate_count": 6,
+        "evacuation_duration_minutes": 45,
+        "note": "Hypothetical drill-style scenario; no real incident referenced."
+      },
+      "failure_injection_types": ["MISSING_EVENT", "DUPLICATE_EVENT", "STALE_SOURCE"],
+      "trust_x_test_focus": "Whether the system keeps a coherent affected-gate list when sensor/manual reports duplicate or go silent mid-incident."
+    },
+    {
+      "scenario_id": "SCN-PANDEMIC-001",
+      "name": "health_screening_disruption",
+      "family": "SINGLE",
+      "severity_tier": "MEDIUM",
+      "summary": "An elevated health-screening requirement (communicable disease response) adds immigration/security dwell time industry-wide.",
+      "causal_chain": [
+        "health_advisory_issued",
+        "additional_screening_requirement",
+        "immigration_security_dwell_time_up",
+        "queue_buildup",
+        "connection_risk_up"
+      ],
+      "real_public_context": [
+        {"fact": "WHO publishes disease outbreak and response data used for public-health advisories affecting travel", "source": "WHO COVID-19 / disease dashboards", "url": "https://data.who.int/dashboards/covid19/data"}
+      ],
+      "benchmark_context": [],
+      "assumption_parameters": {
+        "extra_screening_seconds_per_passenger": 45,
+        "note": "Illustrative dwell-time addition; not a specific disease's measured effect at BKK."
+      },
+      "failure_injection_types": ["LATE_EVENT", "STALE_SOURCE"],
+      "trust_x_test_focus": "Whether queue-risk forecasts update promptly when a health-advisory parameter change is published."
+    },
+    {
+      "scenario_id": "SCN-SYSTEM-RESILIENCE-001",
+      "name": "bhs_and_trust_pipeline_outage",
+      "family": "CASCADING",
+      "severity_tier": "CRITICAL",
+      "summary": "The baggage handling system (BHS) and/or One TrustX's own ingest pipeline degrades, producing an operational failure AND a data failure at the same time — this is the scenario that stress-tests our own system, not just the airport.",
+      "causal_chain": [
+        "bhs_component_failure",
+        "operational_failure_bhs_down",
+        "sensor_heartbeat_lost",
+        "data_failure_conflicting_source_reports",
+        "airline_source_reports_stale_normal_status",
+        "ground_handler_source_reports_degraded",
+        "airport_source_reports_down_latest",
+        "trust_engine_must_reconcile_conflict",
+        "trusted_common_state_published_with_confidence_score"
+      ],
+      "real_public_context": [],
+      "benchmark_context": [],
+      "assumption_parameters": {
+        "sensor_heartbeat_timeout_seconds": 90,
+        "ground_truth_state": "BHS_DOWN",
+        "expected_reconciled_confidence_floor": 0.7,
+        "note": "This is the explicit 'operational failure vs data failure' test case: ground truth is BHS_DOWN, but at least one source stays stale and reports NORMAL. Pass condition is that the trusted common state matches ground truth, not the stale source."
+      },
+      "failure_injection_types": ["STALE_SOURCE", "CONTRADICTORY_EVENT", "MISSING_EVENT", "DUPLICATE_EVENT"],
+      "trust_x_test_focus": "This is the core resilience test: can One TrustX itself keep producing a correct shared state when its own inputs are degraded, not just when the airport is degraded."
+    },
+    {
+      "scenario_id": "SCN-POWER-001",
+      "name": "terminal_power_disruption",
+      "family": "SINGLE",
+      "severity_tier": "HIGH",
+      "summary": "Partial terminal power loss degrades jet bridges, conveyor systems and check-in kiosks simultaneously.",
+      "causal_chain": [
+        "power_fault",
+        "backup_generator_engaged_partial_capacity",
+        "non_critical_systems_shed",
+        "jet_bridge_and_conveyor_slowdown",
+        "turnaround_delay",
+        "recovery_once_grid_restored"
+      ],
+      "real_public_context": [],
+      "benchmark_context": [],
+      "assumption_parameters": {
+        "backup_capacity_pct": 60,
+        "restoration_time_minutes": 90,
+        "note": "Illustrative infrastructure-dependency scenario per the PDF's Next-Forward Energy & Utilities dependency."
+      },
+      "failure_injection_types": ["MISSING_EVENT", "LATE_EVENT"],
+      "trust_x_test_focus": "Whether systems correctly distinguish full outage from partial/degraded capacity instead of flattening both to one status."
+    }
+  ]
+}

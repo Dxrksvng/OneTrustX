@@ -1,0 +1,14 @@
+{
+  "source_name": "openmeteo",
+  "source_url": "https://archive-api.open-meteo.com/v1/archive?latitude=13.6811&longitude=100.747002&start_date=2026-09-22&end_date=2026-10-03&hourly=precipitation%2Crain%2Cweather_code%2Cwind_gusts_10m&timezone=Asia%2FBangkok",
+  "retrieved_at": "2026-10-07T17:35:35.783149+00:00",
+  "source_geography": "TH / BKK",
+  "source_period": "2026-09-22/2026-10-03",
+  "license_or_terms": "CC BY 4.0; https://open-meteo.com/en/terms",
+  "source_type": "REAL_PUBLIC",
+  "request_parameters": null,
+  "checksum": "209d5611f6238621bfb2f896b61695d092e71f5f816bae64d5388da1591c3279",
+  "bytes": 10858,
+  "status": "CACHED",
+  "content_type": "application/json; charset=utf-8"
+}

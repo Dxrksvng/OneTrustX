@@ -33,7 +33,7 @@ def fetch(source, url, name, geography, period, terms, limit=150_000_000, body=N
             urllib.request.Request(
                 url,
                 headers={
-                    "User-Agent": "AirportTimeTwin/0.2 public-data research (one-time local cache)",
+                    "User-Agent": "OneTrustX/0.2 public-data research (one-time local cache)",
                     "Content-Type": "application/json",
                 },
                 data=json.dumps(body).encode() if body else None,
