@@ -18,7 +18,7 @@ airline branding, real-airport identities and deployment claims are not copied.
 - `/demo`: scenario timeline alongside the actual operational workspace.
 
 Previous `/app/...` and `/passenger/TT401` URLs remain supported. Audit and sources
-remain available under More; Ask TimeTwin is a contextual top-navigation action.
+remain available under More; Ask One TrustX is a contextual top-navigation action.
 Submitting a recommendation records human approval and updates only synthetic
 state. Real equipment is never controlled.
 

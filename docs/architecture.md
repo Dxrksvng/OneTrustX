@@ -1,6 +1,6 @@
 # Architecture and implementation contract
 
-Airport TimeTwin is a decision and simulation layer above airport intelligence. It is a production-oriented demonstrator, not a deployed airport control system. Operations own action approval; passenger guidance is advisory.
+One TrustX is a decision and simulation layer above airport intelligence. It is a production-oriented demonstrator, not a deployed airport control system. Operations own action approval; passenger guidance is advisory.
 
 ```mermaid
 flowchart TD
@@ -50,7 +50,7 @@ Scenario time is frozen at 17:00 ICT. Wall-clock freshness is tracked independen
 ## Repository structure
 
 ```text
-airport-timetwin/
+onetrustx/
   backend/app/            # ORM schema, seed, deterministic engines, FastAPI
   backend/migrations/     # Alembic
   backend/tests/          # conservation, decisions, stale-data and API tests

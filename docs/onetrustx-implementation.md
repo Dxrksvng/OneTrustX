@@ -1,6 +1,8 @@
 # One TrustX implementation
 
-One TrustX is the collaborative event and decision layer in this repository. It keeps the Airport TimeTwin forecast/simulation modules and adds stakeholder events, verification metadata, conflict reconciliation, a Common Operational State, human decisions, audit history, and an experiment/KPI layer.
+**Pitch scope note (2026-10-07):** the pitch narrative is now "Baggage Disruption Recovery," not a general cross-stakeholder platform — see `docs/onetrustx-pitch.md` and `docs/decisions/2026-10-07-baggage-disruption-scope-narrowing.md`. The engine and API below are unchanged; only the framing narrowed.
+
+One TrustX is the collaborative event and decision layer in this repository. It keeps the original forecast/simulation modules and adds stakeholder events, verification metadata, conflict reconciliation, a Common Operational State, human decisions, audit history, and an experiment/KPI layer.
 
 ## Run
 
@@ -9,7 +11,7 @@ cp .env.example .env
 docker compose --env-file .env -f infra/docker-compose.yml up -d --build
 ```
 
-Open `/trustx` for the overview. The guided product demo remains at `/demo`; the original TimeTwin routes remain available. The local API is documented at `/docs`.
+Open `/trustx` for the overview. The guided product demo remains at `/demo`; the original queue-simulation routes remain available. The local API is documented at `/docs`.
 
 ## Evidence boundary
 

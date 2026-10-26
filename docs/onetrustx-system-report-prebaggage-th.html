@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One TrustX: รายงานระบบฉบับก่อนกระเป๋า</title>
+<style>
+  body { font-family: "Sarabun", "Noto Sans Thai", -apple-system, sans-serif; line-height: 1.7; color: #1d2633; max-width: 960px; margin: 0 auto; padding: 32px 20px; background: #fff; }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  h2 { font-size: 22px; border-bottom: 2px solid #1d2633; padding-bottom: 4px; margin-top: 40px; }
+  h3 { font-size: 17px; margin-top: 24px; }
+  .meta { color: #5a6573; font-size: 14px; margin-bottom: 24px; }
+  .note { background: #fff4e5; border-left: 4px solid #e08a00; padding: 12px 16px; margin: 16px 0; font-size: 15px; }
+  .warn { background: #fdecec; border-left: 4px solid #c0392b; padding: 12px 16px; margin: 16px 0; font-size: 15px; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 14px; }
+  th, td { border: 1px solid #d5dbe3; padding: 7px 10px; text-align: left; vertical-align: top; }
+  th { background: #f1f4f8; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  code { background: #f1f4f8; padding: 1px 5px; border-radius: 3px; font-size: 13px; }
+  pre { background: #f1f4f8; padding: 12px; overflow-x: auto; font-size: 13px; }
+  ul, ol { padding-left: 22px; }
+  .tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 10px; background: #e6ebf2; margin-right: 4px; }
+  @media (max-width: 600px) { body { padding: 20px 16px; } table { font-size: 13px; } }
+</style>
+</head>
+<body>
+
+<h1>One TrustX: รายงานระบบฉบับก่อนกระเป๋า</h1>
+<div class="meta">อ้างอิง commit <code>386d911</code> (Add One TrustX prototype, provenance, and workflow diagrams) · ระบบเวอร์ชันนี้ยังไม่มีโมดูลกระเป๋า · เอกสารนี้รวบรวมจาก <code>docs/evaluation.md</code> และ <code>docs/project-handoff-th.md</code> ในคอมมิตดังกล่าว</div>
+
+<div class="warn">
+ตัวเลขผลลัพธ์ทั้งหมดในเอกสารนี้เป็นค่า <strong>SYNTHETIC</strong> ที่ถูกกำหนดไว้ในโค้ด ไม่ใช่ผลการวัดจากสนามบินจริง ค่าสัมประสิทธิ์ที่ใช้คูณค่าพื้นฐานอยู่ใน <code>scripts/experiments/generate_validation_pack.py</code> เช่น 0.62, 0.44, 0.39 และ 0.22 ตัวเลขการลดลงที่แสดงด้านล่างจึงเป็นผลของค่าเหล่านี้โดยตรง เอกสารต้นฉบับบางจุดเรียกว่า "measured" ซึ่งไม่ตรงกับโค้ด
+</div>
+
+<h2>1. ระบบนี้คืออะไร</h2>
+
+<p>เวอร์ชันนี้เป็น <strong>decision-support prototype</strong> สำหรับจำลองสถานการณ์ผู้โดยสารที่สนามบิน และเปรียบเทียบมาตรการ เช่น เปิดเลนสำรอง redirect ผู้โดยสาร หรือใช้มาตรการผสม ก่อนให้ผู้ปฏิบัติงานตัดสินใจ</p>
+
+<p>ระบบไม่ใช่ระบบควบคุมสนามบิน และไม่ควรอ้างว่าตัวเลขคิวเป็นข้อมูลจริงของสุวรรณภูมิ ลำดับการทำงานหลักคือ:</p>
+
+<pre>Observe → Predict → Simulate → Compare → Human decision → Measure</pre>
+
+<h2>2. สิ่งที่ระบบทำในเดโม</h2>
+
+<ol>
+  <li>แสดงสถานการณ์ปัจจุบันและ forecast ที่ +15, +30, +60 นาที</li>
+  <li>จำลองคิวของ Security A/B ด้วยข้อมูลชุดเดียวกัน</li>
+  <li>เปรียบเทียบ No Action, เปิดเลน, redirect และมาตรการผสม</li>
+  <li>ตรวจข้อจำกัด เช่น จำนวนเลน, staff และ redirect cap</li>
+  <li>ให้ operator Accept, Reject หรือ Override พร้อมเหตุผล</li>
+  <li>บันทึก decision และผลลัพธ์จำลองลง audit trail</li>
+  <li>จำลอง gate change และคำนวณ accessible route กับ Safe Time ใหม่</li>
+</ol>
+
+<h2>3. ป้ายกำกับข้อมูล</h2>
+
+<table>
+  <tr><th>ป้าย</th><th>ความหมาย</th></tr>
+  <tr><td><span class="tag">REAL_PUBLIC</span></td><td>ข้อมูลสาธารณะจริง ใช้เป็น context หรือ benchmark</td></tr>
+  <tr><td><span class="tag">SYNTHETIC</span></td><td>ข้อมูล fixture ที่สร้างขึ้นสำหรับเดโม</td></tr>
+  <tr><td><span class="tag">ASSUMPTION</span></td><td>ค่าที่สมมติ เช่น service rate และ topology</td></tr>
+  <tr><td><span class="tag">DERIVED</span></td><td>ค่าที่คำนวณจากข้อมูลต้นทาง</td></tr>
+  <tr><td><span class="tag">SIMULATED</span></td><td>ผลจาก engine เช่น queue, forecast และ recommendation</td></tr>
+</table>
+
+<p>ข้อมูล operational ในเดโมเป็น SYNTHETIC และ SIMULATED เป็นหลัก ไม่มี passenger telemetry จริงของ BKK และไม่มีการสั่งงานอุปกรณ์สนามบิน</p>
+
+<h2>4. สถาปัตยกรรม</h2>
+
+<pre>React/TypeScript frontend
+        ↓ JSON + demo session
+FastAPI API layer
+        ↓
+Deterministic simulation engine
+        ↓
+SQLAlchemy → SQLite (local) / PostgreSQL (Compose)</pre>
+
+<p>การคำนวณคิวใช้สูตรหลัก:</p>
+<pre>queue_next = max(0, queue_current + arrivals - lanes × service_rate)</pre>
+
+<p>Recommendation ใช้ weighted score ที่เปิดเผย และตรวจ resource constraints ไม่ได้สร้างตัวเลขด้วย LLM</p>
+
+<h2>5. Endpoint หลัก</h2>
+
+<table>
+  <tr><th>Endpoint</th><th>หน้าที่</th></tr>
+  <tr><td><code>GET /api/overview</code></td><td>สถานการณ์, forecast และ KPI</td></tr>
+  <tr><td><code>GET /api/recommendations</code></td><td>ทางเลือกและคะแนน</td></tr>
+  <tr><td><code>POST /api/simulation</code></td><td>รัน what-if simulation</td></tr>
+  <tr><td><code>POST /api/recommendations/{id}/decision</code></td><td>รับ human decision</td></tr>
+  <tr><td><code>GET /api/audit</code></td><td>ประวัติการตัดสินใจ</td></tr>
+  <tr><td><code>GET /api/results</code></td><td>ผลก่อนและหลัง intervention</td></tr>
+  <tr><td><code>GET /api/passenger/{id}/journey</code></td><td>route และ Safe Time</td></tr>
+  <tr><td><code>GET /api/data/catalog</code></td><td>lineage และ provenance</td></tr>
+</table>
+
+<h2>6. ผลการพยากรณ์คิว (SYNTHETIC)</h2>
+
+<p>ชุดทดสอบใช้การแบ่ง 70% สำหรับ training และ 30% สำหรับ testing พร้อม embargo 60 นาที ไม่สลับลำดับแบบสุ่ม</p>
+
+<table>
+  <tr><th>Model</th><th class="num">Horizon (นาที)</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">P90 error</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">Interval coverage</th></tr>
+  <tr><td>persistence</td><td class="num">15</td><td class="num">5.97</td><td class="num">8.13</td><td class="num">11.32</td><td class="num">0.96</td><td class="num">0.95</td><td class="num">0.95</td><td class="num">0.67</td></tr>
+  <tr><td>moving_average</td><td class="num">15</td><td class="num">8.81</td><td class="num">11.41</td><td class="num">17.14</td><td class="num">0.93</td><td class="num">0.93</td><td class="num">0.93</td><td class="num">0.52</td></tr>
+  <tr><td>fluid</td><td class="num">15</td><td class="num">2.20</td><td class="num">5.07</td><td class="num">3.96</td><td class="num">0.99</td><td class="num">0.99</td><td class="num">0.99</td><td class="num">0.94</td></tr>
+  <tr><td>linear</td><td class="num">15</td><td class="num">4.27</td><td class="num">6.67</td><td class="num">12.12</td><td class="num">0.98</td><td class="num">1.00</td><td class="num">0.99</td><td class="num">0.88</td></tr>
+  <tr><td>random_forest</td><td class="num">15</td><td class="num">1.75</td><td class="num">4.32</td><td class="num">3.58</td><td class="num">0.99</td><td class="num">1.00</td><td class="num">0.99</td><td class="num">0.97</td></tr>
+  <tr><td>persistence</td><td class="num">30</td><td class="num">11.70</td><td class="num">14.96</td><td class="num">22.70</td><td class="num">0.91</td><td class="num">0.91</td><td class="num">0.91</td><td class="num">0.42</td></tr>
+  <tr><td>moving_average</td><td class="num">30</td><td class="num">14.41</td><td class="num">18.20</td><td class="num">28.35</td><td class="num">0.89</td><td class="num">0.88</td><td class="num">0.89</td><td class="num">0.36</td></tr>
+  <tr><td>fluid</td><td class="num">30</td><td class="num">4.57</td><td class="num">8.43</td><td class="num">9.28</td><td class="num">0.98</td><td class="num">0.98</td><td class="num">0.98</td><td class="num">0.84</td></tr>
+  <tr><td>linear</td><td class="num">30</td><td class="num">5.91</td><td class="num">8.75</td><td class="num">15.69</td><td class="num">0.95</td><td class="num">0.99</td><td class="num">0.97</td><td class="num">0.77</td></tr>
+  <tr><td>random_forest</td><td class="num">30</td><td class="num">3.21</td><td class="num">6.37</td><td class="num">7.36</td><td class="num">0.98</td><td class="num">1.00</td><td class="num">0.99</td><td class="num">0.93</td></tr>
+  <tr><td>persistence</td><td class="num">60</td><td class="num">22.56</td><td class="num">28.06</td><td class="num">44.99</td><td class="num">0.82</td><td class="num">0.81</td><td class="num">0.82</td><td class="num">0.26</td></tr>
+  <tr><td>moving_average</td><td class="num">60</td><td class="num">25.17</td><td class="num">31.11</td><td class="num">50.36</td><td class="num">0.80</td><td class="num">0.79</td><td class="num">0.80</td><td class="num">0.23</td></tr>
+  <tr><td>fluid</td><td class="num">60</td><td class="num">10.34</td><td class="num">16.08</td><td class="num">24.34</td><td class="num">0.96</td><td class="num">0.95</td><td class="num">0.96</td><td class="num">0.60</td></tr>
+  <tr><td>linear</td><td class="num">60</td><td class="num">9.34</td><td class="num">12.99</td><td class="num">21.84</td><td class="num">0.90</td><td class="num">0.99</td><td class="num">0.94</td><td class="num">0.60</td></tr>
+  <tr><td>random_forest</td><td class="num">60</td><td class="num">6.13</td><td class="num">9.79</td><td class="num">16.35</td><td class="num">0.96</td><td class="num">0.98</td><td class="num">0.97</td><td class="num">0.80</td></tr>
+</table>
+
+<ul>
+  <li>ยังไม่มีโมเดล ML ใดถูกนำขึ้นใช้งาน (not promoted) ต้องเอาชนะ persistence และ fluid ในทุก horizon และผ่านการตรวจสอบอิสระก่อน</li>
+  <li>ค่าความเชื่อมั่นเป็นการประมาณเชิงฮิวริสติก ไม่ใช่ความน่าจะเป็นที่ผ่านการ calibrate</li>
+  <li>Interval coverage คือความครอบคลุมเชิงประจักษ์บนข้อมูลสังเคราะห์ของช่วง ±(15% ของค่าประมาณ + 2 นาที)</li>
+  <li>ไม่มีการอ้างความแม่นยำของสนามบินจริง</li>
+  <li>เป้าหมายของ MVP: MAE ≤ 5 นาที, recall ≥ 0.80, warning lead ≥ 15 นาที เป็นเป้าภายในทีม ไม่ใช่มาตรฐานอุตสาหกรรม</li>
+</ul>
+
+<h2>7. Benchmark จากข้อมูลจริงสาธารณะ</h2>
+
+<p>ชุดข้อมูลจริงที่ใช้คือ CBP terminal/hour จำนวน 12,186 รายการจาก JFK, LAX และ SFO ช่วงมกราคม–มีนาคม 2025 โดยมี 12,178 รายการที่มีจำนวนเคาน์เตอร์ที่เปิดเป็นบวกและเข้าสู่ benchmark มกราคมใช้ train, กุมภาพันธ์ใช้ validate และมีนาคมใช้ test ไม่สุ่มลำดับ ผลอยู่ที่ <code>data/cache/queue-benchmark.json</code></p>
+
+<p class="note">ชุดนี้เป็นข้อมูลของสหรัฐฯ ใช้เป็นบริบทและ benchmark ไม่ใช่ข้อมูลของ BKK</p>
+
+<h2>8. One TrustX validation pack (SYNTHETIC)</h2>
+
+<p>ชุด validation มี 8 สถานการณ์ สถานการณ์ละ 100 seeds และ 4 เงื่อนไข รวม 3,200 episodes ทุกเงื่อนไขใช้ scenario และ seed เดียวกัน ใช้ median เป็นค่าหลัก และ P25/P75 แสดงความแปรผัน</p>
+
+<p>สถานการณ์: normal turnaround, baggage bottleneck, gate conflict, weather-affected, multi-factor disruption, data conflict, missing/late data และ scale test</p>
+
+<table>
+  <tr><th>ตัวชี้วัด</th><th class="num">BASELINE</th><th class="num">ONE TRUSTX + AI</th><th>การเปลี่ยนแปลง</th></tr>
+  <tr><td>Coordination time</td><td class="num">19.66 วินาที</td><td class="num">7.67 วินาที</td><td>ลด 61%</td></tr>
+  <tr><td>Reconciliation time</td><td class="num">15.29 วินาที</td><td class="num">3.36 วินาที</td><td>ลด 78%</td></tr>
+  <tr><td>Risk visibility time</td><td class="num">45.88 วินาที</td><td class="num">11.93 วินาที</td><td>ลด 74% (เร็วขึ้นประมาณ 34 วินาที)</td></tr>
+  <tr><td>Event traceability</td><td class="num">42.0%</td><td class="num">100.0%</td><td>ค่าที่กำหนดในเงื่อนไข</td></tr>
+  <tr><td>Event verification rate</td><td class="num">0.0%</td><td class="num">85.7%</td><td>ค่าที่กำหนดในเงื่อนไข</td></tr>
+  <tr><td>Delay risk proxy</td><td class="num">1.00</td><td class="num">0.50</td><td>ลด 50% (proxy)</td></tr>
+</table>
+
+<div class="warn">
+<p>ข้อควรรู้ก่อนอ้างตัวเลข:</p>
+<ul>
+  <li>การลด 61%, 78% และ 74% มาจากการคูณ baseline ด้วยสัมประสิทธิ์ที่กำหนดไว้ล่วงหน้า ค่า 85.7 และ 100 เป็นค่าคงที่ในโค้ด ไม่ได้คำนวณจากการตรวจข้อมูล</li>
+  <li>Delay risk proxy 0.50 เป็นค่าที่กำหนดไว้ ไม่ใช่โอกาสที่เที่ยวบินจะล่าช้าจริง</li>
+  <li>ไม่ควรเรียก recommendation success ว่า AI accuracy เพราะชุดนี้ไม่มีผลลัพธ์จริงที่ติดป้ายเป็นอิสระมากพอ</li>
+  <li>ต้นฉบับบางจุดเขียนว่า "measured" ซึ่งไม่ตรงกับโค้ด ควรใช้คำว่า "ค่าที่กำหนดในตัวสร้างข้อมูลสังเคราะห์"</li>
+</ul>
+</div>
+
+<p>ไฟล์ที่เกี่ยวข้อง: <code>data/cache/onetrustx-validation-runs.csv</code>, <code>data/cache/onetrustx-validation-summary.csv</code> และ <code>data/cache/onetrustx-validation-manifest.json</code> ข้อกำหนดข้อมูล telemetry จริงอยู่ใน <code>docs/validation-data-contract.md</code></p>
+
+<h2>9. ข้อจำกัดของระบบ</h2>
+
+<ul>
+  <li>ไม่มี aggregate checkpoint telemetry จากสนามบินจริง</li>
+  <li>ยังไม่มีการ calibrate โมเดลกับข้อมูลสนามบิน</li>
+  <li>ยังไม่มี temporal validation บนข้อมูลจริง</li>
+  <li>ยังไม่มีการตรวจความปลอดภัยและ pilot ที่มนุษย์อนุมัติ</li>
+</ul>
+
+<h2>10. สิ่งที่ควรพูดและไม่ควรพูด</h2>
+
+<div class="note">
+<p><strong>ควรพูด:</strong> ระบบใช้ข้อมูลสาธารณะเป็นบริบท และใช้สถานการณ์สังเคราะห์ที่กำหนดได้ เพื่อสาธิตการเปรียบเทียบมาตรการจัดการคิวอย่างโปร่งใสและตรวจย้อนได้</p>
+</div>
+
+<ul>
+  <li>ไม่ควรพูดว่าโมเดลทำนายคิวสุวรรณภูมิจากข้อมูลจริงได้แล้ว</li>
+  <li>ไม่ควรพูดว่าลดเวลารอได้ตามตัวเลขในเดโม</li>
+  <li>ไม่ควรพูดว่าผ่านการ validate กับสนามบินแล้ว</li>
+  <li>ไม่ควรพูดว่าใช้ข้อมูลผู้โดยสารจริงของ BKK</li>
+</ul>
+
+<h2>11. ความเชื่อถือได้ของระบบ (คำตอบสั้น)</h2>
+
+<p>เชื่อถือได้ในฐานะ prototype ที่แสดงกลไกการจำลอง การเปรียบเทียบทางเลือก ข้อจำกัดทรัพยากร และการตรวจสอบย้อนหลังได้แบบทำซ้ำได้ แต่ยังไม่ควรใช้ตัวเลขเป็นผลปฏิบัติการจริง จนกว่าจะมี telemetry จากสนามบิน การ calibrate การทดสอบตามเวลา การตรวจความปลอดภัย และ pilot ที่มนุษย์อนุมัติ</p>
+
+<h2>12. แหล่งอ้างอิง</h2>
+
+<ul>
+  <li><code>docs/evaluation.md</code> ในคอมมิต <code>386d911</code></li>
+  <li><code>docs/project-handoff-th.md</code> ในคอมมิต <code>386d911</code></li>
+  <li><code>scripts/experiments/generate_validation_pack.py</code> ในคอมมิต <code>386d911</code></li>
+  <li><code>backend/app/trust_service.py</code> ในคอมมิต <code>386d911</code> ซึ่งมีค่าสมมติของ run_experiment ที่ 18 → 7 วินาที และ 14 → 3 วินาที</li>
+</ul>
+
+</body>
+</html>

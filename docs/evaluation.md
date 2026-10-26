@@ -56,3 +56,15 @@ The aggregate median comparison between `BASELINE` and `ONE_TRUSTX_AI` is:
 | Delay risk proxy | 1.00 | 0.50 | 50.0% lower |
 
 These are **synthetic prototype validation results**, not airport performance, observed delay probability or financial savings. The delay value is a modelled proxy. Recommendation success is not reported as AI accuracy because the current pack does not contain enough independently labelled real outcomes. The source files are `data/cache/onetrustx-validation-runs.csv`, `data/cache/onetrustx-validation-summary.csv` and `data/cache/onetrustx-validation-manifest.json`. The required schema for authorized real telemetry is documented in [`validation-data-contract.md`](validation-data-contract.md).
+
+## Hero scenario (2026-10-07)
+
+The pitch narrowed to "Baggage Disruption Recovery" (`docs/onetrustx-pitch.md`). `S9` / `SCN-FLOOD-BAGGAGE-001` is now the hero/default demo scenario — lead with its numbers, not the all-scenario aggregate, when presenting. See `docs/decisions/2026-10-07-baggage-disruption-scope-narrowing.md`.
+
+## Disaster/compound scenario pack (v3, 2026-10-03)
+
+The pack above is 8 scenarios. `generate_validation_pack.py` v3 adds 6 more — S9-S14 — covering flood+baggage backlog (calibrated against a cited real Sept 2026 Bangkok flood/baggage-backlog case), geopolitical airspace closure, terminal fire, health-screening disruption, a BHS/trust-pipeline self-outage, and terminal power disruption. Definitions, causal chains and source citations are in [`data/scenarios/scenario_library.json`](../data/scenarios/scenario_library.json). The run/summary/manifest CSVs regenerate to 5,600 episodes across all 14 scenarios; every percentage cited above (61.0%, 78.0%, 74%, 100%, 85.7%, 50%) is unchanged because each condition's reduction is a fixed multiplier of that episode's own baseline — adding scenarios changes absolute seconds, never the cited ratios.
+
+The new pack also adds deterministic failure injection (`failure_injected`, `failure_type`: missing/late/duplicate/contradictory/stale) drawn once per (scenario, seed) and held identical across all four conditions, plus a `ground_truth_state_match` field. Restricting to the 1,784 failure-injected episodes: **BASELINE median ground_truth_state_match is 0.0** (no reconciliation layer exists, so a stale or contradictory source is read literally) and **ONE_TRUSTX_AI median is 0.91**. This is the closest the repository currently comes to the deck's "Risk Detection Accuracy" claim — but it is still a **modelled reconciliation-success proxy from a generator formula**, not a measured detection rate against real labelled incidents. It should be cited as such, never as "86% accuracy," until real incident ground truth exists per [`validation-data-contract.md`](validation-data-contract.md).
+
+The deck's **AI Recommendation Accuracy (100%), Data Consistency (100%), and the 117.39B THB / 2025-2030 loss-benchmark curve remain unbacked by any computation in this repository** as of this note. They should be treated as illustrative projections, not measured results, until a labelled-outcome dataset and an explicit cost model exist.

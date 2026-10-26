@@ -1,0 +1,1404 @@
+<!doctype html>
+<html lang="th">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>One TrustX: รายงานระบบฉบับก่อนกระเป๋า (ฉบับละเอียด)</title>
+<style>
+  body { font-family: "Sarabun", "Noto Sans Thai", -apple-system, sans-serif; line-height: 1.7; color: #1d2633; max-width: 960px; margin: 0 auto; padding: 32px 20px; background: #fff; font-size: 15px; }
+  h1 { font-size: 28px; margin-bottom: 4px; }
+  h2 { font-size: 22px; border-bottom: 2px solid #1d2633; padding-bottom: 4px; margin-top: 44px; page-break-after: avoid; }
+  h3 { font-size: 17px; margin-top: 26px; page-break-after: avoid; }
+  .meta { color: #5a6573; font-size: 14px; margin-bottom: 24px; }
+  .note { background: #eef5fb; border-left: 4px solid #2f6fa8; padding: 12px 16px; margin: 16px 0; }
+  .warn { background: #fdecec; border-left: 4px solid #c0392b; padding: 12px 16px; margin: 16px 0; }
+  .caution { background: #fff4e5; border-left: 4px solid #e08a00; padding: 12px 16px; margin: 16px 0; }
+  table { border-collapse: collapse; width: 100%; margin: 12px 0 20px; font-size: 13.5px; page-break-inside: auto; }
+  tr { page-break-inside: avoid; }
+  th, td { border: 1px solid #d5dbe3; padding: 6px 9px; text-align: left; vertical-align: top; }
+  th { background: #f1f4f8; }
+  td.num, th.num { text-align: right; font-variant-numeric: tabular-nums; }
+  code { background: #f1f4f8; padding: 1px 5px; border-radius: 3px; font-size: 12.5px; }
+  pre { background: #f1f4f8; padding: 12px; overflow-x: auto; font-size: 12.5px; white-space: pre-wrap; }
+  ul, ol { padding-left: 22px; }
+  li { margin-bottom: 3px; }
+  .tag { display: inline-block; font-size: 12px; padding: 1px 7px; border-radius: 10px; background: #e6ebf2; margin-right: 4px; white-space: nowrap; }
+  .toc a { color: #2f6fa8; text-decoration: none; }
+  @media (max-width: 600px) { body { padding: 20px 16px; } table { font-size: 12.5px; } }
+  img { max-width: 100%; height: auto; border: 1px solid #d5dbe3; margin: 8px 0; page-break-inside: avoid; }
+  h4 { font-size: 15px; margin-top: 20px; }
+  blockquote { border-left: 4px solid #d5dbe3; margin: 12px 0; padding: 4px 14px; color: #3a4655; }
+</style>
+</head>
+<body>
+
+<h1>One TrustX: รายงานระบบฉบับก่อนกระเป๋า (ฉบับละเอียด)</h1>
+<div class="meta">
+  อ้างอิง commit <code>386d911</code> (Add One TrustX prototype, provenance, and workflow diagrams) และ <code>e632d92</code> (Build Airport TimeTwin simulation and passenger decision MVP)<br>
+  ระบบเวอร์ชันนี้ยังไม่มีโมดูลกระเป๋า ชื่อผลิตภัณฑ์ในโค้ดคือ Airport TimeTwin ส่วน One TrustX คือชื่อชั้นกลางที่ใช้ในชุด validation
+</div>
+
+<div class="warn">
+  <strong>ข้อสำคัญ:</strong> ผลลัพธ์ทั้งหมดในเอกสารนี้เป็น <span class="tag">SIMULATED</span> หรือ <span class="tag">SYNTHETIC</span> ไม่ใช่ผลปฏิบัติการของสนามบินจริง รายงานนี้เขียนเพื่อให้เห็นว่าตัวเลขแต่ละตัวมาจากไหน และข้อใดเป็นค่าที่กำหนดไว้ล่วงหน้า
+</div>
+
+<div class="toc">
+  <h3>สารบัญ</h3>
+  <ol>
+    <li><a href="#s1">สรุปสำหรับผู้บริหาร</a></li>
+    <li><a href="#s2">ขอบเขตและสถานะการพัฒนา</a></li>
+    <li><a href="#s3">ป้ายข้อมูลและแหล่งที่มา</a></li>
+    <li><a href="#s4">สถาปัตยกรรมและส่วนประกอบ</a></li>
+    <li><a href="#s5">แบบจำลองคิวและการคำนวณ</a></li>
+    <li><a href="#s6">ค่าตั้งต้นของเดโมและสมมติฐาน</a></li>
+    <li><a href="#s7">ผลการพยากรณ์คิวบนข้อมูลสังเคราะห์</a></li>
+    <li><a href="#s8">Benchmark จากข้อมูลจริงสาธารณะ (CBP)</a></li>
+    <li><a href="#s9">ชุด validation One TrustX (ค่าที่กำหนดไว้)</a></li>
+    <li><a href="#s10">เกณฑ์ยอมรับและการประเมินเทียบเป้า</a></li>
+    <li><a href="#s11">การตรวจสอบที่ทำจริง</a></li>
+    <li><a href="#s12">ข้อจำกัดและสิ่งที่ยังไม่ได้ทำ</a></li>
+    <li><a href="#s13">การนำเสนอ: ควรพูดและไม่ควรพูด</a></li>
+    <li><a href="#s14">ความปลอดภัยและความเป็นส่วนตัว</a></li>
+    <li><a href="#s15">โครงสร้างฐานข้อมูลและพจนานุกรมข้อมูล</a></li>
+    <li><a href="#s16">ที่มาของข้อมูลและความน่าเชื่อถือ</a></li>
+    <li><a href="#s17">ลำดับการสาธิตหนึ่งรอบ</a></li>
+    <li><a href="#s18">แหล่งอ้างอิงในคอมมิต</a></li>
+    <li><a href="#s19">ภาคผนวก: เอกสารที่มาและการสร้างข้อมูล (คัดลอกครบ)</a></li>
+  </ol>
+</div>
+
+<h2 id="s1">1. สรุปสำหรับผู้บริหาร</h2>
+
+<p>ระบบฉบับนี้เป็น <strong>decision-support prototype</strong> ที่จำลองคิวผู้โดยสารที่จุดตรวจความปลอดภัยของสนามบิน และเปรียบเทียบมาตรการต่าง ๆ เช่น เปิดเลนเพิ่ม การเปลี่ยนเส้นทางผู้โดยสาร หรือมาตรการผสม ก่อนให้ผู้ปฏิบัติงานอนุมัติ ปฏิเสธ หรือแก้ไข โดยทุกการตัดสินใจถูกบันทึกลง audit trail</p>
+
+<p>สิ่งที่ระบบทำได้จริงในเวอร์ชันนี้:</p>
+<ul>
+  <li>คำนวณคิวแบบ FIFO ระดับนาที ตรวจสอบความสมดุลของจำนวนผู้โดยสาร (conservation) ได้</li>
+  <li>เปรียบเทียบทางเลือกภายใต้ข้อจำกัดของเลนและเจ้าหน้าที่ ทางเลือกที่ทำไม่ได้จะไม่ถูกเลือก</li>
+  <li>คำนวณเส้นทางที่เข้าถึงได้ (accessible route) และเวลา Safe Time สำหรับผู้โดยสารรายบุคคลในกรณีจำลอง</li>
+  <li>บันทึกการตัดสินใจแบบมีเวอร์ชัน และป้องกันการอนุมัติซ้ำ (ผลทดสอบ: การอนุมัติพร้อมกัน 1 รายการสำเร็จ อีกรายการได้ 409)</li>
+</ul>
+
+<p>สิ่งที่ยังไม่มีในเวอร์ชันนี้:</p>
+<ul>
+  <li>ข้อมูลผู้โดยสาร จำนวนผู้โดยสารรายเที่ยวบิน หรือสถานะการขึ้นเครื่องจริงของ BKK</li>
+  <li>การเชื่อมต่อกับระบบของสนามบิน หรือการสั่งงานอุปกรณ์จริง</li>
+  <li>ระบบยืนยันตัวตนสำหรับการใช้งานจริง (บทบาทผู้ใช้ในเดโมเป็นการระบุด้วย header เพื่อทดสอบเท่านั้น)</li>
+  <li>โมเดล ML ที่ผ่านเกณฑ์ เวอร์ชันนี้ไม่มีโมเดลที่ถูกนำขึ้นใช้งาน</li>
+</ul>
+
+<h2 id="s2">2. ขอบเขตและสถานะการพัฒนา</h2>
+
+<table>
+  <tr><th>ส่วน</th><th>สถานะ</th><th>หมายเหตุ</th></tr>
+  <tr><td>แบบจำลองคิวจุดตรวจ 2 จุด (Security A/B)</td><td>ทำงานแล้ว</td><td>ค่าเริ่มต้นและอัตราบริการเป็น ASSUMPTION</td></tr>
+  <tr><td>การพยากรณ์ +15, +30, +60 นาที</td><td>ทำงานแล้ว</td><td>พยากรณ์แบบ fluid ไม่ใช่ ML</td></tr>
+  <tr><td>เปรียบเทียบทางเลือกและข้อจำกัดทรัพยากร</td><td>ทำงานแล้ว</td><td>ทางเลือกที่ขาดทรัพยากรจะถูกปฏิเสธ</td></tr>
+  <tr><td>Human decision และ audit trail</td><td>ทำงานแล้ว</td><td>บันทึกแบบ transactional และมีเวอร์ชัน</td></tr>
+  <tr><td>Accessible route และ Safe Time</td><td>ทำงานแล้ว</td><td>กราฟเส้นทางเป็นตัวอย่าง ไม่ใช่แผนผังจริงของ BKK</td></tr>
+  <tr><td>Copilot แบบไม่ใช้ LLM</td><td>ทำงานแล้ว</td><td>รองรับหัวข้อภาษาอังกฤษจำกัด</td></tr>
+  <tr><td>ข้อมูลสาธารณะ (OurAirports, Open-Meteo, OpenSky)</td><td>ดึงและแคชได้</td><td>ใช้เป็นบริบท ไม่ใช่ข้อมูลการดำเนินงาน</td></tr>
+  <tr><td>Benchmark ML เทียบ baseline</td><td>ทำงานแล้ว</td><td>ไม่มีโมเดลถูกนำขึ้นใช้งาน</td></tr>
+  <tr><td>ภาษาไทยเต็มรูปแบบ</td><td>ยังไม่ครบ</td><td>มีโครงสร้างข้อความไทยสำหรับ CTA และ Safe Time</td></tr>
+  <tr><td>ข้อมูลกระเป๋า</td><td>ไม่มี</td><td>อยู่ในเวอร์ชันถัดไป</td></tr>
+</table>
+
+<h2 id="s3">3. ป้ายข้อมูลและแหล่งที่มา</h2>
+
+<table>
+  <tr><th>ป้าย</th><th>ความหมาย</th></tr>
+  <tr><td><span class="tag">REAL_PUBLIC</span></td><td>ข้อมูลสาธารณะจริง ใช้เป็นบริบทหรือ benchmark ไม่ใช่ข้อมูลการดำเนินงานของสนามบิน</td></tr>
+  <tr><td><span class="tag">SYNTHETIC</span></td><td>ข้อมูลที่สร้างขึ้นด้วยการกำหนด seed สำหรับเดโม ไม่ใช่บันทึกจริงของสายการบินหรือสนามบิน</td></tr>
+  <tr><td><span class="tag">ASSUMPTION</span></td><td>ค่าที่สมมติ เช่น อัตราบริการ โครงสร้างเส้นทาง และข้อจำกัดในการดำเนินงาน</td></tr>
+  <tr><td><span class="tag">DERIVED</span></td><td>ค่าที่คำนวณจากข้อมูลต้นทาง ต้องเก็บ lineage และสูตร</td></tr>
+  <tr><td><span class="tag">SIMULATED</span></td><td>ผลจาก engine เช่น คิว การพยากรณ์ และคำแนะนำ</td></tr>
+</table>
+
+<h3>3.1 แหล่งข้อมูลและขอบเขตการใช้</h3>
+
+<table>
+  <tr><th>ชุดข้อมูล / ค่า</th><th>ป้าย</th><th>แหล่งและขอบเขต</th></tr>
+  <tr><td>ข้อมูลสนามบินจาก adapter</td><td>REAL_PUBLIC</td><td>OurAirports ข้อมูลสาธารณะ ไม่รับประกันความถูกต้อง</td></tr>
+  <tr><td>พยากรณ์อากาศ (ถ้าเปิดใช้)</td><td>REAL_PUBLIC</td><td>Open-Meteo เป็นการพยากรณ์ของแบบจำลอง ไม่ใช่เซ็นเซอร์ที่สนามบิน</td></tr>
+  <tr><td>ตำแหน่งอากาศยาน (ถ้าเปิดใช้)</td><td>REAL_PUBLIC</td><td>OpenSky REST API ใช้ได้เฉพาะตำแหน่งและสถานะการบิน</td></tr>
+  <tr><td>ชุด fixture สนามบิน (TWT / ZZTW)</td><td>SYNTHETIC</td><td>รหัสเป็นตัวอย่าง ไม่ใช่รหัสที่จดทะเบียนจริง พิกัดโดยประมาณ</td></tr>
+  <tr><td>เที่ยวบิน คิว เลน ผู้โดยสาร การจัดการ</td><td>SYNTHETIC</td><td>ข้อมูลที่ seed ไว้ ห้ามอธิบายว่าเป็นข้อมูลจริง</td></tr>
+  <tr><td>โครงสร้างเส้นทาง อัตราบริการ เวลาข้ามจุด และ staff</td><td>ASSUMPTION</td><td>ผังจำลองที่ไม่ใช่ข้อมูลจาก BKK</td></tr>
+  <tr><td>ค่าพยากรณ์คิว ผลการแทรกแซง Safe Time และ KPI proxy</td><td>SIMULATED</td><td>ทุกหน้าจอและ response มีข้อความว่าเป็นผลจำลอง</td></tr>
+  <tr><td>ความเชื่อมั่น 80% (ข้อมูลสด) และ 35% (ข้อมูลเก่า)</td><td>ASSUMPTION</td><td>เป็นฮิวริสติก ไม่ได้ calibrate</td></tr>
+</table>
+
+<p>ข้อมูลเชิงปฏิบัติการในเดโมเป็น SYNTHETIC และ SIMULATED เป็นหลัก OpenSky ไม่ได้ใช้นับจำนวนผู้โดยสาร สถานะการขึ้นเครื่อง ตารางเที่ยวบินฉบับเต็ม เหตุยกเลิก หรือคิว หากการดึงข้อมูลสาธารณะล้มเหลว ระบบจะใช้แคชเดิมพร้อมป้ายว่าเก่า หรือใช้ข้อมูลสังเคราะห์ โดยไม่เปลี่ยนป้ายข้อมูลสังเคราะห์เป็นข้อมูลจริง</p>
+
+<h2 id="s4">4. สถาปัตยกรรมและส่วนประกอบ</h2>
+
+<h3>4.1 ภาพรวมการไหลของข้อมูล</h3>
+<pre>ข้อมูลสาธารณะ (OurAirports / Open-Meteo / OpenSky)
+    → แคชพร้อมป้ายที่มา
+ตัวสร้างข้อมูลสังเคราะห์ (กำหนด seed ได้)
+    → PostgreSQL
+    → FastAPI (RBAC สำหรับเดโม / การตรวจสอบข้อมูล)
+    → พยากรณ์ fluid รายนาที (+15 / +30 / +60)
+    → จำลองคิว FIFO แบบ cohort สองจุดตรวจ
+    → การให้คะแนนแบบมีข้อจำกัด
+    → มนุษย์ accept / reject / override
+    → สถานะเดโมแบบมีเวอร์ชัน
+    → กราฟเส้นทางที่เข้าถึงได้ → Safe Time และการวางแผนใหม่
+    → audit snapshot และการวัดผล → การประเมินแบบ offline / เกณฑ์เลื่อนระดับโมเดล
+    → Copilot แบบมีโครงสร้าง (มี fallback ที่ไม่ใช้ LLM เสมอ)
+    → UI ฝั่ง operations และ passenger</pre>
+
+<h3>4.2 ส่วนประกอบและหน้าที่</h3>
+<table>
+  <tr><th>ส่วนประกอบ</th><th>ตัดสินใจอะไร</th><th>หลักฐาน</th><th>เมื่อผิดพลาด / เจ้าของ</th></tr>
+  <tr><td>Forecast</td><td>ควรเตรียมกำลังที่จุดไหน</td><td>arrival profile ที่ freeze ไว้ คิวปัจจุบัน และเลนที่เปิด</td><td>ทำเครื่องหมายข้อมูลเก่า บล็อกการดำเนินการ ผู้ปฏิบัติงานเป็นเจ้าของการตอบสนอง</td></tr>
+  <tr><td>Simulator</td><td>เลนหรือการเปลี่ยนเส้นทางแบบใดเหมาะสม</td><td>cohort และ horizon เดียวกันสำหรับทุกการเปรียบเทียบ</td><td>ปฏิเสธการร้องขอทรัพยากรที่ไม่ถูกต้อง เก็บ No Action ไว้เสมอ</td></tr>
+  <tr><td>Scorer</td><td>ทางเลือกที่ให้ประโยชน์ดีที่สุดภายใต้ staff และการเดิน</td><td>สูตรเปิดเผย น้ำหนักไม่ติดลบและปรับได้</td><td>ไม่แนะนำเมื่อข้อมูลเก่า</td></tr>
+  <tr><td>Journey</td><td>ผู้โดยสารควรใช้เส้นทางใดตอนนี้</td><td>กราฟมีทิศทาง เวลารอ deadline และ buffer</td><td>ไม่แสดงเส้นทางที่เข้าไม่ถึง แสดงคำเตือนข้อมูลเก่า เป็นคำแนะนำเท่านั้น</td></tr>
+  <tr><td>Audit</td><td>การตัดสินใจนั้นช่วยหรือไม่</td><td>snapshot ของ input/output เหตุผลของมนุษย์ และการสังเกตแบบจำลองภายหลัง</td><td>บันทึกแบบ transaction ไม่ promote โมเดลโดยอัตโนมัติ</td></tr>
+  <tr><td>Copilot</td><td>อธิบายผลของ engine</td><td>อ้างอิงเฉพาะค่าที่คำนวณได้</td><td>ใช้ template ที่ไม่ใช้ LLM เป็นค่าเริ่มต้น</td></tr>
+</table>
+
+<h3>4.3 ฐานข้อมูลและการควบคุมความขัดแย้ง</h3>
+<ul>
+  <li>ฐานข้อมูลหลักคือ PostgreSQL (Docker Compose) และใช้ SQLite เฉพาะการทดสอบแบบแยกและการพัฒนาในเครื่อง</li>
+  <li>การตัดสินใจใช้ row locking และการเปรียบเทียบเวอร์ชัน เพื่อป้องกันการเขียนทับจากคำสั่งที่ซ้ำหรือล้าสมัย</li>
+  <li>การรีเซ็ตเก็บประวัติ audit ไว้ทั้งหมด และเพิ่มเวอร์ชัน</li>
+  <li>เวลาของสถานการณ์ถูกตรึงที่ 17:00 ICT ส่วนความสดของข้อมูลตรวจด้วยนาฬิกาจริง โดยเกณฑ์ 5 นาที</li>
+</ul>
+
+<h3>4.4 ผังโครงสร้างโค้ด</h3>
+<pre>airport-timetwin/
+  backend/app/            ORM, seed, engine ที่กำหนดผลได้แน่นอน, FastAPI
+  backend/migrations/     Alembic
+  backend/tests/          conservation, decisions, stale-data, API
+  frontend/src/           React views, styles, API client
+  frontend/e2e/           browser integration และ mobile tests
+  data/synthetic/         CSV ที่สร้างขึ้นและประวัติ training
+  data/seeds/             สถานการณ์ peak ที่ทำซ้ำได้ และ acceptance config
+  data/raw/               แคชสาธารณะ (ไม่อยู่ใน git)
+  scripts/                ingestion, generation, seeding, demo
+  ml/evaluation/          การประเมินเชิงเวลาเทียบ baseline
+  infra/                  Docker Compose
+  docs/                   สถาปัตยกรรม ERD พจนานุกรม การประเมิน runbook</pre>
+
+<h2 id="s5">5. แบบจำลองคิวและการคำนวณ</h2>
+
+<h3>5.1 สมการหลัก</h3>
+<pre>Q(t+1) = max(0, Q(t) + arrivals(t) − lanes × service_rate)</pre>
+<ul>
+  <li>ขั้นเวลาคือ 1 นาที</li>
+  <li>บริการถูกจัดสรรให้ cohort แบบ FIFO และระบายต่อได้ถึง 600 นาที เพื่อไม่ให้ค่าเฉลี่ย/P95 ถูกตัดตามขอบเขต horizon</li>
+  <li>ถ้าคิวยังไม่ถูกระบายภายใน 600 นาที ทางเลือกนั้นถือว่าทำไม่ได้</li>
+  <li>คิวเริ่มต้นเป็น cohort ที่มาถึงเวลา 0 ดังนั้นตัววัดคือเวลารอที่เหลือ ไม่ใช่เวลารอที่สะสมไปแล้ว</li>
+</ul>
+
+<h3>5.2 การคำนวณตัวชี้วัด</h3>
+<table>
+  <tr><th>ตัวชี้วัด</th><th>วิธีคำนวณ</th><th>ข้อควรระวัง</th></tr>
+  <tr><td>เวลารอ P95</td><td>P95 แบบถ่วงน้ำหนักตามผู้โดยสารของ cohort ที่ FIFO</td><td>ไม่ใช่เวลารอของทุกคนในสนามบิน</td></tr>
+  <tr><td>Passenger-minutes saved</td><td>ผลต่างของพื้นที่ใต้คิวของเครือข่าย ลบด้วยต้นทุนการเดินจากการเปลี่ยนเส้นทาง</td><td>เป็นผลจำลอง ไม่ใช่ประโยชน์ที่วัดได้ในสนามบิน</td></tr>
+  <tr><td>ความเสี่ยง (risk)</td><td>สัดส่วนของผู้โดยสารที่เวลารอเกินงบ 35 นาทีต่อจุดตรวจ (สมมติฐาน)</td><td>ไม่ใช่ความน่าจะเป็นที่พลาดการขึ้นเครื่องของเที่ยวบินใดเที่ยวบินหนึ่ง</td></tr>
+  <tr><td>Safe Time</td><td>เวลาถึงเกต − ระยะเดิน − เวลาผ่านจุดตรวจ</td><td>ใช้ในกรณีตัวอย่างเท่านั้น</td></tr>
+</table>
+
+<h3>5.3 การวิเคราะห์สาเหตุ (Shapley)</h3>
+<p>มีการแยกสัดส่วนสาเหตุของเวลารอ +30 นาที เทียบกับสถานการณ์ปกติและเลนห้าเลน โดยใช้ Shapley decomposition สองปัจจัย ผลนี้เป็น <strong>การอธิบายจากแบบจำลอง (model counterfactual)</strong> ไม่ใช่การพิสูจน์เชิงเหตุผลจากข้อมูลจริง และไม่ได้หมายความว่าการเพิ่มเจ้าหน้าที่ทำได้จริงในทางปฏิบัติ</p>
+
+<h2 id="s6">6. ค่าตั้งต้นของเดโมและสมมติฐาน</h2>
+
+<table>
+  <tr><th>รายการ</th><th>ค่า</th><th>ป้าย</th></tr>
+  <tr><td>เวลาเริ่มต้นของเดโม</td><td>2026-09-12 17:00 ICT</td><td>ASSUMPTION</td></tr>
+  <tr><td>คิวเริ่มต้น Security A / B</td><td>96 / 12 คน</td><td>ASSUMPTION</td></tr>
+  <tr><td>อัตราบริการ</td><td>2 คนต่อนาทีต่อเลน</td><td>ASSUMPTION</td></tr>
+  <tr><td>จำนวนเลนที่เปิด</td><td>A 4 จาก 5 เลน, B 3 เลน</td><td>ASSUMPTION</td></tr>
+  <tr><td>ผู้มาถึงช่วง peak ที่ A</td><td>15.2 คนต่อนาที 30 นาที, ต่อด้วย 9 (15 นาที) และ 5</td><td>SYNTHETIC</td></tr>
+  <tr><td>ผู้มาถึงปกติที่ A / ที่ B</td><td>5 / 3 คนต่อนาที</td><td>SYNTHETIC</td></tr>
+  <tr><td>เจ้าหน้าที่ต่อเลนที่เปิด</td><td>2 คน (สำรอง 4 คน)</td><td>ASSUMPTION</td></tr>
+  <tr><td>เพดานการเปลี่ยนเส้นทาง</td><td>30%</td><td>ASSUMPTION</td></tr>
+  <tr><td>ต้นทุนการเดินเพิ่มเมื่อเปลี่ยนเส้นทาง</td><td>4 นาทีต่อคน</td><td>ASSUMPTION</td></tr>
+  <tr><td>เพิ่มความจุจากเจ้าหน้าที่ 1 คน</td><td>0.25 คนต่อนาที (ทดสอบความไว)</td><td>ASSUMPTION</td></tr>
+  <tr><td>เดินเพิ่มเมื่อเปลี่ยนเกต (ทางเข้าถึงได้)</td><td>23 นาที</td><td>ASSUMPTION</td></tr>
+  <tr><td>งบเวลาที่ตรวจต่อจุด</td><td>35 นาที</td><td>ASSUMPTION</td></tr>
+  <tr><td>ความเชื่อมั่นพยากรณ์</td><td>80% ข้อมูลสด / 35% ข้อมูลเก่า</td><td>ASSUMPTION (ไม่ได้ calibrate)</td></tr>
+  <tr><td>ช่วงความไม่แน่นอน</td><td>±(15% ของค่าประมาณ + 2 นาที) กว้างขึ้นเมื่อข้อมูลเก่า</td><td>ASSUMPTION</td></tr>
+  <tr><td>ผู้โดยสารต่อเที่ยวบินที่จำลอง</td><td>145 คน</td><td>ASSUMPTION</td></tr>
+  <tr><td>ประสิทธิภาพที่ใช้ตอนวัดผลซ้ำ</td><td>97% ของความจุที่วางแผน</td><td>ASSUMPTION</td></tr>
+</table>
+
+<h3>6.1 ค่าที่คำนวณได้จากค่าตั้งต้น</h3>
+<ul>
+  <li>คิว Security A ปัจจุบัน 12 นาที และที่ +30 นาที 39 นาที (ตรงกับ (96 + 30 × (15.2 − 8)) / 8 = 39)</li>
+  <li>เดโมที่ตรึงค่า: A 12 นาทีตอนนี้, 18 นาทีที่ +15, 39 นาทีที่ +30, 28.88 นาทีที่ +60</li>
+  <li>กรณี Safe Time: 64 − 20 − 10 = 34 นาที เมื่อเปลี่ยนเกตเป็นเส้นทางที่เข้าถึงได้ จะเหลือ 11 นาที (เพิ่มเดิน 23 นาที)</li>
+</ul>
+
+<h3>6.2 ข้อจำกัดของกลุ่มตัวอย่าง</h3>
+<ul>
+  <li>เที่ยวบินตัวอย่าง 4 เที่ยวบินและผู้โดยสารนิรนาม 580 แถวเป็นกลุ่มเล่าเรื่อง ไม่ใช่รายการผู้โดยสารจริง</li>
+  <li>ผู้โดยสารที่เปลี่ยนเส้นทางทุกคนถือว่าเข้าเกณฑ์ไป B ซึ่งเป็นการสมมติ ระบบจริงต้องมีเงื่อนไขคุณสมบัติ เวลาการเดินทาง และการยืนยันจากเซ็นเซอร์</li>
+  <li>ผู้โดยสารเข้าเส้นทางตามกฎทิศทางของกราฟจำลอง ไม่ใช่ผังสนามบินจริง</li>
+</ul>
+
+<h2 id="s7">7. ผลการพยากรณ์คิวบนข้อมูลสังเคราะห์</h2>
+
+<p>ชุดทดสอบแบ่ง 70% สำหรับ training และ 30% สำหรับ testing พร้อม embargo 60 นาที ไม่สุ่มลำดับ (ข้อมูลจาก <code>docs/evaluation.md</code>)</p>
+
+<table>
+  <tr><th>Model</th><th class="num">Horizon (นาที)</th><th class="num">MAE</th><th class="num">RMSE</th><th class="num">P90 error</th><th class="num">Precision</th><th class="num">Recall</th><th class="num">F1</th><th class="num">Interval coverage</th></tr>
+  <tr><td>persistence</td><td class="num">15</td><td class="num">5.97</td><td class="num">8.13</td><td class="num">11.32</td><td class="num">0.96</td><td class="num">0.95</td><td class="num">0.95</td><td class="num">0.67</td></tr>
+  <tr><td>moving_average</td><td class="num">15</td><td class="num">8.81</td><td class="num">11.41</td><td class="num">17.14</td><td class="num">0.93</td><td class="num">0.93</td><td class="num">0.93</td><td class="num">0.52</td></tr>
+  <tr><td>fluid</td><td class="num">15</td><td class="num">2.20</td><td class="num">5.07</td><td class="num">3.96</td><td class="num">0.99</td><td class="num">0.99</td><td class="num">0.99</td><td class="num">0.94</td></tr>
+  <tr><td>linear</td><td class="num">15</td><td class="num">4.27</td><td class="num">6.67</td><td class="num">12.12</td><td class="num">0.98</td><td class="num">1.00</td><td class="num">0.99</td><td class="num">0.88</td></tr>
+  <tr><td>random_forest</td><td class="num">15</td><td class="num">1.75</td><td class="num">4.32</td><td class="num">3.58</td><td class="num">0.99</td><td class="num">1.00</td><td class="num">0.99</td><td class="num">0.97</td></tr>
+  <tr><td>persistence</td><td class="num">30</td><td class="num">11.70</td><td class="num">14.96</td><td class="num">22.70</td><td class="num">0.91</td><td class="num">0.91</td><td class="num">0.91</td><td class="num">0.42</td></tr>
+  <tr><td>moving_average</td><td class="num">30</td><td class="num">14.41</td><td class="num">18.20</td><td class="num">28.35</td><td class="num">0.89</td><td class="num">0.88</td><td class="num">0.89</td><td class="num">0.36</td></tr>
+  <tr><td>fluid</td><td class="num">30</td><td class="num">4.57</td><td class="num">8.43</td><td class="num">9.28</td><td class="num">0.98</td><td class="num">0.98</td><td class="num">0.98</td><td class="num">0.84</td></tr>
+  <tr><td>linear</td><td class="num">30</td><td class="num">5.91</td><td class="num">8.75</td><td class="num">15.69</td><td class="num">0.95</td><td class="num">0.99</td><td class="num">0.97</td><td class="num">0.77</td></tr>
+  <tr><td>random_forest</td><td class="num">30</td><td class="num">3.21</td><td class="num">6.37</td><td class="num">7.36</td><td class="num">0.98</td><td class="num">1.00</td><td class="num">0.99</td><td class="num">0.93</td></tr>
+  <tr><td>persistence</td><td class="num">60</td><td class="num">22.56</td><td class="num">28.06</td><td class="num">44.99</td><td class="num">0.82</td><td class="num">0.81</td><td class="num">0.82</td><td class="num">0.26</td></tr>
+  <tr><td>moving_average</td><td class="num">60</td><td class="num">25.17</td><td class="num">31.11</td><td class="num">50.36</td><td class="num">0.80</td><td class="num">0.79</td><td class="num">0.80</td><td class="num">0.23</td></tr>
+  <tr><td>fluid</td><td class="num">60</td><td class="num">10.34</td><td class="num">16.08</td><td class="num">24.34</td><td class="num">0.96</td><td class="num">0.95</td><td class="num">0.96</td><td class="num">0.60</td></tr>
+  <tr><td>linear</td><td class="num">60</td><td class="num">9.34</td><td class="num">12.99</td><td class="num">21.84</td><td class="num">0.90</td><td class="num">0.99</td><td class="num">0.94</td><td class="num">0.60</td></tr>
+  <tr><td>random_forest</td><td class="num">60</td><td class="num">6.13</td><td class="num">9.79</td><td class="num">16.35</td><td class="num">0.96</td><td class="num">0.98</td><td class="num">0.97</td><td class="num">0.80</td></tr>
+</table>
+
+<ul>
+  <li>ไม่มีโมเดล ML ที่ถูกนำขึ้นใช้งาน (not promoted) ต้องเอาชนะทั้ง persistence และ fluid ในทุก horizon และผ่านการตรวจสอบอิสระก่อน</li>
+  <li>interval coverage วัดบนข้อมูลสังเคราะห์เท่านั้น ไม่ใช่การรับประกันการพยากรณ์</li>
+  <li>ค่า F1 ที่สูงบนข้อมูลสังเคราะห์ไม่ใช่หลักฐานว่าใช้ได้กับสนามบินจริง เพราะโมเดลทดสอบใช้กลไกคิวเดียวกับ baseline</li>
+</ul>
+
+<h2 id="s8">8. Benchmark จากข้อมูลจริงสาธารณะ (CBP)</h2>
+
+<p>ชุดข้อมูลคือ CBP terminal/hour จำนวน 12,186 รายการ จาก JFK, LAX และ SFO ช่วงมกราคม–มีนาคม 2025 มี 12,178 รายการที่จำนวนเคาน์เตอร์ที่เปิดเป็นบวกและเข้าสู่ benchmark</p>
+<ul>
+  <li>มกราคมใช้ train กุมภาพันธ์ใช้ validate มีนาคมใช้ test ไม่สุ่มลำดับ</li>
+  <li>เปรียบเทียบ persistence, moving average, queue-load proxy, linear regression และ random forest ด้วย MAE, RMSE, precision, recall, F1 และ false-alarm rate</li>
+  <li>ผลอยู่ที่ <code>data/cache/queue-benchmark.json</code></li>
+  <li>เป็นการประเมินความสมเหตุสมผลจากข้อมูลสหรัฐฯ ไม่ใช่ข้อมูลของ BKK และไม่ใช่การพยากรณ์ระยะไกลของจุดตรวจความปลอดภัย</li>
+</ul>
+
+<h2 id="s9">9. ชุด validation One TrustX (ค่าที่กำหนดไว้)</h2>
+
+<div class="warn">
+  <p><strong>ข้อสำคัญที่สุดของส่วนนี้:</strong> ผลลดลง 61%, 78%, 74% และ 50% ที่เคยเขียนว่า "measured" ได้มาจากการคูณค่าพื้นฐานด้วยสัมประสิทธิ์ที่กำหนดไว้ใน <code>scripts/experiments/generate_validation_pack.py</code> ไม่ได้เกิดจากการวัดหรือการค้นพบของระบบ</p>
+</div>
+
+<h3>9.1 ขอบเขตของชุด validation</h3>
+<ul>
+  <li>8 สถานการณ์: normal turnaround, baggage bottleneck, gate conflict, weather-affected, multi-factor disruption, data conflict, missing/late data และ scale test</li>
+  <li>สถานการณ์ละ 100 seeds และ 4 เงื่อนไข รวม 3,200 episodes</li>
+  <li>ทุกเงื่อนไขใช้ scenario และ seed เดียวกัน (paired comparison) ใช้ median เป็นค่าหลัก และ P25/P75 แสดงความแปรผัน</li>
+</ul>
+
+<h3>9.2 สัมประสิทธิ์ที่ตั้งไว้ในตัวสร้างข้อมูล</h3>
+<p>ค่า baseline ของแต่ละ episode คือ coordination 18.0 วินาที และ reconciliation 14.0 วินาที คูณด้วย severity, jitter และ failure penalty (1.18 เมื่อมีการ inject ความผิดพลาด)</p>
+
+<table>
+  <tr><th>เงื่อนไข</th><th class="num">× coordination</th><th class="num">× reconciliation</th><th class="num">× detect</th><th class="num">traceability (%)</th><th class="num">verified (%)</th><th class="num">risk (proxy)</th></tr>
+  <tr><td>BASELINE</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">1.00</td><td class="num">42.0</td><td class="num">0.0</td><td class="num">1.00</td></tr>
+  <tr><td>SHARED_DATA</td><td class="num">0.62</td><td class="num">0.64</td><td class="num">0.70</td><td class="num">76.0</td><td class="num">52.0</td><td class="num">0.82</td></tr>
+  <tr><td>ONE_TRUSTX</td><td class="num">0.44</td><td class="num">0.29</td><td class="num">0.45</td><td class="num">100.0</td><td class="num">85.7</td><td class="num">0.75</td></tr>
+  <tr><td>ONE_TRUSTX_AI</td><td class="num">0.39</td><td class="num">0.22</td><td class="num">0.26</td><td class="num">100.0</td><td class="num">85.7</td><td class="num">0.50</td></tr>
+</table>
+
+<p>หมายเหตุ: ค่า traceability, verified และ risk เป็นค่าคงที่ที่กำหนดในแต่ละเงื่อนไข ไม่ได้คำนวณจากข้อมูล ค่า gt_match ในโค้ดก็เป็นค่าที่กำหนดเช่นกัน</p>
+
+<h3>9.3 ผลสรุประหว่าง BASELINE กับ ONE_TRUSTX_AI</h3>
+<table>
+  <tr><th>ตัวชี้วัด</th><th class="num">BASELINE</th><th class="num">ONE TRUSTX + AI</th><th>การเปลี่ยนแปลง</th></tr>
+  <tr><td>Coordination time</td><td class="num">19.66 วินาที</td><td class="num">7.67 วินาที</td><td>ลด 61%</td></tr>
+  <tr><td>Reconciliation time</td><td class="num">15.29 วินาที</td><td class="num">3.36 วินาที</td><td>ลด 78%</td></tr>
+  <tr><td>Risk visibility time</td><td class="num">45.88 วินาที</td><td class="num">11.93 วินาที</td><td>ลด 74% (เร็วขึ้นประมาณ 34 วินาที)</td></tr>
+  <tr><td>Event traceability</td><td class="num">42.0%</td><td class="num">100.0%</td><td>ค่าที่กำหนดในเงื่อนไข</td></tr>
+  <tr><td>Event verification rate</td><td class="num">0.0%</td><td class="num">85.7%</td><td>ค่าที่กำหนดในเงื่อนไข</td></tr>
+  <tr><td>Delay risk proxy</td><td class="num">1.00</td><td class="num">0.50</td><td>ลด 50% (proxy ที่กำหนดไว้)</td></tr>
+</table>
+
+<h3>9.4 การอ่านผลอย่างถูกต้อง</h3>
+<ul>
+  <li>ผลทั้งหมดเป็น synthetic prototype validation ไม่ใช่ประสิทธิภาพของสนามบิน ไม่ใช่โอกาสล่าช้าที่สังเกตได้ และไม่ใช่การประหยัดทางการเงิน</li>
+  <li>Delay risk เป็น proxy ที่กำหนดไว้ ไม่ควรเรียกว่าโอกาสล่าช้าจริง</li>
+  <li>Recommendation success ไม่ได้รายงานเป็น AI accuracy เพราะชุดนี้ไม่มีผลลัพธ์จริงที่ติดป้ายเป็นอิสระมากพอ</li>
+  <li>เอกสาร <code>evaluation.md</code> เขียนว่า "measured coverage" และ "measured rule pass rate" ซึ่งไม่ตรงกับโค้ด ควรแก้เป็น "ค่าที่กำหนดไว้ในตัวสร้างข้อมูล" ก่อนนำไปอ้างอิง</li>
+</ul>
+
+<h2 id="s10">10. เกณฑ์ยอมรับและการประเมินเทียบเป้า</h2>
+
+<p>เป้าหมายของ MVP ถูกเก็บไว้ในไฟล์ตั้งค่า <code>data/seeds/acceptance.json</code> ซึ่งเป็นเกณฑ์ตรวจสอบ ไม่ใช่กลไกที่ปรับผลจำลองให้ผ่าน</p>
+
+<table>
+  <tr><th>เป้าหมาย</th><th>ค่าเป้า</th><th>ผล (fluid baseline บนข้อมูลสังเคราะห์)</th><th>สถานะ</th></tr>
+  <tr><td>MAE ของคิว</td><td>≤ 5 นาที</td><td>ที่ 30 นาที 4.57 นาที ที่ 60 นาที 10.34 นาที</td><td>ผ่านที่ 30, ไม่ผ่านที่ 60</td></tr>
+  <tr><td>Congestion recall</td><td>≥ 0.80</td><td>0.98 ที่ 30 นาที, 0.95 ที่ 60 นาที</td><td>ผ่าน</td></tr>
+  <tr><td>Warning lead ของการเตือนครั้งแรก</td><td>≥ 15 นาที</td><td>มัธยฐาน 14 นาที</td><td>ไม่ผ่าน</td></tr>
+</table>
+
+<p>ผลจาก <code>scripts/assess_acceptance.py</code> บันทึกใน <code>docs/acceptance-results.json</code> ระบบตรวจว่าเป้าหมายใดผ่านหรือไม่ และไม่ปรับเกณฑ์ให้ผ่าน</p>
+
+<h2 id="s11">11. การตรวจสอบที่ทำจริง</h2>
+
+<table>
+  <tr><th>รายการตรวจ</th><th>ผลที่บันทึก (ตามวันที่ที่ระบุในเอกสารต้นทาง)</th></tr>
+  <tr><td>Ruff lint และ format (Python)</td><td>ผ่าน</td></tr>
+  <tr><td>Backend behavior และ API tests</td><td>16 ผ่าน (SQLite แยก) ต่อมาระบุ 18 ผ่าน รวมการทดสอบ conservation ของจำนวนผู้ออกเดินทาง</td></tr>
+  <tr><td>Frontend ESLint, Prettier และ TypeScript/Vite build</td><td>ผ่าน</td></tr>
+  <tr><td>Frontend unit tests</td><td>2 ผ่าน</td></tr>
+  <tr><td>Browser end-to-end (desktop และ mobile 390 × 844)</td><td>13 ผ่านในชุดล่าสุด รวม keyboard, reduced motion และ mobile overflow</td></tr>
+  <tr><td>SQLite Alembic migration</td><td>ผ่าน ต่อมา PostgreSQL current = 001 (head)</td></tr>
+  <tr><td>PostgreSQL concurrent decisions</td><td>การอนุมัติพร้อมกัน: 200 สำเร็จ 1 รายการ, ซ้ำได้ 409</td></tr>
+  <tr><td>Public ingestion</td><td>OurAirports, Open-Meteo และ OpenSky ดึงข้อมูลเมื่อ 2026-09-12 ประมาณ 17:07 UTC พร้อมเก็บ metadata</td></tr>
+  <tr><td>npm audit</td><td>0 ช่องโหว่ที่รายงาน</td></tr>
+  <tr><td>CLI demo ที่ทำซ้ำได้</td><td>เลือกทางเลือกผสม ประหยัดได้ 10,770.72 passenger-minutes (จำลอง) และกรณี gate 34 → 11</td></tr>
+  <tr><td>PostgreSQL / Docker</td><td>Build และ start ผ่าน API ตอบ healthy</td></tr>
+</table>
+
+<div class="note">
+  <p>เอกสารต้นทางระบุว่าการทดสอบ backend มีคำเตือนจาก Starlette/httpx ที่เลิกใช้แล้ว ไม่ใช่ข้อผิดพลาดของแอป รายการที่ยังไม่ได้ตรวจ: การยืนยันตัวตนจริง การเชื่อมระบบสนามบินจริง การรับรอง WCAG การทดสอบ load การบังคับนโยบายการเก็บข้อมูล และ high availability</p>
+</div>
+
+<h2 id="s12">12. ข้อจำกัดและสิ่งที่ยังไม่ได้ทำ</h2>
+<ul>
+  <li>ไม่มี stochastic lane outage, crowd microsimulation, sensor stream แบบเรียลไทม์, คิวระหว่างจุดตรวจ, กะเจ้าหน้าที่ หรือการกระจายความต้องการเที่ยวบินที่ผ่านการตรวจสอบ</li>
+  <li>ไม่มี virtual queue, boarding hold, priority group หรือการสั่งงานอุปกรณ์สนามบินจริง การเปลี่ยนเกตมีผลเฉพาะในเดโม</li>
+  <li>ไม่มีผังสนามบินจริง เส้นทางเป็นตัวอย่างที่ตั้งทิศทางไว้เอง</li>
+  <li>Copilot รองรับหัวข้อภาษาอังกฤษจำกัด Gemini เป็นจุดต่อขยายที่ยังไม่ได้ใช้งานจริง</li>
+  <li>บทบาทในเดโมระบุผ่าน header ที่ปลอมได้ ไม่เหมาะกับการใช้งานจริง คำสั่งที่เปลี่ยนแปลงระบบจะล้มเหลวแบบปิดเมื่อไม่มีการยืนยันตัวตนจริง</li>
+  <li>การรีเซ็ตเก็บประวัติไว้ทั้งหมด ประวัติจะโตต่อเนื่อง ต้องมีนโยบาย retention และ archival ก่อนใช้งานจริง</li>
+  <li>การประเมิน ML ใช้ประวัติสังเคราะห์ที่ใช้กลไกคิวเดียวกับ baseline จึงไม่ใช่หลักฐานการใช้งานจริง</li>
+  <li>การวัดผลซ้ำใช้ 97% ของความจุที่วางแผนเป็นค่าสมมติ ไม่ใช่ประสิทธิภาพที่สังเกตได้</li>
+  <li>ไม่มีการอ้างการลดการปล่อย CO2</li>
+</ul>
+
+<h2 id="s13">13. การนำเสนอ: ควรพูดและไม่ควรพูด</h2>
+
+<div class="note">
+  <p><strong>ควรพูด:</strong> ระบบใช้ข้อมูลสาธารณะเป็นบริบท และใช้สถานการณ์สังเคราะห์ที่กำหนดได้ เพื่อสาธิตการเปรียบเทียบมาตรการจัดการคิวอย่างโปร่งใสและตรวจสอบย้อนหลังได้ ผลทั้งหมดเป็นผลจำลอง</p>
+</div>
+
+<ul>
+  <li>ไม่ควรพูดว่าโมเดลทำนายคิวของสุวรรณภูมิจากข้อมูลจริงได้แล้ว</li>
+  <li>ไม่ควรพูดว่าลดเวลารอได้ตามตัวเลขในเดโม</li>
+  <li>ไม่ควรพูดว่าผ่านการ validate กับสนามบินแล้ว หรือใช้ข้อมูลผู้โดยสารจริงของ BKK</li>
+  <li>ไม่ควรพูดว่า 61%, 78%, 74% หรือ 50% เป็นผลที่วัดได้ ควรพูดว่าเป็นค่าที่กำหนดไว้ในตัวสร้างข้อมูลสังเคราะห์</li>
+  <li>ไม่ควรเรียก recommendation success ว่า AI accuracy</li>
+</ul>
+
+<h3>13.1 คำตอบสั้นสำหรับคำถาม "ระบบนี้เชื่อถือได้แค่ไหน"</h3>
+<p>เชื่อถือได้ในฐานะ prototype ที่แสดงกลไกการจำลอง การเปรียบเทียบทางเลือก ข้อจำกัดทรัพยากร และการตรวจสอบย้อนหลังที่ทำซ้ำได้ แต่ยังไม่ควรใช้ตัวเลขเป็นผลปฏิบัติการจริง จนกว่าจะมี aggregate checkpoint telemetry จากสนามบิน การ calibrate การทดสอบเชิงเวลาบนข้อมูลจริง การตรวจความปลอดภัย และ pilot ที่มนุษย์อนุมัติ</p>
+
+<h2 id="s14">14. ความปลอดภัยและความเป็นส่วนตัว</h2>
+
+<p>ข้อมูลผู้โดยสารใน MVP เป็นตัวระบุนิรนามที่สร้างขึ้นเท่านั้น ไม่มีหนังสือเดินทาง เลขบัตรประชาชน ชื่อ ข้อมูลติดต่อ embedding ของใบหน้า หรือเส้นทางการเดินทางส่วนบุคคล แถวใน itinerary เป็นข้อมูลสังเคราะห์ ไม่ใช่ข้อมูลส่วนบุคคลจริง</p>
+
+<h3>14.1 การควบคุมการเข้าถึง</h3>
+<ul>
+  <li>Compose ผูกพอร์ตกับ 127.0.0.1 เท่านั้น</li>
+  <li>Secret อ่านจาก environment variable และ <code>.env</code> ถูก ignore ใน git</li>
+  <li>ฐานข้อมูลใช้ named Docker volume และ API กับ frontend รันด้วยผู้ใช้ที่ไม่ใช่ root</li>
+  <li>CORS กำหนด origin แบบตรงตัว Pydantic ตรวจขอบเขตค่าและปฏิเสธฟิลด์ที่ไม่รู้จัก</li>
+  <li>Rate limit ภายในโปรเซส 300 คำขอต่อนาทีต่อที่อยู่ไคลเอนต์ เป็นมาตรการสำหรับเดโมเท่านั้น ไม่ใช่ gateway แบบกระจาย</li>
+</ul>
+
+<h3>14.2 บทบาทในเดโม</h3>
+<table>
+  <tr><th>บทบาท</th><th>สิทธิ์</th></tr>
+  <tr><td>AIRPORT_OPERATOR</td><td>แก้ไขได้</td></tr>
+  <tr><td>ADMIN</td><td>แก้ไขได้</td></tr>
+  <tr><td>VIEWER</td><td>อ่านอย่างเดียว</td></tr>
+  <tr><td>AIRLINE_OPERATOR</td><td>อ่านอย่างเดียว</td></tr>
+  <tr><td>GROUND_HANDLER</td><td>อ่านอย่างเดียว</td></tr>
+</table>
+
+<div class="warn">
+  <p>Header ของบทบาทปลอมได้โดยตั้งใจ ห้ามเปิดการยืนยันตัวตนแบบเดโมนี้สู่อินเทอร์เน็ต หากตั้ง <code>DEMO_MODE=false</code> การแก้ไขจะถูกปิดจนกว่าจะติดตั้ง identity provider จริง</p>
+</div>
+
+<p>การ accept, reject หรือ override ต้องมีเหตุผล snapshot เก็บเวอร์ชันของ input ผลของ engine และที่มา audit เก็บผู้กระทำ การตัดสินใจ การกระทำ และค่าความคลาดเคลื่อนของการวัด ข้อมูลเก่าจะบล็อกการยอมรับคำแนะนำและการจำลองแบบกำหนดเอง ตัวตรวจเวอร์ชันป้องกันไม่ให้คำแนะนำเก่าถูกนำไปใช้หลังมีการกระทำอื่น การส่งซ้ำได้ 409 ระบบไม่มีการเชื่อมต่อกับระบบปฏิบัติการจริง จึงไม่มีการสั่งงานอัตโนมัติ และความล้มเหลวของบริการไม่สามารถหยุดการดำเนินงานของสนามบินได้</p>
+
+<h3>14.3 PDPA</h3>
+<p>PDPA เป็นงานด้านการกำกับดูแลในขั้นการผลิตจริง ไม่ใช่การอ้างว่าผ่านการปฏิบัติตามกฎหมาย ก่อนใช้ข้อมูลส่วนบุคคลต้องมีการพิจารณาทางกฎหมาย กำหนดวัตถุประสงค์และฐานทางกฎหมาย ลดฟิลด์ที่เก็บให้น้อยที่สุด กำหนดระยะเวลาเก็บ ออกแบบขั้นตอนเข้าถึงและลบข้อมูลตามที่เกี่ยวข้อง ประเมินผู้ประมวลผลและการส่งข้อมูลข้ามประเทศ และจัดทำแผนรับมือเหตุละเมิด MVP นี้ไม่มีข้อสรุปทางกฎหมาย</p>
+
+<div class="warn">
+  <p>ยังไม่ได้ตรวจสอบ: การเก็บรักษาข้อมูลจริง High availability การ restore จาก backup การวิเคราะห์ภัยคุกคาม การเฝ้าระวังการบุกรุก และ penetration test ห้ามเผยแพร่เดโมนี้ในฐานะระบบ production หลายผู้ใช้ที่ปลอดภัย</p>
+</div>
+
+<h2 id="s15">15. โครงสร้างฐานข้อมูลและพจนานุกรมข้อมูล</h2>
+
+<p>ทุกเรคคอร์ดมี <code>id</code> และ <code>source_type</code> เวลาเป็น UTC ระยะเดินและเวลารอเป็นนาที ระยะทางและความสูงเป็นเมตร ข้อมูล fixture ใช้ <code>SYNTHETIC</code> และผลจาก engine ใช้ <code>SIMULATED</code> ค่า null หมายถึง "ไม่ได้สังเกต" ไม่ใช่ศูนย์ JSONB ใช้เฉพาะ <code>operational_events.metadata</code> สำหรับ snapshot ที่มีเวอร์ชันและ payload ที่ยืดหยุ่น ค่าการวัดอื่น ๆ เป็นคอลัมน์ที่มีชนิดข้อมูลชัดเจน</p>
+
+<h3>15.1 ความสัมพันธ์ระหว่างตาราง</h3>
+<pre>flights ──< aircraft_positions
+flights ──< baggage_events
+flights ──< gate_events
+flights ──< ground_handling
+flights ──< passenger_journey
+checkpoint ──< lane_status
+checkpoint ──< passenger_flow
+airports ──< weather
+operational_events ──< predictions
+predictions ──< recommendations ──< intervention_results
+predictions ──< audit ──> operational_events</pre>
+
+<h3>15.2 ตารางหลักและฟิลด์สำคัญ</h3>
+<table>
+  <tr><th>ตาราง</th><th>หน้าที่</th><th>ฟิลด์สำคัญ</th></tr>
+  <tr><td>airport_graph</td><td>โหนดและ edge ของเส้นทาง</td><td>from_node, to_node, walking_time_min, accessible, capacity</td></tr>
+  <tr><td>airports</td><td>ข้อมูลอ้างอิงสนามบิน</td><td>iata, icao, latitude, longitude, timezone</td></tr>
+  <tr><td>checkpoint</td><td>จุดตรวจ</td><td>checkpoint_type, terminal, maximum_lanes</td></tr>
+  <tr><td>demo_state</td><td>สถานะเดโมปัจจุบัน (แถวเดียว)</td><td>peak, lanes, redirect, gate, version</td></tr>
+  <tr><td>flights</td><td>เที่ยวบิน</td><td>flight_number, scheduled/estimated/actual_departure, gate, status, delay_reason</td></tr>
+  <tr><td>operational_events</td><td>เหตุการณ์และ snapshot</td><td>event_type, entity_type, actor, status, metadata (JSON)</td></tr>
+  <tr><td>aircraft_positions</td><td>ตำแหน่งอากาศยาน</td><td>latitude, longitude, altitude, ground_speed, heading</td></tr>
+  <tr><td>baggage_events</td><td>จำนวนกระเป๋าตามขั้นตอน</td><td>bag_count_expected, bag_checked, bag_loaded, bag_on_belt (มีในเวอร์ชันนี้เป็นข้อมูลสังเคราะห์ ยังไม่ใช่โมดูลกระเป๋า)</td></tr>
+  <tr><td>gate_events</td><td>เหตุการณ์ที่เกต</td><td>gate_id, state, queue_estimate, gate_ready</td></tr>
+  <tr><td>ground_handling</td><td>กิจกรรมภาคพื้น</td><td>activity, planned/actual start/end, status, actor</td></tr>
+  <tr><td>lane_status</td><td>สถานะเลน</td><td>lane_id, status, capacity_pax_min, staff_count</td></tr>
+  <tr><td>passenger_flow</td><td>การไหลของผู้โดยสาร</td><td>passenger_arrivals, passenger_departures, queue_length, average_wait_min, p95_wait_min</td></tr>
+  <tr><td>passenger_journey</td><td>เส้นทางผู้โดยสารนิรนาม</td><td>anonymous_passenger_id, current_node, boarding_deadline, safe_time_min, risk_level</td></tr>
+  <tr><td>predictions</td><td>การพยากรณ์</td><td>target, forecast_horizon, predicted_value, lower/upper_bound, confidence (heuristic), model_version</td></tr>
+  <tr><td>weather</td><td>สภาพอากาศ</td><td>temperature, precipitation, wind_speed, visibility, weather_risk_score</td></tr>
+  <tr><td>audit</td><td>บันทึกการตัดสินใจ</td><td>human_decision, action_taken, actual_outcome, prediction_error, result</td></tr>
+  <tr><td>recommendations</td><td>ทางเลือกและคะแนน</td><td>action, expected_impact (passenger-minutes), cost, constraints, score, accepted, decision, reason</td></tr>
+  <tr><td>intervention_results</td><td>ผลการแทรกแซง</td><td>before, after_predicted, after_actual, passenger_minutes_saved, prediction_error</td></tr>
+</table>
+
+<h3>15.3 ตารางสาธารณะ</h3>
+<table>
+  <tr><th>ตาราง</th><th>เกรน (grain)</th><th>ฟิลด์สำคัญ</th></tr>
+  <tr><td>public_datasets</td><td>หนึ่งชุดข้อมูลที่ดึงมา</td><td>URL, เวลาที่ดึง, พื้นที่, ช่วงเวลา, SHA256 ของ raw, จำนวนเรคคอร์ด, อัตราข้อมูลหาย/ซ้ำ, เงื่อนไขการใช้</td></tr>
+  <tr><td>public_observations</td><td>หนึ่งตัวชี้วัด/เซลล์</td><td>dataset FK, source row, สนามบิน, วันที่, หมวด, ตัวชี้วัด, ค่า, หน่วย</td></tr>
+  <tr><td>public_flights</td><td>หนึ่งเที่ยวบิน BTS</td><td>วันบิน, สายการบิน, สนามบิน, เวลา, ความล่าช้า, เหตุผลความล่าช้า</td></tr>
+  <tr><td>public_queues</td><td>หนึ่ง terminal/ชั่วโมง CBP</td><td>สนามบิน, terminal, ชั่วโมง, เวลารอ, จำนวนผู้โดยสาร, เคาน์เตอร์ที่เปิด</td></tr>
+  <tr><td>demo_sessions</td><td>หนึ่ง session ของเบราว์เซอร์</td><td>UUID, scenario version, stale flag, lanes, routing, gate</td></tr>
+</table>
+
+<h3>15.4 ป้ายประเภทข้อมูลในฐานข้อมูล</h3>
+<ul>
+  <li><span class="tag">REAL_PUBLIC</span> เรคคอร์ดจากแหล่งสาธารณะที่เผยแพร่</li>
+  <li><span class="tag">DERIVED_REAL</span> สถิติ benchmark ภายนอกที่คำนวณต่อ</li>
+  <li><span class="tag">MODELLED</span> เที่ยวบินในสถานการณ์และสมมติฐานของกระบวนการ</li>
+  <li><span class="tag">ASSUMPTION</span> ค่า topology และ service rate แบบประกอบการอธิบาย</li>
+  <li><span class="tag">SIMULATED</span> การพยากรณ์และผล replay จาก what-if</li>
+  <li><span class="tag">SYNTHETIC</span> ข้อมูล legacy ที่คงป้ายไว้เพื่อความเข้ากันได้ ไม่เคยถูกเปลี่ยนป้ายเป็นข้อมูลจริง</li>
+</ul>
+
+<p>จำนวน observation ในรายงานคุณภาพคือจำนวนแถวต้นทาง ไม่ใช่จำนวนเซลล์ที่ขยายใน SQL ค่าที่หายในต้นทางคงเป็น null ข้อมูลสภาพอากาศย้อนหลังเป็น reanalysis จากผู้ให้บริการ ไม่ใช่การสังเกตตรงที่สนามบิน รายการ CAAT ที่แก้ไขจะแยกเก็บและลบซ้ำในการตอบกลับแบบรวม</p>
+
+<h2 id="s16">16. ที่มาของข้อมูลและความน่าเชื่อถือ</h2>
+
+<h3>16.1 สรุปข้อมูลสามประเภท</h3>
+<p>ระบบแบ่งข้อมูลเป็น REAL_PUBLIC สำหรับบริบทภายนอก SYNTHETIC สำหรับเดโม และ SIMULATED สำหรับผลของ engine หน้าเว็บที่ deploy ในขณะนั้นใช้ backend เดโม SYNTHETIC/SIMULATED เป็นหลัก ข้อมูลสาธารณะเก็บและออกแบบให้เป็นบริบทและ benchmark แต่ยังไม่ได้แทนที่ telemetry ของ checkpoint BKK</p>
+
+<h3>16.2 แหล่งข้อมูลจริงที่ใช้</h3>
+<table>
+  <tr><th>ชุดข้อมูล</th><th>แหล่ง</th><th>บทบาท</th><th>ขอบเขตที่ห้ามสรุปเกิน</th></tr>
+  <tr><td>Airport metadata</td><td>OurAirports</td><td>ข้อมูลอ้างอิงสนามบินและ runway</td><td>ไม่ใช่ passenger telemetry</td></tr>
+  <tr><td>Historical weather</td><td>Open-Meteo</td><td>บริบทและ weather feature</td><td>เป็น model/reanalysis ไม่ใช่ sensor METAR</td></tr>
+  <tr><td>Aircraft states</td><td>OpenSky REST API</td><td>บริบทการเคลื่อนที่ของอากาศยาน</td><td>ไม่ใช่ boarding, queue หรือจำนวนผู้โดยสาร</td></tr>
+  <tr><td>BTS flights</td><td>US BTS TranStats</td><td>benchmark เที่ยวบินภายนอก</td><td>เป็นข้อมูลภายในสหรัฐฯ ไม่ใช่ตารางบิน BKK</td></tr>
+  <tr><td>CBP wait times</td><td>CBP Airport Wait Times</td><td>benchmark เวลารอตม.ภายนอก</td><td>ไม่ใช่อัตราบริการ Security ของ BKK</td></tr>
+  <tr><td>สถิติการบินไทย</td><td>CAAT</td><td>บริบทสถิติการบินของไทย</td><td>ความครอบคลุมไม่ต่อเนื่อง ไม่ใช่ telemetry ของจุดตรวจ</td></tr>
+  <tr><td>สถิติสนามบิน UK</td><td>UK CAA</td><td>บริบทขนาดและรูปแบบ</td><td>ไม่ใช่ข้อมูลปฏิบัติการของไทย</td></tr>
+</table>
+
+<p>จำนวนเรคคอร์ดที่ normalize แล้วตามรายงานของ repository: BTS 504,884 เรคคอร์ด, CBP 12,186 observation, Open-Meteo BKK 8,760 เรคคอร์ดรายชั่วโมง และ OurAirports 145 เรคคอร์ด ข้อมูลเหล่านี้ไม่ถูกนำไปเรียกว่าเป็นข้อมูล BKK และไม่ได้ใช้ยืนยันว่าโมเดลผ่านการ validate แล้ว หากการดึงข้อมูลสาธารณะล้มเหลว ระบบต้องเก็บ stale marker หรือ fallback ที่ติดป้าย synthetic</p>
+
+<h3>16.3 ความน่าเชื่อถือแยกตามคำถาม</h3>
+<table>
+  <tr><th>คำถาม</th><th>ระดับ</th><th>เหตุผล</th></tr>
+  <tr><td>กลไกคิวทำงานตามสูตรหรือไม่</td><td>สูง</td><td>สมการชัดเจน และทดสอบ conservation ได้</td></tr>
+  <tr><td>การเปรียบเทียบทางเลือกยุติธรรมหรือไม่</td><td>สูง</td><td>ใช้ demand และ initial condition เดียวกัน</td></tr>
+  <tr><td>ข้อมูลสาธารณะมีแหล่งอ้างอิงหรือไม่</td><td>สูงในฐานะบริบทสาธารณะ</td><td>มี URL ช่วงเวลา provenance และ checksum</td></tr>
+  <tr><td>ตัวเลขคิวของ BKK เป็นค่าจริงหรือไม่</td><td>ต่ำ</td><td>ไม่มี telemetry ของจุดตรวจ BKK</td></tr>
+  <tr><td>ความแม่นยำของการพยากรณ์</td><td>ยังสรุปไม่ได้</td><td>evaluation ส่วนใหญ่เป็น synthetic และ confidence เป็น heuristic</td></tr>
+  <tr><td>ใช้ควบคุมสนามบินจริงได้หรือไม่</td><td>ไม่ได้</td><td>ยังขาด identity, telemetry, safety case และ validation</td></tr>
+</table>
+
+<p>ความน่าเชื่อถือของแหล่งข้อมูลไม่ได้แปลว่าค่าที่นำไปใช้กับ BKK จะถูกต้องโดยอัตโนมัติ ต้องพิจารณาความตรงกับกระบวนการ พื้นที่ ช่วงเวลา หน่วย ความสด และอัตราข้อมูลหาย ระบบจึงไม่ใช้ CBP หรือ BTS แทนจุดตรวจความปลอดภัยของสุวรรณภูมิ รายงาน evaluation บนประวัติสังเคราะห์อาจแสดง MAE/RMSE ที่ดี เพราะ generator และ evaluator ใช้กลไกใกล้กัน ผลนี้ยืนยันว่าเส้นทางโค้ดสอดคล้องกันได้ แต่ไม่ใช่หลักฐานว่าการพยากรณ์แม่นในสนามบินจริง</p>
+
+<h3>16.4 แผนเปลี่ยนไปใช้ข้อมูลจริง</h3>
+<ol>
+  <li>ขอข้อมูล aggregate แบบไม่ระบุตัวบุคคลจากสนามบิน เช่น queue length, arrivals และ departures ทุก 5 นาที, เลนที่เปิด, service rate และ timestamp</li>
+  <li>เก็บ source, timestamp, สนามบิน/terminal, หน่วย, schema version และ quality flag ทุกแถว</li>
+  <li>แบ่ง train/validation/test ตามเวลา ห้าม random shuffle</li>
+  <li>calibrate arrival profile, service rate, walking time และ resource limit จากข้อมูลย้อนหลัง</li>
+  <li>วัด MAE, RMSE, P95 error, interval coverage, false alarm และ lead time บนเหตุการณ์จริง</li>
+  <li>ทดสอบ peak, lane closure, gate change และ disruption ที่มี ground truth</li>
+  <li>เริ่ม shadow mode ให้ระบบแนะนำอย่างเดียว และให้ operator ตรวจทุก action</li>
+  <li>เทียบกับ baseline เช่น persistence และ moving average</li>
+  <li>เลื่อนไป pilot ที่มนุษย์อนุมัติเมื่อผ่านการ validate แล้ว</li>
+</ol>
+
+<div class="caution">
+  <p>ยังไม่ควรใช้ CBP หรือ BTS แทนข้อมูลจุดตรวจของ BKK เพราะเป็นคนละสนามบิน คนละกระบวนการ และคนละการกระจายของข้อมูล</p>
+</div>
+
+<h2 id="s17">17. ลำดับการสาธิตหนึ่งรอบ</h2>
+
+<p>ลำดับนี้ใช้สำหรับนำเสนอและอธิบายว่าระบบทำงานอย่างไรตั้งแต่เปิดเว็บจนจบหนึ่งรอบการตัดสินใจ</p>
+
+<table>
+  <tr><th>ขั้น</th><th>หน้าจอ / การกระทำ</th><th>สิ่งที่ควรอธิบาย</th></tr>
+  <tr><td>1</td><td><code>/overview</code></td><td>สถานการณ์ คิว การพยากรณ์ +15/+30/+60 ความเสี่ยง และเที่ยวบินจำลอง</td></tr>
+  <tr><td>2</td><td>ระบบวิเคราะห์ช่วง peak</td><td>คิวที่ A เพิ่มจาก 12 เป็น 39 นาทีที่ +30 (ตามค่าตั้งต้น)</td></tr>
+  <tr><td>3</td><td>กด Compare interventions</td><td>ทุกทางเลือกใช้ demand และ initial queue เหมือนกัน</td></tr>
+  <tr><td>4</td><td>ตรวจคำแนะนำ</td><td>คะแนนเปิดเผยและตรวจ resource constraint ก่อนแนะนำ</td></tr>
+  <tr><td>5</td><td>Accept, Reject หรือ Override</td><td>ต้องใส่เหตุผล บันทึกลง audit และป้องกันการส่งซ้ำ</td></tr>
+  <tr><td>6</td><td>ระบบวัดผลจำลอง</td><td>ผล predicted กับ actual และค่าความคลาดเคลื่อน ระบุว่าเป็น SIMULATED</td></tr>
+  <tr><td>7</td><td>Passenger journey</td><td>Safe Time 34 นาที และหลังเปลี่ยนเกตเหลือ 11 นาที (กรณีตัวอย่าง)</td></tr>
+</table>
+
+<p>สำหรับ guided demo ที่ควบคุม step ได้ให้เปิด <code>/demo</code> ส่วน <code>/sources</code> ใช้อธิบาย provenance และขอบเขตข้อมูล ทั้งสองหน้าควรถูกเปิดเมื่อมีคำถามเรื่องที่มา</p>
+
+<h2 id="s19">19. ภาคผนวก: เอกสารที่มาและการสร้างข้อมูล (คัดลอกครบจากต้นฉบับ)</h2>
+<div class="note"><p>ส่วนนี้คัดลอกหัวข้อ 9–16 ของ <code>docs/data-provenance-th.md</code> ในคอมมิต <code>386d911</code> ครบทุกบรรทัด ได้แก่ ข้อความนำเสนอ ตัวอย่างการใช้งานหนึ่งรอบ การทำงานของฐานข้อมูล สถาปัตยกรรม คู่มือรายหน้าจอพร้อมภาพ data lineage รายตาราง/ฟิลด์ และตัวอย่างการคำนวณ เลขหัวข้อย่อยภายในคงตามต้นฉบับซึ่งซ้ำเลขกันในบางจุด หัวข้อ 1–8 ของต้นฉบับถูกสรุปไว้ในส่วน 3, 5, 6 และ 16 ข้างต้น</p>
+<p>คำเตือน: ต้นฉบับบางจุดเรียกผลชุด validation ว่า measured ซึ่งไม่ตรงกับโค้ด ดูส่วน 9</p></div>
+<h3 id="9-ข้อความที่ควรใช้ในการนำเสนอ-hackathon">9. ข้อความที่ควรใช้ในการนำเสนอ
+Hackathon</h3>
+<p>ข้อความที่ถูกต้อง:</p>
+<blockquote>
+<p>Airport TimeTwin ใช้ public aviation data เพื่อสร้าง context และใช้
+deterministic synthetic scenario
+เพื่อสาธิตการเปรียบเทียบมาตรการจัดการคิวอย่างโปร่งใส เนื่องจาก checkpoint telemetry
+จริงของ BKK ไม่เปิดเผย ระบบจึงพิสูจน์ decision workflow, constraints และ
+auditability ก่อน ไม่ได้อ้างความแม่นยำของสนามบินจริง</p>
+</blockquote>
+<p>ข้อความที่ไม่ควรใช้:</p>
+<ul>
+<li>“โมเดลทำนายคิวสุวรรณภูมิได้จริง”</li>
+<li>“ลดเวลารอได้ 21 นาทีจริง”</li>
+<li>“ผ่านการ validate กับสนามบินแล้ว”</li>
+<li>“ใช้ข้อมูล passenger จริงของ BKK”</li>
+</ul>
+<h3 id="10-ตัวอย่างการใช้งานจริงตั้งแต่เปิดเว็บจนจบหนึ่งรอบ">10.
+ตัวอย่างการใช้งานจริงตั้งแต่เปิดเว็บจนจบหนึ่งรอบ</h3>
+<h4 id="ฉากเหตุการณ์">ฉากเหตุการณ์</h4>
+<p>สมมติผู้ใช้เป็น Airport Operator เข้ามาตรวจช่วงเย็น ระบบกำหนด demo clock ไว้ที่
+17:00 ICT และ session ของ browser มี UUID ของตัวเอง
+เพื่อไม่ให้การทดลองของผู้ใช้คนหนึ่งปนกับผู้ใช้อื่น</p>
+<h4 id="ขั้นที่-1-เปิด-overview">ขั้นที่ 1 เปิด <code>/overview</code></h4>
+<p>ผู้ใช้เปิดเว็บและ React เรียก API หลักสี่ชุดพร้อมกัน:</p>
+<table>
+<thead>
+<tr>
+<th>API</th>
+<th>ทำอะไร</th>
+<th>ข้อมูลที่ได้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /api/overview</code></td>
+<td>โหลดสถานการณ์และ forecast</td>
+<td>scenario, checkpoint, queue, wait, risk, journey, feed health</td>
+</tr>
+<tr>
+<td><code>GET /api/recommendations</code></td>
+<td>โหลดทางเลือก</td>
+<td>options, score, feasibility, reason</td>
+</tr>
+<tr>
+<td><code>GET /api/flights</code></td>
+<td>โหลดเที่ยวบินของ scenario</td>
+<td>flight number, gate, departure, status</td>
+</tr>
+<tr>
+<td><code>GET /api/passenger/demo-passenger/journey</code></td>
+<td>โหลด passenger route</td>
+<td>gate, route, walking time, Safe Time</td>
+</tr>
+</tbody>
+</table>
+<p>API อ่าน <code>DemoSession</code> จาก database ตาม
+<code>X-Demo-Session</code> header ถ้ายังไม่มี row จะสร้าง session เริ่มต้นให้
+จากนั้นสร้าง <code>Scenario</code> object และส่งให้ engine คำนวณ
+ไม่ได้อ่านค่าตัวเลขจากหน้าเว็บโดยตรง</p>
+<p>หน้า Overview จะแสดง:</p>
+<ol type="1">
+<li>สถานะ feed ว่า fresh, stale หรือ context only</li>
+<li>Current queue ของ Security A/B</li>
+<li>forecast ที่ +15, +30 และ +60 นาที</li>
+<li>root causes ที่เป็น model attribution ไม่ใช่ causal proof</li>
+<li>เที่ยวบินและ gate ที่อยู่ใน representative scenario</li>
+<li>action ที่ recommendation scorer เห็นว่าเหมาะที่สุด</li>
+</ol>
+<h4 id="ขั้นที่-2-ระบบวิเคราะห์-peak">ขั้นที่ 2 ระบบวิเคราะห์ peak</h4>
+<p>ถ้า scenario เป็น peak engine ใช้ arrival profile และ service capacity
+ที่อธิบายในบทที่ 5 แล้วคำนวณ queue แบบหนึ่งนาที ระบบจำลองต่อไปจน queue ระบายหรือถึง
+600 นาที จากนั้นบันทึก prediction snapshot เช่น target
+<code>security-a</code>, horizon 30, predicted wait, lower/upper bound,
+confidence และ <code>model_version = fluid-v1</code></p>
+<p>ผล prediction เชื่อมกับ <code>operational_events</code> และ
+<code>audit</code> เพื่อย้อนดูได้ว่า forecast นี้เกิดจาก input scenario version
+ใด</p>
+<h4 id="ขั้นที่-3-ผู้ใช้กด-compare-interventions">ขั้นที่ 3 ผู้ใช้กด “Compare
+interventions”</h4>
+<p>ผู้ใช้ไปหน้า What-if lab ระบบไม่เปลี่ยนข้อมูลจริงของสนามบิน
+แต่สร้างผลลัพธ์จำลองสี่ชุดบน demand เดิม:</p>
+<pre class="text"><code>No Action
+Open A5
+Redirect 20%
+Open A5 + Redirect 12%</code></pre>
+<p>แต่ละชุดจะคำนวณ average wait, P95, peak queue, passenger-minutes saved,
+additional staff, walking penalty, confidence, cost และ feasibility
+แล้วนำไปจัดอันดับด้วย scoring formula</p>
+<p>หากผู้ใช้ปรับ sliders เช่น lanes=5, redirect=20%, staff=1 ระบบส่ง
+<code>POST /api/simulation</code> พร้อมค่าที่ปรับไปให้ engine ตรวจ constraint
+และคืนผล simulation ใหม่ โดยยังไม่เขียน decision ลง audit จนกว่าผู้ใช้จะกดส่ง
+recommendation</p>
+<h4 id="ขั้นที่-4-ผู้ใช้ตรวจคำแนะนำ">ขั้นที่ 4 ผู้ใช้ตรวจคำแนะนำ</h4>
+<p>ผู้ใช้ดูว่าทางเลือกใดลด wait ได้เท่าไร ต้องใช้ staff เท่าไร มี walking penalty
+เท่าไร และ queue drain สำเร็จหรือไม่
+ตารางนี้ช่วยให้ผู้ใช้เข้าใจว่าระบบไม่ได้เลือกจากคะแนนอย่างเดียว
+แต่มีข้อจำกัดด้านทรัพยากรและความเป็นไปได้</p>
+<p>ถ้าข้อมูลถูกทำเครื่องหมาย stale ระบบจะลด confidence และปิด action บางประเภท
+เพื่อไม่ให้ operator กดใช้ recommendation จากข้อมูลเก่า</p>
+<h4 id="ขั้นที่-5-ผู้ใช้กด-accept-reject-หรือ-override">ขั้นที่ 5 ผู้ใช้กด Accept,
+Reject หรือ Override</h4>
+<p>เมื่อผู้ใช้ตัดสินใจ frontend ส่ง
+<code>POST /api/recommendations/{id}/decision</code> พร้อม:</p>
+<ul>
+<li><code>decision</code>: accept, reject หรือ override</li>
+<li><code>reason</code>: เหตุผลจากมนุษย์</li>
+<li><code>intervention</code>: lanes, redirect, staff และ flight delay
+ที่เลือก</li>
+<li><code>X-Demo-Session</code>: UUID ของ session</li>
+</ul>
+<p>backend ตรวจ role <code>AIRPORT_OPERATOR</code> หรือ
+<code>ADMIN</code>, ตรวจ version ของ scenario, ตรวจ resource constraints
+และเขียน event/audit/recommendation snapshot ลง database
+การกดปุ่มนี้เปลี่ยนเฉพาะ state ของ Demo ไม่ได้สั่งอุปกรณ์สนามบินจริง</p>
+<h4 id="ขั้นที่-6-ระบบวัดผลจำลอง">ขั้นที่ 6 ระบบวัดผลจำลอง</h4>
+<p>หน้า Decision log โหลด <code>GET /api/audit</code> และ
+<code>GET /api/results</code> เพื่อแสดงว่า:</p>
+<ul>
+<li>forecast เดิมคาดการณ์เท่าไร</li>
+<li>intervention ที่รับรองคืออะไร</li>
+<li>ผลหลัง intervention ใน simulation เป็นเท่าไร</li>
+<li>actual value ที่ผู้ใช้กรอกเพื่อการทดสอบเป็น synthetic หรือไม่</li>
+<li>prediction error เท่าไร</li>
+</ul>
+<p>เมื่อผู้ใช้กรอก observed average wait และกดวัดผล ระบบส่ง
+<code>POST /api/results/{id}/measure</code> แต่ field นี้บังคับ
+<code>source_type = SIMULATED</code> ใน Demo จึงไม่ควรเรียกว่า observation
+จากสนามบินจริง</p>
+<h4 id="ขั้นที่-7-ผู้ใช้ดู-passenger-journey">ขั้นที่ 7 ผู้ใช้ดู Passenger journey</h4>
+<p>เมื่อเปลี่ยนไปหน้า Journey ระบบใช้ directed airport graph หาเส้นทางที่
+accessible และคำนวณ:</p>
+<pre class="text"><code>Safe Time = เวลาถึง boarding deadline
+             - processing time
+             - walking time
+             - safety buffer</code></pre>
+<p>ถ้ากด Simulate gate change จาก C8 เป็น E7 ระบบเปลี่ยน session scenario
+และคำนวณ route ใหม่ แสดงว่าการเปลี่ยน gate ทำให้ walking time และ Safe Time
+เปลี่ยนอย่างไร ข้อมูลนี้เป็น advisory simulation ไม่ใช่ passenger itinerary
+จริง</p>
+<h3 id="11-database-ทำงานอย่างไร">11. Database ทำงานอย่างไร</h3>
+<p>ระบบใช้ SQLAlchemy กับ SQLite ใน local development และออกแบบให้ใช้
+PostgreSQL ใน Compose production-style stack การเชื่อมข้อมูลหลักมีดังนี้:</p>
+<table>
+<thead>
+<tr>
+<th>ตาราง/กลุ่มข้อมูล</th>
+<th>หน้าที่</th>
+<th>เขียนเมื่อใด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>demo_sessions</code></td>
+<td>แยก state ของแต่ละ browser/session</td>
+<td>เปิดใช้ session หรือ mutate scenario</td>
+</tr>
+<tr>
+<td><code>demo_state</code></td>
+<td>state legacy/global ของ demo</td>
+<td>seed และ compatibility</td>
+</tr>
+<tr>
+<td><code>flights</code>, <code>checkpoint</code>,
+<code>lane_status</code></td>
+<td>fixture operational entities</td>
+<td>seed</td>
+</tr>
+<tr>
+<td><code>passenger_flow</code>, <code>passenger_journey</code></td>
+<td>flow และ route fixtures</td>
+<td>seed / read</td>
+</tr>
+<tr>
+<td><code>airport_graph</code></td>
+<td>topology และ walking edges</td>
+<td>seed / read</td>
+</tr>
+<tr>
+<td><code>operational_events</code></td>
+<td>event พร้อม actor, status และ metadata</td>
+<td>overview, demo event, decision</td>
+</tr>
+<tr>
+<td><code>predictions</code></td>
+<td>forecast snapshot พร้อม bounds/confidence/model version</td>
+<td>โหลด overview หรือสร้าง forecast</td>
+</tr>
+<tr>
+<td><code>recommendations</code></td>
+<td>option, score, constraints, decision และเหตุผล</td>
+<td>โหลด/ตัดสินใจ</td>
+</tr>
+<tr>
+<td><code>audit</code></td>
+<td>human decision, event link, outcome และ error</td>
+<td>ทุก lifecycle ของ decision</td>
+</tr>
+<tr>
+<td><code>intervention_results</code></td>
+<td>before/after และ measurement</td>
+<td>รับ action และบันทึกผลจำลอง</td>
+</tr>
+</tbody>
+</table>
+<p>ความสัมพันธ์หลักคือ:</p>
+<pre class="text"><code>DemoSession
+  → Scenario
+  → OperationalEvent
+  → Prediction
+  → Recommendation
+  → Audit / InterventionResult</code></pre>
+<p>ระบบใช้ session UUID เพื่อแยกผู้ใช้ และใช้ scenario version
+เพื่อป้องกันการเขียนทับ state ที่ผู้ใช้อื่นเพิ่งเปลี่ยน การ reset จะ reset scenario แต่เก็บ
+audit history ไว้เพื่อให้ตรวจย้อนหลังได้</p>
+<h3 id="12-สรุป-flow-สำหรับผู้ไม่มีพื้นฐานเว็บ">12. สรุป flow
+สำหรับผู้ไม่มีพื้นฐานเว็บ</h3>
+<pre class="text"><code>เปิดเว็บ
+  ↓
+สร้าง/อ่าน session ของผู้ใช้
+  ↓
+อ่าน scenario และ fixture จาก database
+  ↓
+engine คำนวณ queue และ forecast
+  ↓
+สร้าง prediction snapshot + audit event
+  ↓
+ผู้ใช้เห็น Overview
+  ↓
+ผู้ใช้ทดลองหลาย intervention
+  ↓
+engine คำนวณผลลัพธ์ด้วย demand เดิม
+  ↓
+scorer จัดอันดับตาม benefit, staff, walking และ feasibility
+  ↓
+ผู้ใช้ยอมรับ/ปฏิเสธ/override
+  ↓
+database บันทึก human decision และเหตุผล
+  ↓
+ผู้ใช้ตรวจผลและ synthetic measurement
+  ↓
+ผู้โดยสารเห็น route และ Safe Time ที่คำนวณใหม่</code></pre>
+<p>กล่าวง่าย ๆ คือเว็บนี้ทำหน้าที่เป็น “ห้องทดลองตัดสินใจ”
+ผู้ใช้ไม่ได้ป้อนตัวเลขเพื่อให้ระบบเดาคำตอบ แต่ระบบสร้างสถานการณ์ที่มีหลักเกณฑ์ชัด
+แล้วให้ผู้ใช้เห็นผลลัพธ์ของแต่ละทางเลือกก่อนตัดสินใจ</p>
+<h4 id="หมายเหตุเรื่อง-deployment-ปัจจุบัน">หมายเหตุเรื่อง deployment ปัจจุบัน</h4>
+<p>Repository มี backend สองระดับ: <code>backend/app/main.py</code> คือ
+FastAPI + SQLAlchemy flow แบบเต็มสำหรับ local/Compose และ
+<code>backend/api/index.py</code> คือ serverless demo handler ที่ใช้กับ
+Vercel ปัจจุบัน URL production ใช้ handler แบบ demo ซึ่งตอบข้อมูล synthetic แบบ
+deterministic และไม่มีฐานข้อมูล PostgreSQL ถาวรแบบ Compose ดังนั้นเอกสาร
+database ข้างต้นอธิบาย architecture และ flow ของระบบเต็ม ขณะที่หน้า production
+ปัจจุบันควรถูกนำเสนอเป็น demo endpoint จนกว่าจะ deploy FastAPI เต็มพร้อม
+database ที่มี persistence, migration และ authentication</p>
+<h3 id="13-architecture-ของระบบ">13. Architecture ของระบบ</h3>
+<h4 id="131-ภาพรวมส่วนประกอบ">13.1 ภาพรวมส่วนประกอบ</h4>
+<pre class="text"><code>ผู้ใช้ / Browser
+      │
+      ▼
+React + TypeScript Frontend
+  Landing · Overview · Simulator · Passenger · Sources
+      │  JSON over HTTP + session UUID
+      ▼
+FastAPI API Layer
+  validation · demo role · rate limit · route handlers
+      │
+      ├──────────────► Public Context API
+      │                 cached OurAirports / Open-Meteo / BTS / CBP / CAAT / UK CAA
+      │
+      ▼
+Decision &amp; Simulation Engine
+  arrivals → queue_step → FIFO simulation → forecast
+  graph routing → Safe Time
+  compare → constraints → weighted recommendation
+      │
+      ▼
+SQLAlchemy Database
+  operational fixtures · sessions · predictions · recommendations
+  operational events · audit · intervention results</code></pre>
+<p>Frontend มีหน้าที่แสดงผลและรับ interaction ไม่ควรเป็นเจ้าของ business rule
+หลัก ส่วน FastAPI เป็น boundary ที่รับ request, ตรวจ input, ตรวจ demo role, หา
+session และเรียก engine ส่วน engine เป็น pure/deterministic calculation
+layer ที่คำนวณผลจาก <code>Scenario</code> และ parameters ส่วน database เก็บ
+fixture, state และหลักฐานการตัดสินใจ</p>
+<h4 id="132-frontend-layer">13.2 Frontend layer</h4>
+<p>React entry point ตรวจ route แล้ว render Landing หรือ App หน้าหลักใช้
+<code>api()</code> client ซึ่งเติม <code>X-Demo-Session</code> และ
+<code>X-Demo-Role</code> ให้ทุก request เมื่อผู้ใช้เปลี่ยน tab ระบบใช้
+<code>history.pushState</code> เพื่อเปลี่ยน route โดยไม่ reload application
+ทั้งก้อน</p>
+<p>หน้าจอแบ่งเป็น 3 กลุ่ม:</p>
+<ol type="1">
+<li><strong>Observe</strong>: Overview, Future Flow, Operations,
+Flights, Passenger Flow</li>
+<li><strong>Decide</strong>: Simulator, Decision Log, Performance</li>
+<li><strong>Explain/Trust</strong>: Passenger Journey, Sources,
+Integration, Guided Demo และ TrustX</li>
+</ol>
+<p>Frontend มี normalization/fallback layer เพื่อให้หน้าเว็บยังแสดงคำอธิบายได้เมื่อ
+public endpoint ไม่พร้อม แต่ fallback จะติดป้ายว่า data cache unavailable
+และไม่เปลี่ยน synthetic ให้เป็น real</p>
+<h4 id="133-api-layer">13.3 API layer</h4>
+<p>API หลักแบ่งตามหน้าที่:</p>
+<table>
+<thead>
+<tr>
+<th>กลุ่ม endpoint</th>
+<th>ตัวอย่าง</th>
+<th>หน้าที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Read scenario</td>
+<td><code>GET /api/overview</code>, <code>/api/flights</code></td>
+<td>โหลด state และ forecast</td>
+</tr>
+<tr>
+<td>Forecast/simulation</td>
+<td><code>GET /api/checkpoints</code>,
+<code>POST /api/simulation</code></td>
+<td>คำนวณผลตาม parameters</td>
+</tr>
+<tr>
+<td>Recommendation</td>
+<td><code>GET /api/recommendations</code>,
+<code>POST /api/recommendations/{id}/decision</code></td>
+<td>สร้าง option และรับ human decision</td>
+</tr>
+<tr>
+<td>Passenger</td>
+<td><code>GET /api/passenger/{id}/journey</code></td>
+<td>route และ Safe Time</td>
+</tr>
+<tr>
+<td>Demo control</td>
+<td><code>POST /api/demo/event</code></td>
+<td>reset, peak, lane closure, gate change, stale</td>
+</tr>
+<tr>
+<td>Audit/measurement</td>
+<td><code>GET /api/audit</code>, <code>/api/results</code>,
+<code>POST /api/results/{id}/measure</code></td>
+<td>ตรวจ lifecycle และ error</td>
+</tr>
+<tr>
+<td>Public context</td>
+<td><code>GET /api/data/context</code>,
+<code>/api/data/catalog</code></td>
+<td>historical context/provenance</td>
+</tr>
+</tbody>
+</table>
+<p>ทุก mutation ต้องผ่าน validation และ operator role ใน full FastAPI
+implementation คำสั่งที่ stale หรือทำให้ queue ไม่ feasible จะถูก reject</p>
+<h4 id="134-engine-layer">13.4 Engine layer</h4>
+<p>Engine แยกเป็นหน้าที่เล็ก ๆ:</p>
+<ul>
+<li><code>arrivals()</code> สร้าง demand profile ของ scenario</li>
+<li><code>queue_step()</code> คำนวณ queue หนึ่งนาที</li>
+<li><code>simulate()</code> รัน FIFO cohorts จน queue drain และคืน
+metrics</li>
+<li><code>forecast()</code> เลือกค่า +15/+30/+60 และสร้าง
+bounds/confidence</li>
+<li><code>compare()</code> รันหลาย intervention บน demand เดียวกันแล้วคำนวณ
+score</li>
+<li><code>graph()</code> สร้าง directed accessible terminal graph</li>
+<li><code>journey()</code> หา route และคำนวณ Safe Time</li>
+<li><code>root_causes()</code> ทำ counterfactual attribution
+ที่ติดป้ายว่าไม่ใช่ causal proof</li>
+</ul>
+<p>Engine ไม่เรียก external API ระหว่างคำนวณ operational scenario และไม่ใช้
+LLM เพื่อสร้างตัวเลข queue</p>
+<h4 id="135-database-และ-persistence-boundary">13.5 Database และ
+persistence boundary</h4>
+<p>Full architecture ใช้ SQLAlchemy ORM และรองรับ SQLite สำหรับ isolated
+local/test กับ PostgreSQL สำหรับ Compose stack การอ่าน overview จะสร้าง/อ่าน
+<code>DemoSession</code>, รัน engine, บันทึก
+<code>operational_events</code> และ <code>predictions</code> แล้วจึงคืน
+JSON ให้ frontend การกด action จะสร้าง <code>recommendations</code>,
+<code>intervention_results</code> และ <code>audit</code> พร้อม scenario
+version ใหม่</p>
+<p>Public data แยกจาก operational simulation ผ่าน normalized public
+tables และ provenance fields เช่น source URL, retrieval time, period,
+geography, checksum และ freshness ไม่อนุญาตให้ public context เขียนทับ
+synthetic queue fixture โดยอัตโนมัติ</p>
+<h4 id="136-deployment-boundary">13.6 Deployment boundary</h4>
+<pre class="text"><code>Local / Compose architecture:
+React → FastAPI main.py → SQLAlchemy → SQLite/PostgreSQL
+                         ├→ deterministic engine
+                         └→ public normalized tables
+
+Current Vercel demo:
+React → Vercel rewrite `/api/*` → serverless demo handler
+                                  └→ deterministic synthetic response</code></pre>
+<p>ดังนั้นหน้า production ปัจจุบันเหมาะกับการสาธิต UI, flow และ deterministic
+demo มากกว่าการอ้างว่าเป็นระบบ backend production ที่มี database persistence
+เต็มรูปแบบ การนำไปใช้งานจริงต้องเพิ่ม managed PostgreSQL, migration, OIDC/JWT,
+secret management, monitoring, backup, audit retention และ data owner
+approval</p>
+<h4 id="137-ตัวอย่าง-request-flow-หนึ่งครั้ง">13.7 ตัวอย่าง request flow
+หนึ่งครั้ง</h4>
+<p>เมื่อเปิด <code>/overview</code>:</p>
+<pre class="text"><code>1. Browser สร้าง/อ่าน session UUID
+2. Frontend เรียก GET /api/overview
+3. API อ่าน DemoSession และสร้าง Scenario
+4. Engine รัน forecast(), journey() และ root_causes()
+5. API บันทึก prediction/event snapshot ใน full architecture
+6. API คืน JSON
+7. React normalize ข้อมูลและ render KPI, map, chart, flights
+8. PublicContext โหลดแหล่ง context แยกอีก request
+9. ถ้า public cache ใช้ไม่ได้ UI แสดง fallback พร้อม provenance label</code></pre>
+<h3 id="14-คู่มือแต่ละหน้าจอจากภาพ-demo">14. คู่มือแต่ละหน้าจอจากภาพ Demo</h3>
+<p>ส่วนนี้อธิบายภาพในโฟลเดอร์ <code>pic/</code> ตามลำดับการใช้งานจริง
+ภาพเป็นหลักฐานของ UI prototype และค่าที่เห็นยังอยู่ภายใต้ขอบเขต
+synthetic/simulated ตามที่ระบุในเอกสารนี้</p>
+<h4 id="131-landing--welcome">13.1 Landing / Welcome</h4>
+<p><img src="../pic/e199d409-da08-498b-b34b-12a8bf4ac4fc.jpeg"
+alt="Landing page: จุดเริ่มต้นสำหรับเลือก Operations centre หรือดู Demo" /></p>
+<p>ผู้ใช้ใหม่เริ่มจากหน้า Landing เพื่อเข้าใจคำสัญญาของระบบ: anticipate pressure,
+test response และ protect passenger time หน้า นี้ไม่ได้คำนวณคิวเอง ปุ่ม
+<code>Operations centre</code> ไปที่ <code>/overview</code> ส่วน
+<code>View Demo Scenario</code> ไปยัง guided demonstration</p>
+<h4 id="132-overview--airport-now">13.2 Overview / Airport now</h4>
+<p><img src="../pic/ac7abf4b-b7ad-4f51-851b-34c41c0e267a.jpeg"
+alt="Overview: ภาพรวม pressure, map, forecast และ priority insight" /></p>
+<p>หน้า <code>/overview</code> เป็น command overview สำหรับ operator แสดง
+KPI, terminal map แบบ illustrative, Security A/B, current wait, +30
+forecast, confidence, เที่ยวบิน และ priority insight การตัดสินใจในหน้านี้คือ
+“ควรไปวิเคราะห์สถานการณ์ใดต่อ” ไม่ใช่การสั่งเปิดเลนทันที</p>
+<h4 id="133-operations-control--situations">13.3 Operations control /
+Situations</h4>
+<p><img src="../pic/c99d6509-ab9d-40a6-9fc0-52252ce196d7.jpeg"
+alt="Operations: ตารางสถานการณ์ที่จัดลำดับตาม priority" /></p>
+<p>หน้า <code>/operations</code> เปลี่ยน forecast ให้เป็น work queue ของ
+operator เช่น Security A เป็น <code>CRITICAL</code>, Security B เป็น
+<code>STABLE</code> และมี time window +30 นาที ปุ่ม <code>Investigate</code>
+เปิดรายละเอียดเหตุผลเชิง model เช่น demand wave → capacity exceeded → queue
+accumulation → journey risk ด้านล่างเป็น model attribution ไม่ใช่ causal
+proof จากโลกจริง</p>
+<h4 id="134-future-flow--future-map">13.4 Future Flow / Future map</h4>
+<p>หน้า <code>/future</code> ใช้ map และ horizon selector เพื่อดูผลที่ +15, +30
+และ +60 นาที ผู้ใช้เลือก checkpoint เพื่อดู queue pressure ตามอนาคต
+ค่าในหน้านี้มาจาก <code>forecast()</code> และ <code>AirportMap</code>
+ไม่ใช่ภาพ floor plan ที่สำรวจจริง</p>
+<h4 id="135-what-if-lab--simulator">13.5 What-if lab / Simulator</h4>
+<p><img src="../pic/3afd3854-7908-4760-9fea-f747d600c278.jpeg"
+alt="Simulator: เลือก intervention และเปรียบเทียบผลลัพธ์" /></p>
+<p>หน้า <code>/simulator</code> คือพื้นที่ทดลองมาตรการ ผู้ใช้เลือก No Action, Open
+A5, Redirect 20% หรือแบบผสม จากนั้นดู baseline/proposed, average wait, P95,
+queue, staff, walking impact, feasibility และ score ระบบใช้ demand
+เดิมทุกทางเลือกเพื่อให้การเปรียบเทียบยุติธรรม ปุ่ม custom simulation ส่งค่าจาก sliders
+ไปให้ engine แต่ยังไม่เปลี่ยน state จนกด submit decision</p>
+<h4 id="136-flights">13.6 Flights</h4>
+<p><img src="../pic/415f2207-1641-4177-b8d2-c57d558d0438.jpeg"
+alt="Flights: ตารางเที่ยวบินจำลองและ shared checkpoint" /></p>
+<p>หน้า <code>/flights</code> แสดงเที่ยวบิน DEMO401–DEMO404, route, gate,
+เวลาออก, passenger cohort และสถานะ ตารางนี้ช่วยให้ operator เห็นว่า departure
+wave ใดแชร์ Security A การกด View เปิด ground handling, baggage และ gate
+events ทั้งหมดเป็น fixture จำลอง ไม่ใช่ commercial schedule จริง</p>
+<h4 id="137-passenger-flow">13.7 Passenger flow</h4>
+<p><img src="../pic/c45e66f1-1f92-4466-af8b-c193fddb7bd5.jpeg"
+alt="Passenger flow: แผนภาพจำนวนผู้โดยสารผ่านแต่ละ node" /></p>
+<p>หน้า <code>/passenger-flow</code> แสดง flow จาก terminal arrival →
+check-in → bag drop → Security A/B → immigration/domestic bypass →
+concourse → gate ผู้ใช้เลือก +15/+30/+60 เพื่อดู scenario horizon
+ความหนาของเส้นเป็น simulated passenger volume ไม่ใช่ sensor count</p>
+<h4 id="138-passenger-journey">13.8 Passenger journey</h4>
+<p><img src="../pic/cdf16a1c-e5bc-41a3-9083-7402dc2d8b2e.jpeg"
+alt="Passenger journey: Safe Time, boarding deadline และ accessible route" /></p>
+<p>หน้า <code>/journey</code> ให้มุมมองของ passenger หน้าการ์ดแสดง deadline,
+gate, Safe Time และ action ปัจจุบัน ด้านข้างแสดงเส้นทางแบบ step-free จาก node
+ปัจจุบันไป gate เมื่อกด gate change ระบบคำนวณ route และ Safe Time ใหม่ ตัวอย่าง
+C8 → E7 เป็นสถานการณ์จำลอง ไม่ใช่ข้อมูล itinerary ของคนจริง</p>
+<h4 id="139-performance">13.9 Performance</h4>
+<p><img src="../pic/ea3fcbe8-efe0-4b6a-9eeb-06b84de41c9d.jpeg"
+alt="Performance: ผลลัพธ์ของ intervention และ synthetic evaluation" /></p>
+<p>หน้า <code>/performance</code> ตอบคำถาม “มาตรการที่เลือกสร้างผลอย่างไร”
+แสดง passenger-minutes saved, P95 before/after, additional staff,
+resource efficiency และตาราง offline evaluation ค่าเหล่านี้เป็นผลจาก scenario
+เดียวและ synthetic history ไม่ใช่ KPI ที่วัดจากสนามบินจริง</p>
+<h4 id="1310-sources--data--sources">13.10 Sources / Data &amp;
+sources</h4>
+<p><img src="../pic/bfc4521b-ec53-4086-aedb-7112a1cebe12.jpeg"
+alt="Sources: แยก public context, synthetic operations และ data lineage" /></p>
+<p>หน้า <code>/sources</code> ทำหน้าที่สร้างความเข้าใจเรื่อง provenance แยก
+<code>REAL_PUBLIC</code>, <code>SYNTHETIC</code>,
+<code>SIMULATED</code>, <code>ASSUMPTION</code> และ <code>DERIVED</code>
+พร้อมแสดง provider, freshness, record count และ source link
+ผู้ใช้ควรเปิดหน้านี้ก่อนตีความตัวเลขใน Overview</p>
+<h4 id="1311-decision-log--audit">13.11 Decision log / Audit</h4>
+<p><img src="../pic/34d580c9-510e-4d16-bdce-80a12b2eae97.jpeg"
+alt="Audit: ประวัติการตัดสินใจและ event trail" /></p>
+<p>หน้า <code>/app/audit</code> แสดงว่าใครตัดสินใจอะไร เหตุผลอะไร scenario
+version ใดถูกใช้ และผลจำลองหลัง action เป็นเท่าไร ส่วน measurement เป็น
+synthetic observation ใน Demo เพื่อทดลอง error tracking
+ไม่ใช่ผลการตรวจวัดจริง</p>
+<h4 id="1312-system-integration">13.12 System Integration</h4>
+<p><img src="../pic/88adcee1-1b12-4ce2-902a-e7861c55003d.jpeg"
+alt="System Integration: แนวทางเชื่อมต่อ source systems กับ TimeTwin" /></p>
+<p>หน้า <code>/integration</code> อธิบายขอบเขตการเชื่อมต่อในอนาคต เช่น
+AODB/FIDS, baggage, gate และ human operator โดยแยก integration concept
+ออกจากระบบที่เชื่อมต่อจริงใน prototype หน้า นี้เป็น roadmap และ contract
+ไม่ใช่หลักฐานว่า connector production มีอยู่แล้ว</p>
+<h4 id="1313-guided-demonstration">13.13 Guided demonstration</h4>
+<p><img src="../pic/38d8ea44-d64d-416d-bc44-2a69eff88cf0.jpeg"
+alt="Guided demo: ลำดับ presenter-controlled ตั้งแต่ forecast ถึง passenger action" /></p>
+<p>หน้า <code>/demo</code> ใช้เล่าเรื่องตามลำดับ: normal operation → departure
+wave → future congestion → compare interventions → recommended response
+→ human approval → passenger Safe Time → gate change/re-plan → measured
+impact เหมาะสำหรับการนำเสนอ เพราะผู้พูดควบคุม step และอธิบาย data boundary
+ได้ทีละจุด</p>
+<h4 id="1314-หน้า-data-catalog-แบบละเอียด">13.14 หน้า data catalog
+แบบละเอียด</h4>
+<p><img src="../pic/08c4718c-a943-4ddf-88c7-4b76d157bb81.jpeg"
+alt="Data quality and lineage: ตาราง records, missingness, benchmark และ public cache" /></p>
+<p>ภาพนี้เป็นมุมมอง Sources แบบละเอียด แสดง quality table, period, geography,
+missing/duplicate และ benchmark charts เป็นหลักฐาน provenance ของ public
+context ไม่ใช่หลักฐานว่า operational queue เป็นข้อมูลจริง</p>
+<h3 id="15-database-lineage-ตาราง-field-และกระบวนการที่นำไปใช้">15.
+Database lineage: ตาราง, field และกระบวนการที่นำไปใช้</h3>
+<h4 id="131-กติกาการอ่าน-schema">13.1 กติกาการอ่าน schema</h4>
+<p>ทุก operational table มี <code>id</code> และ <code>source_type</code>
+เป็น field กลาง <code>source_type</code> ใช้บอก provenance ของแถวนั้น ส่วน
+field ที่เขียนเป็น <code>@table</code> ใน schema คือ foreign key ไปยัง
+<code>table.id</code> ตารางหลักจึงไม่ได้เก็บค่าในหน้าเว็บแบบลอย ๆ แต่ถูก seed →
+อ่านเข้า engine → แปลงเป็น API response → แสดงผลบน UI</p>
+<h4 id="132-ตาราง-reference-และ-operational-input">13.2 ตาราง reference
+และ operational input</h4>
+<table>
+<thead>
+<tr>
+<th>ตาราง</th>
+<th>Field สำคัญ</th>
+<th>ข้อมูลมาจากไหน</th>
+<th>ใช้ทำอะไร</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>airports</code></td>
+<td><code>iata</code>, <code>icao</code>, <code>airport_name</code>,
+<code>latitude</code>, <code>longitude</code>,
+<code>timezone</code></td>
+<td>seed synthetic (<code>TWT/ZZTW</code>) หรือ public adapter ใน full
+pipeline</td>
+<td>ระบุ airport context และผูก weather/metadata</td>
+</tr>
+<tr>
+<td><code>flights</code></td>
+<td><code>flight_number</code>, <code>origin</code>,
+<code>destination</code>, <code>scheduled_departure</code>,
+<code>estimated_departure</code>, <code>gate</code>,
+<code>status</code></td>
+<td>seed สี่เที่ยวบิน DEMO401–404</td>
+<td>สร้าง departure wave, แสดง flight board และผูก
+passenger/baggage/gate</td>
+</tr>
+<tr>
+<td><code>aircraft_positions</code></td>
+<td><code>timestamp</code>, <code>flight_id</code>,
+<code>latitude</code>, <code>longitude</code>, <code>altitude</code>,
+<code>ground_speed</code>, <code>heading</code></td>
+<td>synthetic fixture; OpenSky เป็น optional context</td>
+<td>แสดง movement context; ไม่คำนวณ passenger queue</td>
+</tr>
+<tr>
+<td><code>weather</code></td>
+<td><code>timestamp</code>, <code>airport_id</code>,
+<code>temperature</code>, <code>precipitation</code>,
+<code>wind_speed</code>, <code>visibility</code>,
+<code>weather_risk_score</code></td>
+<td>synthetic seed หรือ Open-Meteo cache</td>
+<td>context เท่านั้น; ไม่เปลี่ยน Security capacity โดยอัตโนมัติ</td>
+</tr>
+<tr>
+<td><code>checkpoint</code></td>
+<td><code>checkpoint_type</code>, <code>terminal</code>,
+<code>zone</code>, <code>maximum_lanes</code></td>
+<td>seed illustrative terminal</td>
+<td>กำหนดจุดบริการและเพดาน lane</td>
+</tr>
+<tr>
+<td><code>lane_status</code></td>
+<td><code>timestamp</code>, <code>checkpoint_id</code>,
+<code>lane_id</code>, <code>status</code>,
+<code>capacity_pax_min</code>, <code>staff_count</code></td>
+<td>seed; lane A5 เริ่ม unavailable</td>
+<td>ใช้ตรวจ open lanes และ capacity</td>
+</tr>
+<tr>
+<td><code>passenger_flow</code></td>
+<td><code>timestamp</code>, <code>checkpoint_id</code>,
+<code>passenger_arrivals</code>, <code>passenger_departures</code>,
+<code>queue_length</code>, <code>average_wait_min</code>,
+<code>p95_wait_min</code></td>
+<td>seed historical fixture</td>
+<td>flow history และหน้า Passenger Flow; engine peak ใช้ arrival profile
+ที่กำหนดใน <code>engine.py</code></td>
+</tr>
+<tr>
+<td><code>passenger_journey</code></td>
+<td><code>anonymous_passenger_id</code>, <code>flight_id</code>,
+<code>current_node</code>, <code>journey_state</code>,
+<code>boarding_deadline</code>, <code>safe_time_min</code>,
+<code>risk_level</code></td>
+<td>สร้าง 580 anonymous journeys</td>
+<td>เลือก passenger ตัวอย่างและคำนวณ route/Safe Time ใหม่</td>
+</tr>
+<tr>
+<td><code>airport_graph</code></td>
+<td><code>from_node</code>, <code>to_node</code>,
+<code>distance_m</code>, <code>walking_time_min</code>,
+<code>accessible</code>, <code>direction</code>,
+<code>capacity</code></td>
+<td>edges illustrative ใน <code>engine.py</code> และ seed</td>
+<td>สร้าง directed accessible route ไป gate</td>
+</tr>
+</tbody>
+</table>
+<h4 id="133-ตารางเหตุการณ์และผลลัพธ์">13.3 ตารางเหตุการณ์และผลลัพธ์</h4>
+<table>
+<thead>
+<tr>
+<th>ตาราง</th>
+<th>Field สำคัญ</th>
+<th>เขียนเมื่อใด</th>
+<th>ใช้ต่อในขั้นตอนใด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>operational_events</code></td>
+<td><code>timestamp</code>, <code>event_type</code>,
+<code>entity_type</code>, <code>entity_id</code>, <code>actor</code>,
+<code>status</code>, <code>metadata</code></td>
+<td>โหลด forecast, simulation, demo event และ human decision</td>
+<td>เก็บ input snapshot, session UUID, output และ lineage ของเหตุการณ์</td>
+</tr>
+<tr>
+<td><code>predictions</code></td>
+<td><code>target</code>, <code>forecast_horizon</code>,
+<code>predicted_value</code>, <code>lower_bound</code>,
+<code>upper_bound</code>, <code>confidence</code>,
+<code>model_version</code>, <code>event_id</code></td>
+<td>เมื่อสร้าง overview/checkpoint/recommendation/journey prediction</td>
+<td>แสดง forecast +30 และผูก prediction กับ event ต้นทาง</td>
+</tr>
+<tr>
+<td><code>recommendations</code></td>
+<td><code>prediction_id</code>, <code>action</code>,
+<code>expected_impact</code>, <code>cost</code>,
+<code>constraints</code>, <code>score</code>, <code>accepted</code>,
+<code>decision</code>, <code>reason</code>, <code>actor</code></td>
+<td>เมื่อเรียก <code>/api/recommendations</code></td>
+<td>เก็บทางเลือกและ human decision lifecycle</td>
+</tr>
+<tr>
+<td><code>intervention_results</code></td>
+<td><code>recommendation_id</code>, <code>before</code>,
+<code>after_predicted</code>, <code>after_actual</code>,
+<code>passenger_minutes_saved</code>, <code>prediction_error</code>,
+<code>result</code></td>
+<td>เมื่อ Accept/Override และเมื่อวัดผล</td>
+<td>แสดง before/after และ prediction error</td>
+</tr>
+<tr>
+<td><code>audit</code></td>
+<td><code>prediction_id</code>, <code>event_id</code>,
+<code>human_decision</code>, <code>action_taken</code>,
+<code>actual_outcome</code>, <code>prediction_error</code>,
+<code>result</code></td>
+<td>ทุก demo event และ decision</td>
+<td>หน้า Decision Log, audit trail และ review ย้อนหลัง</td>
+</tr>
+</tbody>
+</table>
+<h4 id="134-ตาราง-state-ของผู้ใช้และ-demo">13.4 ตาราง state ของผู้ใช้และ
+demo</h4>
+<table>
+<thead>
+<tr>
+<th>ตาราง</th>
+<th>Field</th>
+<th>หน้าที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>demo_sessions</code></td>
+<td><code>id</code>, <code>peak</code>, <code>lanes</code>,
+<code>redirect</code>, <code>gate</code>, <code>version</code>,
+<code>stale</code>, <code>updated_at</code></td>
+<td>state แยกตาม browser session; ใช้สร้าง <code>Scenario</code>
+ก่อนคำนวณทุก request</td>
+</tr>
+<tr>
+<td><code>demo_state</code></td>
+<td><code>peak</code>, <code>lanes</code>, <code>redirect</code>,
+<code>gate</code>, <code>version</code>, <code>updated_at</code></td>
+<td>legacy/global compatibility state และ health check</td>
+</tr>
+</tbody>
+</table>
+<h4 id="135-data-lineage-ของค่าในหน้า-overview">13.5 Data lineage
+ของค่าในหน้า Overview</h4>
+<table>
+<thead>
+<tr>
+<th>ค่าที่ผู้ใช้เห็น</th>
+<th>อ่านจาก</th>
+<th>คำนวณ/แปลงอย่างไร</th>
+<th>แสดงที่ไหน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Current wait</td>
+<td><code>DemoSession</code> + <code>engine.forecast()</code></td>
+<td>queue เริ่มต้น ÷ lanes × service rate</td>
+<td>metric Security A/B</td>
+</tr>
+<tr>
+<td>+15/+30/+60 forecast</td>
+<td><code>Scenario</code> + <code>arrivals()</code> +
+<code>simulate()</code></td>
+<td>minute-step queue และ horizon row</td>
+<td>forecast card/map</td>
+</tr>
+<tr>
+<td>Lower/upper bound</td>
+<td>prediction output</td>
+<td>heuristic spread; fresh/stale confidence</td>
+<td>uncertainty interval</td>
+</tr>
+<tr>
+<td>Risk level</td>
+<td>simulated wait</td>
+<td>threshold GREEN/YELLOW/ORANGE/RED</td>
+<td>priority/situations</td>
+</tr>
+<tr>
+<td>Root causes</td>
+<td><code>Scenario</code> counterfactual</td>
+<td>two-factor model attribution</td>
+<td>priority insight</td>
+</tr>
+<tr>
+<td>Best feasible action</td>
+<td><code>compare()</code></td>
+<td>weighted score + constraints</td>
+<td>recommendation card</td>
+</tr>
+<tr>
+<td>Flights</td>
+<td><code>flights</code></td>
+<td>serialize fixture ตาม session scenario</td>
+<td>flight table</td>
+</tr>
+<tr>
+<td>Safe Time</td>
+<td><code>passenger_journey</code> + <code>airport_graph</code> +
+<code>Scenario</code></td>
+<td>deadline − processing − walking − buffer</td>
+<td>Passenger Journey</td>
+</tr>
+<tr>
+<td>Public context</td>
+<td>public normalized tables/cache</td>
+<td>server-side aggregates</td>
+<td>Sources/Overview context panel</td>
+</tr>
+</tbody>
+</table>
+<h4 id="136-data-lineage-ของ-recommendation">13.6 Data lineage ของ
+recommendation</h4>
+<pre class="text"><code>DemoSession
+  ├─ peak, lanes, redirect, gate, version, stale
+  ↓
+Scenario
+  ├─ arrivals()          → demand profile
+  ├─ simulate()           → queue, wait, P95, throughput, cost
+  ├─ journey()            → accessible route, walking, Safe Time
+  └─ compare()            → options + score + feasible
+       ↓
+operational_events (input_snapshot + predicted_outcome)
+       ↓
+predictions (target + horizon + bounds + confidence)
+       ↓
+recommendations (action + constraints + score)
+       ↓ human Accept / Reject / Override
+intervention_results + audit</code></pre>
+<h4 id="137-ตัวอย่างการคำนวณจาก-field-ไปถึงหน้าจอ">13.7 ตัวอย่างการคำนวณจาก
+field ไปถึงหน้าจอ</h4>
+<p>สมมติ row state มี <code>lanes=4</code>, <code>peak=true</code>, และ
+engine ใช้ <code>service_rate=2</code>:</p>
+<pre class="text"><code>capacity = lanes × service_rate = 4 × 2 = 8 pax/min
+queue_next = max(0, queue_current + arrivals - capacity)</code></pre>
+<p>ถ้าผู้ใช้เลือก redirect 20% ระบบแบ่ง arrival เป็น:</p>
+<pre class="text"><code>Security A arrivals = arrivals × (1 - 0.20)
+Security B arrivals = Security B baseline + arrivals × 0.20</code></pre>
+<p>จากนั้น <code>simulate()</code> คำนวณ wait ของแต่ละ FIFO cohort, รวม
+queue area เป็น passenger-minutes และส่งค่าไป <code>compare()</code>
+เพื่อหาคะแนน เมื่อผู้ใช้กด Accept ระบบเก็บ <code>before</code>,
+<code>after_predicted</code>, action และ reason ลง
+<code>intervention_results</code>/<code>audit</code> ก่อนเพิ่ม
+<code>version</code> ของ session</p>
+<h3 id="16-รายการอ้างอิง">16. รายการอ้างอิง</h3>
+<ol type="1">
+<li>Airport TimeTwin, <a href="data-sources.md">Data sources and
+provenance matrix</a></li>
+<li>Airport TimeTwin, <a href="data-quality-report.md">Data Quality
+Report</a></li>
+<li>Airport TimeTwin, <a href="assumptions.md">Assumptions and known
+limitations</a></li>
+<li>Airport TimeTwin, <a href="architecture.md">Architecture and
+implementation contract</a></li>
+<li><a href="https://ourairports.com/data/">OurAirports open
+data</a></li>
+<li><a href="https://open-meteo.com/en/docs">Open-Meteo
+documentation</a></li>
+<li><a
+href="https://openskynetwork.github.io/opensky-api/rest.html">OpenSky
+REST API</a></li>
+<li><a href="https://transtats.bts.gov/">US BTS TranStats</a></li>
+<li><a href="https://awt.cbp.gov/">US CBP Airport Wait Times</a></li>
+<li><a href="https://www.caat.or.th/">CAAT</a></li>
+<li><a href="https://www.caa.co.uk/data-and-analysis/">UK Civil Aviation
+Authority data</a></li>
+</ol>
+<p><strong>สถานะเอกสาร:</strong> เอกสารนี้แยกข้อเท็จจริงจากข้อสมมติอย่างชัดเจน
+และไม่ควรใช้เป็น approval สำหรับการ deploy ในสนามบินจริงโดยไม่มี data owner,
+security review, operational validation และ safety governance</p>
+
+<h2 id="s18">18. แหล่งอ้างอิงในคอมมิต</h2>
+<ul>
+  <li><code>README.md</code>, <code>docs/architecture.md</code>, <code>docs/assumptions.md</code>, <code>docs/data-sources.md</code> ในคอมมิต <code>386d911</code></li>
+  <li><code>docs/verification.md</code>, <code>docs/acceptance.md</code>, <code>docs/evaluation.md</code>, <code>docs/project-handoff-th.md</code> ในคอมมิต <code>386d911</code></li>
+  <li><code>scripts/experiments/generate_validation_pack.py</code> และ <code>backend/app/trust_service.py</code> ในคอมมิต <code>386d911</code></li>
+  <li><code>data/cache/queue-benchmark.json</code>, <code>data/cache/onetrustx-validation-*.csv</code> (ไฟล์แคชในเครื่อง ไม่ได้ track ใน git)</li>
+</ul>
+
+<p class="meta">ส่วนที่ 14–17 รวบรวมจาก <code>docs/security.md</code>, <code>docs/data-dictionary.md</code>, <code>docs/er-diagram.md</code> และ <code>docs/data-provenance-th.md</code> ในคอมมิต <code>386d911</code> โดยสรุปเนื้อหาหลัก ไม่ได้คัดลอกครบทุกบรรทัด ส่วนที่ไม่ได้นำมาคือคู่มือรายหน้าจอ (ส่วน 14 ของต้นฉบับ) ตาราง data lineage รายฟิลด์ และตัวอย่างการคำนวณเต็ม ซึ่งยังอยู่ในไฟล์ต้นทาง</p>
+
+</body>
+</html>

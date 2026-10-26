@@ -1,10 +1,10 @@
-# Airport TimeTwin — คู่มือส่งต่อโปรเจคฉบับย่อ
+# One TrustX — คู่มือส่งต่อโปรเจคฉบับย่อ
 
 เอกสารนี้ใช้คู่กับ `data-provenance-th.pdf` เพื่อให้คนที่ไม่เคยเห็นโค้ดเข้าใจโปรเจคและสาธิตระบบได้อย่างถูกต้อง
 
 ## 1. โปรเจคนี้คืออะไร
 
-Airport TimeTwin เป็น **decision-support prototype** สำหรับจำลองสถานการณ์ผู้โดยสารในสนามบิน แล้วเปรียบเทียบมาตรการ เช่น เปิดเลนสำรอง, redirect ผู้โดยสาร หรือใช้มาตรการผสม ก่อนให้ผู้ปฏิบัติงานตัดสินใจ
+One TrustX เป็น **decision-support prototype** สำหรับจำลองสถานการณ์ผู้โดยสารในสนามบิน แล้วเปรียบเทียบมาตรการ เช่น เปิดเลนสำรอง, redirect ผู้โดยสาร หรือใช้มาตรการผสม ก่อนให้ผู้ปฏิบัติงานตัดสินใจ
 
 มันเป็น “ห้องทดลองตัดสินใจ” ไม่ใช่ระบบควบคุมสนามบิน และไม่ควรอ้างว่าตัวเลขคิวเป็นข้อมูลจริงของสุวรรณภูมิ
 
@@ -43,7 +43,7 @@ Observe → Predict → Simulate → Compare → Human decision → Measure
 ต้องเปิด Docker Desktop ก่อน จากโฟลเดอร์โปรเจคให้รัน:
 
 ```bash
-cd '/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/airport-timetwin'
+cd '/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/onetrustx'
 docker compose --env-file .env -f infra/docker-compose.yml up -d --build
 ```
 
@@ -57,7 +57,7 @@ docker compose --env-file .env -f infra/docker-compose.yml up -d --build
 ### วิธีรันแบบไม่ใช้ Docker
 
 ```bash
-cd '/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/airport-timetwin'
+cd '/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/onetrustx'
 ./run-local.sh
 ```
 
@@ -141,7 +141,7 @@ Recommendation ใช้ weighted score ที่เปิดเผยและ�
 
 ## 11. ผล validation หลายสถานการณ์
 
-ชุด validation ใหม่มี 8 สถานการณ์, 100 seeds ต่อสถานการณ์ และ 4 เงื่อนไข รวม 3,200 paired episodes ใช้ median เป็นค่าหลักและ P25/P75 แสดงความแปรผัน ทุกเงื่อนไขใช้ scenario และ seed เดียวกัน
+ชุด validation มี 14 สถานการณ์ (8 เดิม + 6 ภัยพิบัติ/compound ใหม่ — ดู `data/scenarios/scenario_library.json`), 100 seeds ต่อสถานการณ์ และ 4 เงื่อนไข รวม 5,600 paired episodes ใช้ median เป็นค่าหลักและ P25/P75 แสดงความแปรผัน ทุกเงื่อนไขใช้ scenario และ seed เดียวกัน
 
 ผลรวม `BASELINE` เทียบกับ `ONE_TRUSTX_AI`:
 

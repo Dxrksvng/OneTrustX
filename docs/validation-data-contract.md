@@ -2,11 +2,17 @@
 
 The repository now includes a multi-scenario, multi-seed synthetic validation pack:
 
-- `data/cache/onetrustx-validation-runs.csv`: 3,200 condition runs across 8 scenarios and 100 seeds
+- `data/cache/onetrustx-validation-runs.csv`: 5,600 condition runs across 14 scenarios and 100 seeds
 - `data/cache/onetrustx-validation-summary.csv`: median, P25 and P75 for each scenario/condition
 - `data/cache/onetrustx-validation-manifest.json`: dataset identity and limitations
 
 Every condition uses the same scenario and seed. This makes the comparison paired and avoids giving one condition an easier episode. The pack tests repeatability, sensitivity to scenario type and the direction of the workflow effect. It does not establish airport accuracy or financial benefit.
+
+## Scenario families (v3)
+
+Scenarios S1-S8 are the original operational set (normal turnaround, baggage bottleneck, gate conflict, weather, multi-factor, data conflict, missing/late data, scale test). S9-S14 are a disaster/compound family defined in [`data/scenarios/scenario_library.json`](../data/scenarios/scenario_library.json): flood+baggage backlog (calibrated against the Sept 2026 Bangkok flood/Thai Airways baggage case, see sources in that file), geopolitical airspace closure, terminal fire, health-screening disruption, our own BHS/trust-pipeline outage, and terminal power disruption. Each scenario in the library carries its own provenance tier (REAL_PUBLIC facts cited by URL, BENCHMARK industry figures, or ASSUMPTION operating parameters) — these are design inputs for the generator, not claims about a specific airport's or airline's real operations.
+
+Every episode also carries a deterministic, condition-independent `failure_injected`/`failure_type` draw (MISSING_EVENT, LATE_EVENT, DUPLICATE_EVENT, CONTRADICTORY_EVENT, STALE_SOURCE) and a `ground_truth_state_match` field: whether the condition's resulting shared state matches the scenario's defined ground truth. On the failure-injected subset, BASELINE's median `ground_truth_state_match` is 0.0 (no reconciliation mechanism exists to prefer ground truth over a stale/contradictory source) and ONE_TRUSTX_AI's is 0.91 — this is a *modelled reconciliation-success proxy*, not a measured detection-accuracy percentage from production data, and must not be cited as "accuracy" without that caveat.
 
 ## To measure real usage
 

@@ -1,4 +1,4 @@
-# Airport TimeTwin — รายงานส่งต่อทีม
+# One TrustX — รายงานส่งต่อทีม
 
 วันที่ตรวจ: 13 กันยายน 2026
 
@@ -42,7 +42,7 @@
 - `/performance`: แยก operational outcome กับ model quality
 - `/journey`: Reset demo → Simulate gate change → Safe Time และเส้นทางเปลี่ยน
 - `/app/audit`: ตรวจเหตุผล การยอมรับ/ปฏิเสธ/override และบันทึกผลจำลอง
-- Ask TimeTwin: explanation layer แบบ deterministic ไม่ต้องมี cloud LLM
+- Ask One TrustX: explanation layer แบบ deterministic ไม่ต้องมี cloud LLM
 
 ## ข้อมูลที่ใช้
 
@@ -73,10 +73,10 @@ Simulated MVP Result — Not actual airport performance.
 
 ## การดูแลเดโม
 
-โฟลเดอร์: `/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/airport-timetwin`
+โฟลเดอร์: `/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/onetrustx`
 
 ```bash
-cd '/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/airport-timetwin'
+cd '/Users/jswvn/Desktop/missj/my-exp/HACKTHON/sky ict/onetrustx'
 docker compose --env-file .env -f infra/docker-compose.yml up -d
 # ดู URL หลัง tunnel restart
 docker logs airport-timetwin-share 2>&1 | rg 'trycloudflare.com'

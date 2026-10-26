@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
 set -euo pipefail
 PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
-export DATABASE_URL="${DATABASE_URL:-sqlite:///$PROJECT_DIR/backend/timetwin.db}"
+export DATABASE_URL="${DATABASE_URL:-sqlite:///$PROJECT_DIR/backend/onetrustx.db}"
 export DEMO_MODE=true
 cd "$PROJECT_DIR/backend"
 uv sync --frozen

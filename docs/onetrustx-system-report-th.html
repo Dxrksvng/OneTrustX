@@ -1,0 +1,2575 @@
+<!doctype html><html lang='th'><head><meta charset='utf-8'><title>One TrustX</title>
+<link rel='preconnect' href='https://fonts.googleapis.com'><link rel='preconnect' href='https://fonts.gstatic.com' crossorigin>
+<link href='https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap' rel='stylesheet'>
+<style>
+@page { size: A4; margin: 17mm 15mm 18mm; }
+* { box-sizing: border-box; }
+:root { --ink:#16242f; --muted:#5b6b78; --line:#d9e2e7; --brand:#0f3d5c; --accent:#b8862f; --ok:#1f6f5c; --bad:#a3423b; --soft:#f3f6f8; }
+html { font-family: 'IBM Plex Sans Thai', 'Noto Sans Thai', sans-serif; font-size: 10.2pt; line-height: 1.72; color: var(--ink); -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+body { margin: 0; }
+code, pre { font-family: 'IBM Plex Mono', monospace; font-size: 8.4pt; }
+code { background: var(--soft); padding: 1px 4px; border-radius: 3px; }
+pre { background: #10212d; color: #e6eef3; padding: 11px 13px; border-radius: 8px; line-height: 1.55; white-space: pre-wrap; break-inside: avoid; }
+pre code { background: none; padding: 0; color: inherit; }
+.cover { height: 258mm; display: flex; flex-direction: column; justify-content: space-between; padding: 22mm 14mm; color: #fff; border-radius: 10px;
+  background: linear-gradient(150deg, #0b2233 0%, #0f3d5c 55%, #1b6a78 100%); break-after: page; }
+.cover small { letter-spacing: 3px; font-size: 8.5pt; opacity: .8; }
+.cover h1 { font-size: 40pt; line-height: 1.1; margin: 0 0 6mm; font-weight: 700; letter-spacing: -.5px; }
+.cover h2 { font-size: 15pt; font-weight: 400; line-height: 1.5; margin: 0; color: #dbe9ef; border: 0; padding: 0; }
+.cover .meta { font-size: 9.5pt; line-height: 1.8; color: #cfe0e8; }
+.cover .tag { display: inline-block; border: 1px solid rgba(255,255,255,.45); border-radius: 99px; padding: 2px 12px; font-size: 8.5pt; margin-top: 5mm; }
+h2 { font-size: 16pt; color: var(--brand); margin: 9mm 0 3mm; padding-bottom: 2mm; border-bottom: 2px solid var(--brand); line-height: 1.35; break-after: avoid; }
+h3 { font-size: 11.6pt; color: var(--brand); margin: 6mm 0 2mm; break-after: avoid; }
+p { margin: 0 0 2.6mm; }
+ul, ol { margin: 0 0 3mm; padding-left: 6mm; }
+li { margin-bottom: .8mm; }
+hr { border: 0; margin: 0; break-after: page; }
+hr:first-of-type { break-after: auto; margin-bottom: 4mm; }
+.lead { background: var(--soft); border-radius: 8px; padding: 4mm 5mm; }
+blockquote { margin: 3mm 0; padding: 3mm 5mm; border-left: 4px solid var(--accent); background: #fbf6ea; border-radius: 0 6px 6px 0; font-weight: 500; }
+blockquote p { margin: 0; }
+a { color: #0d5c8a; text-decoration: none; }
+table { width: 100%; border-collapse: collapse; margin: 2mm 0 4.5mm; font-size: 8.8pt; line-height: 1.5; }
+th { background: var(--brand); color: #fff; text-align: left; padding: 5px 7px; font-weight: 600; }
+td { padding: 5px 7px; border-bottom: 1px solid var(--line); vertical-align: top; }
+tr:nth-child(even) td { background: #f8fafb; }
+tr { break-inside: avoid; }
+figure { margin: 4mm 0 5mm; break-inside: avoid; }
+figure img { width: 100%; border: 1px solid var(--line); border-radius: 6px; display: block; }
+figcaption { font-size: 8.3pt; color: var(--muted); margin-top: 1.6mm; text-align: center; }
+figure.diagram { background: var(--soft); border: 1px solid var(--line); border-radius: 10px; padding: 5mm 4mm 3mm; }
+.chain { display: flex; align-items: stretch; gap: 1.2mm; }
+.chain .node { flex: 1; background: #fff; border: 1px solid var(--line); border-top: 3px solid var(--brand); border-radius: 6px; padding: 2.2mm 1.6mm; text-align: center; display: flex; flex-direction: column; justify-content: center; }
+.node b { font-size: 8.6pt; line-height: 1.3; } .node small { font-size: 7.1pt; color: var(--muted); line-height: 1.3; margin-top: .8mm; }
+.node.assume { border-top-color: var(--accent); border-style: dashed; border-top-style: solid; }
+.node.manual { border-top-color: var(--bad); } .node.scan { border-top-color: var(--ok); } .node.end { border-top-color: #8796a1; background: #eef2f4; }
+.arrow { align-self: center; color: var(--muted); font-size: 11pt; } .arrow.big { font-size: 20pt; color: var(--brand); }
+.legend { font-size: 7.8pt; color: var(--muted); margin: 3mm 0 0; text-align: center; }
+.dot { display: inline-block; width: 8px; height: 8px; border-radius: 2px; margin: 0 4px 0 10px; background: var(--brand); }
+.dot.assume, .dot.prio { background: var(--accent); } .dot.manual { background: var(--bad); } .dot.scan { background: var(--ok); } .dot.plan { background: #8796a1; }
+.pos { display: flex; align-items: center; gap: 2.5mm; } .pos .col { flex: 1; display: flex; flex-direction: column; gap: 2mm; }
+.box { background: #fff; border: 1px solid var(--line); border-radius: 7px; padding: 2.4mm 3mm; display: flex; flex-direction: column; }
+.box b { font-size: 9pt; } .box small { font-size: 7.6pt; color: var(--muted); line-height: 1.35; } .box em { font-size: 7pt; font-style: normal; color: var(--ok); margin-top: .6mm; }
+.box.opt { border-style: dashed; } .box.opt em { color: var(--accent); } .box.user { border-left: 4px solid var(--ok); }
+.core { flex: 1.15; background: linear-gradient(150deg, #0b2233, #0f3d5c); color: #fff; border-radius: 9px; padding: 4mm; }
+.core span { letter-spacing: 2.5px; font-size: 8pt; opacity: .8; } .core ol { margin: 2mm 0 0; padding-left: 5mm; font-size: 9pt; line-height: 1.7; }
+.barchart { display: flex; flex-direction: column; gap: 2.4mm; padding: 0 2mm; }
+.bar-row { display: flex; align-items: center; gap: 3mm; } .bar-label { width: 36mm; font-size: 8.4pt; text-align: right; }
+.bars { flex: 1; display: grid; grid-template-columns: 1fr auto; row-gap: 1mm; column-gap: 2mm; align-items: center; }
+.bar { height: 3.6mm; border-radius: 2px; background: #8796a1; justify-self: start; } .bar.prio { background: var(--accent); } .bars b { font-size: 8pt; width: 10mm; }
+.ba { display: flex; flex-direction: column; gap: 1.4mm; } .ba-row { display: grid; grid-template-columns: 27mm 1fr 1fr; gap: 2mm; align-items: stretch; font-size: 8.4pt; }
+.ba-row span { align-self: center; font-weight: 600; } .ba-row div { border-radius: 6px; padding: 1.8mm 2.6mm; line-height: 1.4; }
+.ba-row .old { background: #fbeeed; border: 1px solid #efcfcc; color: #6d2f2a; } .ba-row .new { background: #e7f4ef; border: 1px solid #c3e2d7; color: #184f41; }
+.ba-row.head div { font-weight: 600; color: var(--muted); padding: 0 2.6mm; font-size: 7.8pt; }
+.layers { display: flex; flex-direction: column; gap: 1.6mm; } .layer { border-radius: 7px; padding: 2.4mm 4mm; display: flex; flex-direction: column; color: #fff; }
+.layer b { font-size: 9pt; } .layer span { font-size: 7.9pt; opacity: .92; line-height: 1.45; }
+.l1 { background: #1f6f5c; } .l2 { background: #2c6f93; } .l3 { background: #9a6f22; } .l4 { background: #0f3d5c; }
+.down { text-align: center; font-size: 8pt; color: var(--muted); margin: .6mm 0; }
+.lanes { display: flex; flex-direction: column; gap: 2.6mm; } .lane { display: flex; align-items: center; gap: 2.5mm; }
+.lane-title { width: 17mm; font-size: 8.4pt; font-weight: 600; color: var(--brand); } .lane .chain { flex: 1; }
+.arch { display: flex; flex-direction: column; gap: .6mm; max-width: 135mm; margin: 0 auto; } .arch-row.two { display: grid; grid-template-columns: 1fr 1fr; gap: 3mm; }
+.part { height: 250mm; display: flex; flex-direction: column; justify-content: center; padding: 0 12mm; border-left: 6px solid var(--accent); break-before: page; break-after: page; }
+.part span { letter-spacing: 3px; font-size: 8.5pt; color: var(--muted); }
+.part h1 { font-size: 30pt; color: var(--brand); margin: 3mm 0 4mm; line-height: 1.25; }
+.part p { font-size: 12.5pt; color: var(--muted); max-width: 130mm; line-height: 1.7; }
+.part + hr { display: none; }
+hr:has(+ .part) { display: none; }
+.box.today { border-left: 4px solid var(--accent); } .box.future { border-style: dashed; } .box.core2 { background: #0f3d5c; border: 0; } .box.core2 b { color: #fff; } .box.core2 small { color: #cfe0e8; }
+.platform { background: linear-gradient(150deg, #0b2233, #0f3d5c); border-radius: 9px; padding: 4mm; color: #fff; }
+.plat-title { letter-spacing: 2.5px; font-size: 8pt; opacity: .8; }
+.mods { display: grid; grid-template-columns: repeat(4, 1fr); gap: 2mm; margin: 3mm 0; }
+.mod { background: rgba(255,255,255,.09); border: 1px solid rgba(255,255,255,.18); border-radius: 6px; padding: 2.2mm 2.6mm; display: flex; flex-direction: column; }
+.mod b { font-size: 9pt; } .mod small { font-size: 7.4pt; opacity: .8; line-height: 1.35; }
+.mod.hero { background: #c58a2a; border-color: #e3b25c; } .mod.hero small { opacity: 1; }
+.base { font-size: 7.8pt; background: rgba(255,255,255,.06); border-radius: 6px; padding: 2mm 3mm; text-align: center; }
+</style></head><body><section class='cover'><div><small>SKY INNOVATION SPARK 2026 · PRELIMINARY ROUND</small></div>
+      <div><h1>One TrustX</h1><h2>รายงานระบบฉบับเต็ม: โครงเดิมของโครงการ ทั้งระบบทำอะไร และลงลึกเรื่องกระเป๋า</h2><span class='tag'>ต้นแบบ · ข้อมูลจำลอง · ไม่ใช่ผลของสนามบินจริง</span></div>
+      <div class='meta'>ฉบับวันที่ 8 ตุลาคม 2026 · ทีม onetrustx · SKY Innovation Spark 2026</div></section><p>ผู้อ่าน: สมาชิกทีม mentor และกรรมการ เอกสารแบ่งเป็นภาค ก (ทั้งระบบ) ภาค ข (ลงลึกเรื่องกระเป๋าตามโครงเดิม) และภาค ค (ภาคผนวก)</p>
+<p>สถานะของเอกสารนี้: ระบบเป็นต้นแบบที่รันด้วยข้อมูลจำลอง ไม่ใช่ระบบที่ใช้งานในสนามบิน และไม่มีตัวเลขใดในเอกสารนี้เป็นผลการปฏิบัติงานของท่าอากาศยานสุวรรณภูมิ</p>
+<section class='part'><span>ONE TRUSTX</span><h1>ภาค ก · ทั้งระบบ</h1><p>One TrustX ใช้ทำอะไร แต่ละโมดูลทำงานอย่างไร ใช้ข้อมูลอะไร และวัดผลอย่างไร</p></section>
+<h2>ส่วนที่ 1: สรุปหนึ่งหน้า</h2>
+<p>One TrustX คือแพลตฟอร์มกลางที่เชื่อมข้อมูลและเหตุการณ์จากหลายฝ่ายในการบิน ให้ทุกฝ่ายเห็นสถานการณ์ชุดเดียวกัน และช่วยวิเคราะห์ คาดการณ์ และแนะนำการตัดสินใจ โดยคนเป็นผู้ตัดสินใจขั้นสุดท้าย นี่คือนิยามเดิมของโครงการและยังคงเดิม ทุกโมดูลอยู่ในแถบเมนูเดียวกันที่ onetrustx.vercel.app รอบนี้ลงลึกเรื่องกระเป๋า (Baggage) โมดูลอื่นคงไว้และใช้งานได้ตามเดิม</p>
+<figure class='diagram'><div class='platform'><span class='plat-title'>ONE TRUSTX · ระบบกลาง</span><div class='mods'><div class='mod '><b>Overview</b><small>คิวตอนนี้และล่วงหน้า</small></div><div class='mod hero'><b>Baggage</b><small>เรื่องหลักของรอบนี้</small></div><div class='mod '><b>Future Flow</b><small>แผนที่แรงกดดัน</small></div><div class='mod '><b>Operations</b><small>จัดลำดับสถานการณ์</small></div><div class='mod '><b>Simulator</b><small>เทียบมาตรการ</small></div><div class='mod '><b>Flights</b><small>เที่ยวบิน</small></div><div class='mod '><b>Performance</b><small>ผลประเมิน</small></div><div class='mod '><b>Journey</b><small>มุมผู้โดยสาร</small></div></div><div class='base'>ฐานร่วม: ข้อมูลติดป้ายที่มา · ระบบแนะนำ คนตัดสินใจ · บันทึกการตัดสินใจ · แจ้งเมื่อข้อมูลไม่สด</div></div><figcaption>One TrustX เป็นระบบกลางหลายโมดูล รอบนี้เน้นโมดูล Baggage</figcaption></figure>
+<p>ข้อมูลของทั้งระบบมีสี่กลุ่ม และทุกหน้าจอติดป้ายบอกกลุ่ม:</p>
+<figure class='diagram'><div class='chain'><div class='layer l1' style='flex:1'><b>1 · ข้อมูลจริงสาธารณะ</b><span>Open-Meteo · IATA · SITA · CAAT · CBP · BTS · ข่าวเหตุการณ์</span><span style='opacity:.75'>ใช้เป็นบริบทและตัวเทียบ</span></div><span class='arrow'>→</span><div class='layer l3' style='flex:1'><b>2 · สมมติฐานของทีม</b><span>กำลังคน อัตราให้บริการ เกณฑ์ ผังอาคาร</span><span style='opacity:.75'>ประกาศไว้ทุกค่า</span></div><span class='arrow'>→</span><div class='layer l2' style='flex:1'><b>3 · ข้อมูลปฏิบัติการจำลอง</b><span>สแกนกระเป๋า เที่ยวบิน คิว ผู้โดยสาร</span><span style='opacity:.75'>สร้างจาก 1 และ 2 ทำซ้ำได้</span></div><span class='arrow'>→</span><div class='layer l4' style='flex:1'><b>4 · ผลคำนวณ</b><span>พยากรณ์ คอขวด คำแนะนำ เวลาปลอดภัย</span><span style='opacity:.75'>ที่เห็นบนหน้าจอ</span></div></div><figcaption>ข้อมูลสี่กลุ่มของทั้งระบบ: ของจริงและสมมติฐานเป็นตัวตั้ง ข้อมูลปฏิบัติการและผลเป็นของจำลอง</figcaption></figure>
+<ul>
+<li>ข้อมูลจริงมาจากแหล่งสาธารณะ 10 แหล่ง ใช้เป็นบริบทและตัวเทียบเท่านั้น</li>
+<li>ค่าที่ไม่มีแหล่งเผยแพร่ ทีมตั้งเป็นสมมติฐานและประกาศไว้ทุกค่า</li>
+<li>ข้อมูลปฏิบัติการ (กระเป๋า เที่ยวบิน คิว ผู้โดยสาร) เป็นข้อมูลจำลองทั้งหมด ไม่มีข้อมูลของ SKY สายการบิน หรือสนามบินใดในระบบ</li>
+<li>รายละเอียดอยู่ในหัวข้อ 2.3 ถึง 2.5 และข้อมูลที่ต้องขอจาก SKY อยู่ในหัวข้อ 2.6</li>
+</ul>
+<p>เอกสารแบ่งเป็นสามภาค:</p>
+<ul>
+<li><strong>ภาค ก ทั้งระบบ</strong> (ส่วนที่ 1–6): ระบบใช้ทำอะไร แต่ละโมดูลทำงานอย่างไร ใช้ข้อมูลอะไร วัดผลอย่างไร</li>
+<li><strong>ภาค ข ลงลึกเรื่องกระเป๋า</strong> (ส่วนที่ 7–16): ตามโครงเดิมของโครงการ คือ Pain Point, Solution, Impact</li>
+<li><strong>ภาค ค ภาคผนวก</strong> (ส่วนที่ 17–19): สิ่งที่เปลี่ยนจากเวอร์ชันก่อน ข้อจำกัด และแหล่งอ้างอิง</li>
+</ul>
+<p>สิ่งที่เปลี่ยนในรอบนี้ (7–8 ต.ค. 2026):</p>
+<ul>
+<li>เพิ่มเมนู <strong>Baggage</strong> ในแถบนำทางหลัก ถัดจาก Overview ใช้หน้าตาเดียวกับหน้าอื่น</li>
+<li>หน้ากระเป๋าคำนวณจากข้อมูลการสแกนและตารางบินทุกครั้งที่เปิด มี 5 สถานการณ์ รวมสถานการณ์ปกติ</li>
+<li>ค่าทุกตัวที่ใช้ตั้งสถานการณ์กระเป๋ามีป้ายประเภทและลิงก์แหล่งที่มา</li>
+<li>แก้หน้า Data &amp; sources ที่เปิดไม่ขึ้นบนเว็บจริง</li>
+<li>เปลี่ยนชื่อโครงการจาก Airport TimeTwin เป็น One TrustX และลบหน้าแยก <code>TrustXPages</code> ที่ไม่เคยต่อเข้ากับเว็บ</li>
+</ul>
+<p>สถานะการเผยแพร่ (ตรวจ 8 ต.ค. 2026): เว็บ onetrustx.vercel.app และ backend ถูก deploy แล้วพร้อมเมนู Baggage ทุกหน้าเปิดได้และไม่มี error ส่วนโค้ดบน GitHub ยังเป็นเวอร์ชัน 28 ก.ย. เพราะยังไม่ได้ commit และ push</p>
+<p>ประโยคที่ใช้อธิบายตำแหน่งของโมดูลกระเป๋า:</p>
+<blockquote>
+<p>BRS ติดตามและตรวจสอบกระเป๋ารายใบ One TrustX ดูการไหลของกระเป๋ารายขั้นเทียบกับเวลาออกของเที่ยวบิน เพื่อบอกว่าติดที่ไหนและควรช่วยเที่ยวบินใดก่อน</p>
+</blockquote>
+<hr />
+<h2>ส่วนที่ 2: One TrustX ทั้งระบบใช้ทำอะไร</h2>
+<h3>2.1 หลักการที่ทุกโมดูลใช้ร่วมกัน</h3>
+<p>One TrustX ไม่ใช่ระบบเก็บข้อมูลต้นทาง และไม่ได้แทนระบบของสนามบิน มันเป็นชั้นช่วยตัดสินใจที่วางอยู่เหนือระบบเดิม ทุกโมดูลทำงานตามลำดับเดียวกัน:</p>
+<figure class='diagram'><div class='chain '><div class='node '><b>รับข้อมูล</b><small>จากระบบเดิม หรือข้อมูลจำลอง</small></div><span class='arrow'>→</span><div class='node '><b>ตรวจและติดป้าย</b><small>ที่มา ความสด ประเภท</small></div><span class='arrow'>→</span><div class='node '><b>คำนวณ</b><small>พยากรณ์ หาคอขวด</small></div><span class='arrow'>→</span><div class='node '><b>เปรียบเทียบ</b><small>ทางเลือกและผลกระทบ</small></div><span class='arrow'>→</span><div class='node '><b>แนะนำ</b><small>พร้อมเหตุผล</small></div><span class='arrow'>→</span><div class='node scan'><b>คนตัดสินใจ</b><small>อนุมัติ ปฏิเสธ แก้ไข</small></div><span class='arrow'>→</span><div class='node '><b>บันทึกและวัดผล</b><small>ย้อนตรวจได้</small></div></div><figcaption>ลำดับการทำงานที่ทุกโมดูลใช้ร่วมกัน</figcaption></figure>
+<ul>
+<li><strong>ข้อมูลติดป้ายที่มาเสมอ</strong> ทุกหน้ามีแถบแจ้งว่าเป็นผลจำลอง และแยกข้อมูลจริง ข้อมูลจำลอง สมมติฐาน และผลคำนวณออกจากกัน</li>
+<li><strong>ระบบแนะนำ คนตัดสินใจ</strong> ไม่มีโมดูลใดสั่งการอุปกรณ์หรือเปลี่ยนสถานะของสนามบิน</li>
+<li><strong>ทุกการตัดสินใจถูกบันทึก</strong> ว่าใครทำอะไร เมื่อใด ด้วยเหตุผลใด</li>
+<li><strong>เมื่อข้อมูลไม่สด ระบบหยุดแนะนำ</strong> และแจ้งให้ตรวจสอบ แทนการแสดงตัวเลขที่อาจผิด</li>
+<li><strong>ไม่ใช้ข้อมูลส่วนบุคคล</strong> ผู้โดยสารและกระเป๋าเป็นข้อมูลไม่ระบุตัวตนหรือจำนวนรวม</li>
+</ul>
+<h3>2.2 ภาพรวมโมดูล</h3>
+<table>
+<thead>
+<tr>
+<th>เมนู</th>
+<th>ใช้ทำอะไร</th>
+<th>ผู้ใช้หลัก</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Overview</td>
+<td>ดูสถานะคิวที่จุดตรวจตอนนี้ และแนวโน้มอีก 15, 30, 60 นาที</td>
+<td>ผู้ควบคุมการปฏิบัติการ</td>
+</tr>
+<tr>
+<td><strong>Baggage</strong></td>
+<td>ดูว่าการไหลของกระเป๋าปกติหรือไม่ ติดที่ขั้นไหน กระทบเที่ยวบินใด</td>
+<td>ผู้ควบคุมงานกระเป๋าและภาคพื้น</td>
+</tr>
+<tr>
+<td>Future Flow</td>
+<td>ดูแรงกดดันบนแผนผังอาคารตามช่วงเวลาที่เลือก</td>
+<td>ผู้ควบคุมการปฏิบัติการ</td>
+</tr>
+<tr>
+<td>Operations</td>
+<td>เรียงสถานการณ์ตามความเร่งด่วน พร้อมสาเหตุที่แบบจำลองประเมิน</td>
+<td>ผู้ควบคุมการปฏิบัติการ</td>
+</tr>
+<tr>
+<td>Simulator</td>
+<td>เทียบผลของมาตรการหลายแบบก่อนเลือก</td>
+<td>หัวหน้ากะ ผู้ตัดสินใจ</td>
+</tr>
+<tr>
+<td>Flights</td>
+<td>ดูเที่ยวบินที่เกี่ยวข้องกับจุดตรวจ</td>
+<td>ผู้ควบคุมการปฏิบัติการ</td>
+</tr>
+<tr>
+<td>Performance</td>
+<td>ดูผลของมาตรการและความแม่นของแบบจำลอง</td>
+<td>ผู้บริหาร ผู้ตรวจสอบ</td>
+</tr>
+<tr>
+<td>Passenger flow</td>
+<td>ดูเส้นทางการไหลของผู้โดยสารทั้งอาคาร</td>
+<td>ผู้วางแผน</td>
+</tr>
+<tr>
+<td>Passenger journey</td>
+<td>มุมผู้โดยสาร: เวลาที่เหลืออย่างปลอดภัยและเส้นทาง</td>
+<td>ผู้โดยสาร</td>
+</tr>
+<tr>
+<td>Decision log</td>
+<td>ย้อนดูการตัดสินใจและวัดผลหลังดำเนินการ</td>
+<td>ผู้ตรวจสอบ</td>
+</tr>
+<tr>
+<td>Data &amp; sources</td>
+<td>ดูว่าข้อมูลแต่ละชุดมาจากไหน เป็นประเภทใด</td>
+<td>ทุกคน กรรมการ</td>
+</tr>
+<tr>
+<td>System Integration</td>
+<td>แผนการเชื่อมกับระบบจริงของสนามบิน</td>
+<td>ฝ่าย IT</td>
+</tr>
+<tr>
+<td>Guided demonstration</td>
+<td>เดโมแบบมีผู้นำเสนอ 9 ขั้น</td>
+<td>ผู้นำเสนอ</td>
+</tr>
+</tbody>
+</table>
+<h3>2.3 ภาพรวมที่มาของข้อมูลทั้งระบบ</h3>
+<p>ข้อมูลทุกชิ้นในระบบอยู่ในหนึ่งในสี่กลุ่มนี้ และทุกหน้าจอติดป้ายบอกกลุ่ม</p>
+<figure class='diagram'><div class='chain'><div class='layer l1' style='flex:1'><b>1 · ข้อมูลจริงสาธารณะ</b><span>Open-Meteo · IATA · SITA · CAAT · CBP · BTS · ข่าวเหตุการณ์</span><span style='opacity:.75'>ใช้เป็นบริบทและตัวเทียบ</span></div><span class='arrow'>→</span><div class='layer l3' style='flex:1'><b>2 · สมมติฐานของทีม</b><span>กำลังคน อัตราให้บริการ เกณฑ์ ผังอาคาร</span><span style='opacity:.75'>ประกาศไว้ทุกค่า</span></div><span class='arrow'>→</span><div class='layer l2' style='flex:1'><b>3 · ข้อมูลปฏิบัติการจำลอง</b><span>สแกนกระเป๋า เที่ยวบิน คิว ผู้โดยสาร</span><span style='opacity:.75'>สร้างจาก 1 และ 2 ทำซ้ำได้</span></div><span class='arrow'>→</span><div class='layer l4' style='flex:1'><b>4 · ผลคำนวณ</b><span>พยากรณ์ คอขวด คำแนะนำ เวลาปลอดภัย</span><span style='opacity:.75'>ที่เห็นบนหน้าจอ</span></div></div><figcaption>ข้อมูลสี่กลุ่มของทั้งระบบ: ของจริงและสมมติฐานเป็นตัวตั้ง ข้อมูลปฏิบัติการและผลเป็นของจำลอง</figcaption></figure>
+<p><strong>กลุ่มที่ 1 ข้อมูลจริงจากแหล่งสาธารณะ</strong> ใช้เป็นบริบทและตัวเทียบ ไม่ถูกนำมาแทนข้อมูลปฏิบัติการของสุวรรณภูมิ</p>
+<table>
+<thead>
+<tr>
+<th>แหล่ง</th>
+<th>ข้อมูล</th>
+<th>ใช้ในโมดูล</th>
+<th>ความน่าเชื่อถือ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Open-Meteo</td>
+<td>ฝนและอากาศรายชั่วโมงที่ BKK ปี 2025 และช่วง 22 ก.ย.–3 ต.ค. 2026</td>
+<td>Baggage (บริบทเหตุการณ์), Data &amp; sources</td>
+<td>ผลจากแบบจำลองอากาศ ไม่ใช่มาตรวัดในสนามบิน</td>
+</tr>
+<tr>
+<td>การบินไทย (หน้า check-in)</td>
+<td>ปิดรับกระเป๋า 60 นาทีก่อนออก</td>
+<td>Baggage</td>
+<td>นโยบายที่สายการบินประกาศเอง</td>
+</tr>
+<tr>
+<td>IATA Resolution 753</td>
+<td>จุดสแกนบังคับ 4 จุด</td>
+<td>Baggage</td>
+<td>มาตรฐานอุตสาหกรรม</td>
+</tr>
+<tr>
+<td>SITA Baggage IT Insights 2026</td>
+<td>24 ล้านใบ, 4.9 ต่อพันคน, 260 ดอลลาร์ต่อใบ, transfer 39%</td>
+<td>Baggage (ขนาดปัญหา)</td>
+<td>รายงานอุตสาหกรรมระดับโลก ไม่ใช่ตัวเลขของ SKY</td>
+</tr>
+<tr>
+<td>AOT ผ่านสื่อ</td>
+<td>BKK ปีงบ 2025: 62.9 ล้านคน 370,823 เที่ยว</td>
+<td>Baggage (ขนาดเที่ยวบิน)</td>
+<td>ตัวเลขที่สื่อรายงาน ต้องเทียบรายงานประจำปี</td>
+</tr>
+<tr>
+<td>CAAT, The Nation, The Star</td>
+<td>ประกาศและข่าวเหตุการณ์ ก.ย. 2026</td>
+<td>Baggage (เหตุการณ์อ้างอิง)</td>
+<td>ประกาศทางการ 1 ฉบับ และข่าว 4 ชิ้น ตัวเลขเปลี่ยนตามวัน</td>
+</tr>
+<tr>
+<td>CBP (สหรัฐฯ)</td>
+<td>เวลารอคิว 12,186 รายการ ม.ค.–มี.ค. 2025</td>
+<td>Performance (ตัวเทียบคิว)</td>
+<td>ข้อมูลทางการ แต่คนละประเทศ</td>
+</tr>
+<tr>
+<td>BTS (สหรัฐฯ)</td>
+<td>504,884 เที่ยวบิน ก.พ. 2025</td>
+<td>Data &amp; sources</td>
+<td>ข้อมูลทางการ แต่คนละประเทศ</td>
+</tr>
+<tr>
+<td>CAAT สถิติรายวัน</td>
+<td>ผู้โดยสารไทย ก.ย. 2023–เม.ย. 2025</td>
+<td>Data &amp; sources</td>
+<td>CAAT ระบุว่าเป็นข้อมูลเบื้องต้น</td>
+</tr>
+<tr>
+<td>OurAirports, UK CAA, OpenSky</td>
+<td>ข้อมูลอ้างอิงสนามบินและการจราจร</td>
+<td>Data &amp; sources</td>
+<td>ข้อมูลเปิด ใช้เป็นบริบทเท่านั้น</td>
+</tr>
+</tbody>
+</table>
+<p><strong>กลุ่มที่ 2 สมมติฐานของทีม</strong> ค่าที่ไม่มีแหล่งเผยแพร่ ทีมตั้งเองและประกาศไว้</p>
+<table>
+<thead>
+<tr>
+<th>เรื่อง</th>
+<th>ตัวอย่างค่า</th>
+<th>ใช้ในโมดูล</th>
+<th>บันทึกไว้ที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>กระเป๋า</td>
+<td>กำลังคนเหลือ 55% ช่วงน้ำท่วม, กระเป๋า 0.9 ใบต่อคน, เกณฑ์เวลารอ 15 และ 30 นาที</td>
+<td>Baggage</td>
+<td><code>backend/app/baggage_calibration.json</code></td>
+</tr>
+<tr>
+<td>คิวผู้โดยสาร</td>
+<td>เลนละ 2 คนต่อนาที, ผู้โดยสารเข้า 11.2–19.2 คนต่อนาที, ช่วงพยากรณ์บวกลบ 15%</td>
+<td>Overview, Future Flow, Simulator</td>
+<td><code>docs/assumptions.md</code></td>
+</tr>
+<tr>
+<td>อาคารและเส้นทาง</td>
+<td>ผังอาคาร ระยะเดิน เวลาสำรอง 10 นาที</td>
+<td>Passenger flow, Journey</td>
+<td><code>docs/assumptions.md</code></td>
+</tr>
+</tbody>
+</table>
+<p><strong>กลุ่มที่ 3 ข้อมูลปฏิบัติการจำลอง</strong> สร้างจากกลุ่มที่ 1 และ 2 ด้วยเลขสุ่มที่ทำซ้ำได้ ไม่มีข้อมูลของสายการบินหรือสนามบินใด</p>
+<table>
+<thead>
+<tr>
+<th>ชุดข้อมูล</th>
+<th>ขนาด</th>
+<th>ใช้ในโมดูล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>การสแกนกระเป๋าและตารางบิน</td>
+<td>ประมาณ 8,000 รายการ 5 สถานการณ์</td>
+<td>Baggage</td>
+</tr>
+<tr>
+<td>ประวัติคิว 14 วัน</td>
+<td>20,160 นาที</td>
+<td>Performance</td>
+</tr>
+<tr>
+<td>การเดินทางของผู้โดยสาร</td>
+<td>580 แถว 4 เที่ยวบิน</td>
+<td>Flights, Passenger flow, Journey</td>
+</tr>
+<tr>
+<td>เลน จุดตรวจ งานภาคพื้น gate</td>
+<td>6–28 แถวต่อชุด</td>
+<td>Overview, Operations, Simulator</td>
+</tr>
+</tbody>
+</table>
+<p><strong>กลุ่มที่ 4 ผลคำนวณ</strong> ทุกตัวเลขที่ระบบแสดง เช่น เวลารอที่พยากรณ์ คอขวด เที่ยวบินเสี่ยง คำแนะนำ และเวลาปลอดภัยของผู้โดยสาร มาจากการคำนวณบนกลุ่มที่ 3 จึงเป็นผลจำลองทั้งหมด</p>
+<p>หัวข้อถัดไปลงรายละเอียดของแหล่งข้อมูลจริง (2.4) วิธีสร้างข้อมูลจำลอง (2.5) และข้อมูลที่ต้องขอจาก SKY (2.6) การวัดผลของโมดูลทั่วไปอยู่ในส่วนที่ 4 ค่าตั้งต้นของโมดูลกระเป๋าอยู่ในส่วนที่ 12 และรายการลิงก์ทั้งหมดอยู่ในส่วนที่ 19</p>
+<h3>2.4 รายละเอียดของแหล่งข้อมูลจริงแต่ละแหล่ง</h3>
+<p>ทุกไฟล์ที่ดึงมาเก็บไว้ใน <code>data/external/</code> พร้อมไฟล์กำกับที่บันทึก URL เวลาที่ดึง ช่วงเวลาของข้อมูล เงื่อนไขการใช้ และ SHA-256 ถ้าไฟล์ในเครื่องไม่ตรงกับ checksum สคริปต์จะหยุดแทนการเขียนทับ</p>
+<table>
+<thead>
+<tr>
+<th>แหล่ง</th>
+<th>ดึงจาก</th>
+<th>วันที่ดึง</th>
+<th>ช่วงเวลาของข้อมูล</th>
+<th>เงื่อนไขการใช้</th>
+<th>ค่าที่นำมาใช้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Open-Meteo (เหตุการณ์)</td>
+<td>archive-api.open-meteo.com พิกัด 13.6811, 100.7470</td>
+<td>7 ต.ค. 2026</td>
+<td>22 ก.ย.–3 ต.ค. 2026 รายชั่วโมง 288 แถว</td>
+<td>CC BY 4.0</td>
+<td>ปริมาณฝน รหัสสภาพอากาศ ลมกระโชก</td>
+</tr>
+<tr>
+<td>Open-Meteo (ปี 2025)</td>
+<td>archive-api.open-meteo.com</td>
+<td>12 ก.ย. 2026</td>
+<td>ปี 2025 รายชั่วโมง 8,760 แถว</td>
+<td>CC BY 4.0</td>
+<td>อุณหภูมิ ฝน ลม ความกดอากาศ</td>
+</tr>
+<tr>
+<td>CBP Airport Wait Times</td>
+<td>awt.cbp.gov/api/waitTime</td>
+<td>12 ก.ย. 2026</td>
+<td>ม.ค.–มี.ค. 2025 ที่ JFK, LAX, SFO</td>
+<td>ข้อมูลสาธารณะของรัฐบาลสหรัฐฯ</td>
+<td>เวลารอเฉลี่ยและสูงสุด จำนวนผู้โดยสาร จำนวนช่องตรวจ</td>
+</tr>
+<tr>
+<td>BTS On-Time Performance</td>
+<td>transtats.bts.gov</td>
+<td>12 ก.ย. 2026</td>
+<td>ก.พ. 2025</td>
+<td>สถิติสาธารณะของ US DOT</td>
+<td>เวลาออกตามแผนและจริง ความล่าช้า</td>
+</tr>
+<tr>
+<td>CAAT สถิติรายวัน</td>
+<td>caat.or.th ไฟล์ Excel 7 ไฟล์</td>
+<td>12 ก.ย. 2026</td>
+<td>ก.ย. 2023–เม.ย. 2025</td>
+<td>สถิติสาธารณะ ต้องอ้างแหล่ง</td>
+<td>ผู้โดยสารรายวันต่อสนามบิน</td>
+</tr>
+<tr>
+<td>OurAirports</td>
+<td>ourairports-data (GitHub Pages)</td>
+<td>12 ก.ย. 2026</td>
+<td>ภาพ ณ วันที่ดึง</td>
+<td>Public domain</td>
+<td>รหัสสนามบิน พิกัด ทางวิ่ง</td>
+</tr>
+<tr>
+<td>UK CAA</td>
+<td>caa.co.uk ตารางรายปี 3 ตาราง</td>
+<td>12 ก.ย. 2026</td>
+<td>ปี 2025</td>
+<td>เว็บไซต์ทางการ ต้องตรวจเงื่อนไขต้นทาง</td>
+<td>จำนวนเที่ยวบินและผู้โดยสารต่อสนามบิน</td>
+</tr>
+<tr>
+<td>AOT</td>
+<td>airportthai.co.th รายงานปริมาณจราจรปี 2024</td>
+<td>13 ก.ย. 2026</td>
+<td>ปี 2024</td>
+<td>รายงานสาธารณะ</td>
+<td>บันทึกแหล่งไว้ แต่ไฟล์รายงานไม่อยู่ในแคช จึงยังไม่ได้ใช้</td>
+</tr>
+</tbody>
+</table>
+<p>แหล่งที่อ่านจากหน้าเว็บโดยตรงเมื่อ 8 ต.ค. 2026 และไม่ได้เก็บเป็นไฟล์: นโยบาย check-in ของการบินไทย, IATA Resolution 753, ข่าวแจก SITA 2026, ประกาศ CAAT 30/2569 และข่าวจาก The Nation และ The Star ค่าที่ได้ถูกบันทึกพร้อมลิงก์ใน <code>backend/app/baggage_calibration.json</code></p>
+<p>ข้อมูลของ TSA ดึงไม่ได้ จึงไม่มีในระบบ</p>
+<h3>2.5 วิธีสร้างข้อมูลจำลอง ทีละขั้น</h3>
+<p>ข้อมูลจำลองทุกชุดสร้างด้วยเลขสุ่มคงที่ จึงได้ผลเดิมทุกครั้งที่รัน และตรวจสอบย้อนได้</p>
+<p><strong>ชุดกระเป๋า</strong> สร้างโดย <code>backend/app/baggage_flow.py</code> ส่งออกด้วย <code>scripts/experiments/run_baggage_evaluation.py</code></p>
+<ol>
+<li>สร้างตารางบิน: 12 เที่ยวบินขาออก ห่างกันประมาณ 27 นาที จำนวนผู้โดยสารสุ่มรอบค่าเฉลี่ย 170 คน (จากสถิติ BKK) จำกัดที่ 90–300 คน</li>
+<li>คำนวณกระเป๋า: ผู้โดยสาร × 0.9 ใบ แบ่งเป็นกระเป๋าต่อเครื่องประมาณ 20% ที่เหลือเป็นกระเป๋าท้องถิ่น</li>
+<li>สร้างเที่ยวบินขาเข้าที่ป้อนกระเป๋าต่อเครื่อง 12 เที่ยว จอดก่อนเที่ยวบินต่อ 90–150 นาที พร้อมกระเป๋าปลายทาง 80–160 ใบ</li>
+<li>กระจายการรับกระเป๋าท้องถิ่น: เริ่ม 180 นาทีก่อนออก หนาแน่นสุดที่ 110 นาที หยุดที่ 60 นาที (เวลาปิดรับจริงของสายการบิน)</li>
+<li>ตั้งกำลังปกติของแต่ละขั้นจากปริมาณตามแผน คูณ 1.3</li>
+<li>ใส่เหตุของสถานการณ์: น้ำท่วมลดกำลังขั้นที่ใช้คนเหลือ 55% / เครื่องคัดแยกเหลือ 25% เป็นเวลา 75 นาที / ขาเข้า 4 เที่ยวช้า 55 นาที / ข้อมูล loading มาช้า 45 นาที</li>
+<li>เดินเวลาทีละ 5 นาที กระเป๋าไหลผ่านแต่ละขั้นตามกำลัง ทุกครั้งที่ผ่านขั้นจะเกิดรายการสแกนหนึ่งแถว</li>
+<li>กระเป๋าที่ยังไม่ถูกโหลดเมื่อถึงเวลาปิดห้องเก็บสัมภาระ ถูกบันทึกเป็นความจริงของแบบจำลองว่าตกเที่ยวบิน ตัวประเมินไม่เห็นข้อมูลส่วนนี้</li>
+</ol>
+<p>ตัวอย่างแถวจริงจาก <code>data/synthetic/baggage_flow/</code>:</p>
+<pre><code class="language-text">ตารางบิน (flights.csv)
+scenario_id      direction  flight  scheduled  actual  local/terminating  transfer  connection
+BAG-FLOOD-STAFF  ARRIVAL    TT804   07:30      07:30   96                 38        TT404
+
+รายการสแกน (BAG-FLOOD-STAFF.csv มี 1,968 แถว)
+scenario_id      seed  stage     flight  bag_class  count  event_min  ingest_min  source_type
+BAG-FLOOD-STAFF  42    check_in  TT402   LOCAL      2      65         66          SYNTHETIC
+</code></pre>
+<p>อ่านว่า: นาทีที่ 65 ของกะ มีกระเป๋าท้องถิ่น 2 ใบของเที่ยวบิน TT402 ถูกรับที่ check-in และระบบได้รับข้อมูลในนาทีที่ 66</p>
+<p><strong>ชุดคิวผู้โดยสาร</strong> สร้างโดย <code>backend/app/seed.py</code> และ <code>scripts/generate_synthetic.py</code></p>
+<ol>
+<li>ตั้งเวลาเดโมคงที่ที่ 17:00 และสร้างอาคารสมมติ: จุดตรวจ 2 จุด เลน 8 เลน เส้นทางเดิน 16 เส้น</li>
+<li>สร้างเที่ยวบิน 4 เที่ยว เที่ยวละ 145 คน รวม 580 แถวการเดินทางแบบไม่ระบุตัวตน</li>
+<li>ตั้งโปรไฟล์ผู้โดยสารเข้าต่อช่วง 15 นาที (11.2, 19.2, 9 และ 1.6 คนต่อนาที) และกำลังเลนละ 2 คนต่อนาที</li>
+<li>สร้างประวัติคิว 14 วันสำหรับประเมินแบบจำลอง: เริ่มที่คิว 40 คน ผู้โดยสารเข้าเป็นคลื่นไซน์บวกสัญญาณรบกวน เลขสุ่ม 42 เลนสลับ 3 และ 4 ทุกสามชั่วโมง</li>
+</ol>
+<p>ตัวอย่างแถวจริง:</p>
+<pre><code class="language-text">ประวัติคิว (training.csv มี 20,160 แถว)
+minute  queue    arrivals  lanes  source_type
+39      115.676  7.897     3      SYNTHETIC
+
+การเดินทางของผู้โดยสาร (passenger_journey.csv มี 580 แถว)
+anonymous_passenger_id  flight_id  current_node  journey_state  safe_time_min  risk_level
+anon-0039               flight-4   Food C        PRE_SECURITY   34.0           SAFE
+</code></pre>
+<p>สิ่งที่ตั้งใจไม่สร้าง: ชื่อผู้โดยสาร เลขหนังสือเดินทาง เลขป้ายกระเป๋า และเลขเที่ยวบินของสายการบินจริง เที่ยวบินใช้รหัส TT และ DEMO เพื่อไม่ให้สับสนกับเที่ยวบินจริง</p>
+<h3>2.6 ข้อมูลที่ต้องขอจาก SKY เพื่อแทนข้อมูลจำลอง</h3>
+<p>ตารางนี้คือสิ่งที่ระบบต้องการ ไม่ใช่การยืนยันว่าระบบของ SKY ส่งออกได้ในรูปแบบนี้ ต้องถาม mentor ทุกรายการ</p>
+<table>
+<thead>
+<tr>
+<th>ลำดับ</th>
+<th>ระบบต้นทาง</th>
+<th>ข้อมูลที่ต้องการ</th>
+<th>ความละเอียด</th>
+<th>ใช้แทนข้อมูลจำลองชุดใด</th>
+<th>จำเป็นแค่ไหน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1</td>
+<td>BRS</td>
+<td>จำนวนกระเป๋าที่สแกนผ่านแต่ละจุด (รับ คัดแยก โหลด ส่งต่อ ถึง) แยกรายเที่ยวบิน และแยกกระเป๋าท้องถิ่นกับต่อเครื่อง</td>
+<td>จำนวนรวมทุก 5 นาที พร้อมเวลาสแกนและเวลาที่ส่งข้อมูล</td>
+<td>รายการสแกนกระเป๋า</td>
+<td>จำเป็น</td>
+</tr>
+<tr>
+<td>2</td>
+<td>AODB</td>
+<td>เวลาออกตามแผนและคาดการณ์ เวลาจอดจริงของขาเข้า gate หลุมจอด สถานะเที่ยวบิน</td>
+<td>ทุกครั้งที่มีการอัปเดต</td>
+<td>ตารางบินจำลอง</td>
+<td>จำเป็น</td>
+</tr>
+<tr>
+<td>3</td>
+<td>DCS หรือ BRS</td>
+<td>จำนวนกระเป๋าที่คาดไว้ต่อเที่ยวบิน และการจับคู่เที่ยวบินขาเข้ากับเที่ยวบินต่อ</td>
+<td>ต่อเที่ยวบิน อัปเดตเมื่อปิด check-in</td>
+<td>จำนวนกระเป๋าที่คาดไว้</td>
+<td>จำเป็น</td>
+</tr>
+<tr>
+<td>4</td>
+<td>BHS</td>
+<td>สถานะสายพานและเครื่องคัดแยก รหัสข้อขัดข้อง</td>
+<td>เมื่อสถานะเปลี่ยน</td>
+<td>สถานการณ์เครื่องคัดแยกขัดข้อง</td>
+<td>ช่วยระบุสาเหตุ</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Ground handler</td>
+<td>พนักงานที่เข้ากะเทียบแผน รถขนกระเป๋าและอุปกรณ์ที่ใช้ได้</td>
+<td>ทุก 30 นาที</td>
+<td>ข้อมูลกำลังคนจำลอง</td>
+<td>ช่วยระบุสาเหตุ</td>
+</tr>
+<tr>
+<td>6</td>
+<td>Smart Flows</td>
+<td>จำนวนผู้โดยสารที่มาถึงและความหนาแน่นหน้า check-in</td>
+<td>ทุก 5–15 นาที</td>
+<td>โปรไฟล์ผู้โดยสารเข้าของโมดูลคิว</td>
+<td>สำหรับโมดูลคิว และเตือนกระเป๋าล่วงหน้า</td>
+</tr>
+<tr>
+<td>7</td>
+<td>ระบบจุดตรวจ</td>
+<td>จำนวนเลนที่เปิด และเวลารอที่วัดได้</td>
+<td>ทุก 5 นาที</td>
+<td>สถานะเลนและคิวจำลอง</td>
+<td>สำหรับโมดูลคิว</td>
+</tr>
+</tbody>
+</table>
+<p>หลักการขอข้อมูล:</p>
+<ul>
+<li>ขอเป็นจำนวนรวม ไม่ขอชื่อผู้โดยสาร เลขหนังสือเดินทาง หรือเลขป้ายกระเป๋ารายใบ</li>
+<li>เริ่มจากข้อมูลย้อนหลังของวันที่มีเหตุผิดปกติหนึ่งถึงสองวัน และวันปกติหนึ่งวัน เพื่อทดสอบแบบอ่านอย่างเดียวก่อนต่อข้อมูลสด</li>
+<li>รายการ 1–3 เพียงพอสำหรับการหาคอขวดและเที่ยวบินเสี่ยง รายการ 4–5 เพิ่มเพื่อบอกสาเหตุ</li>
+<li>มาตรฐานข้อความกระเป๋าของ IATA (BSM สำหรับข้อมูลต้นทางของกระเป๋า และ BPM สำหรับการสแกนแต่ละจุด) น่าจะเป็นรูปแบบที่ BRS ใช้อยู่ ต้องยืนยันกับ SKY</li>
+<li>ก่อนรับข้อมูลจริง ต้องมีข้อตกลงการใช้ข้อมูล และทบทวนตาม PDPA แม้จะเป็นจำนวนรวม</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 3: แต่ละโมดูลอย่างละเอียด</h2>
+<p>ภาพทั้งหมดในส่วนนี้แคปจาก onetrustx.vercel.app เมื่อ 8 ต.ค. 2026 ตัวเลขบนจอเป็นข้อมูลจำลอง</p>
+<h3>3.1 Overview</h3>
+<p><strong>ใช้ทำอะไร:</strong> หน้าแรกของผู้ควบคุมการปฏิบัติการ ตอบว่าตอนนี้คิวที่จุดตรวจเป็นอย่างไร และอีกครึ่งชั่วโมงจะเป็นอย่างไร</p>
+<p><strong>บนจอมีอะไร:</strong> การ์ดสี่ใบ (เวลารอตอนนี้ / ช่วงพยากรณ์อีก 30 นาที / นาทีที่ผู้โดยสารประหยัดได้ถ้าทำตามคำแนะนำ / ความมั่นใจ) แผนผังอาคารที่กดเลือกช่วงเวลาได้ และกล่อง Priority insight ที่บอกจุดที่ต้องจับตาพร้อมมาตรการที่ทำได้</p>
+<p><strong>คำนวณอย่างไร:</strong> คิวใหม่ = คิวเดิม + ผู้โดยสารเข้า − กำลังให้บริการ ทีละนาที ในสถานการณ์ตั้งต้น Security A รอ 12 นาที และจะเป็น 39 นาทีในอีก 30 นาที เพราะผู้โดยสารเข้า 11.2–19.2 คนต่อนาที แต่ 4 เลนรับได้ 8 คนต่อนาที</p>
+<figure class='shot'><img src="screenshots/report/live-overview.jpg" alt=""><figcaption>Overview: Security A ตอนนี้ 12 นาที พยากรณ์ 35.4–42.6 นาทีในอีก 30 นาที</figcaption></figure>
+<h3>3.2 Future Flow</h3>
+<p><strong>ใช้ทำอะไร:</strong> ดูภาพเดียวกับ Overview แต่เน้นแผนผัง เลือกดูตอนนี้ +15, +30 หรือ +60 นาที เพื่อเห็นว่าแรงกดดันย้ายไปที่ใด</p>
+<p><strong>ข้อควรรู้:</strong> แผนผังเป็นภาพประกอบ ไม่ใช่ผังของสุวรรณภูมิ ช่วงพยากรณ์ (บวกลบ 15% และ 2 นาที) เป็นสมมติฐาน</p>
+<h3>3.3 Operations</h3>
+<p><strong>ใช้ทำอะไร:</strong> รวมสถานการณ์ทั้งหมดไว้ในตารางเดียว เรียงจากเร่งด่วนที่สุด กด Investigate เพื่อดูรายละเอียด แล้วไปต่อที่ Simulator</p>
+<p><strong>บนจอมีอะไร:</strong> ตารางสถานการณ์ (ระดับ / จุดที่เกิด / ผลกระทบ / ช่วงเวลา) และแผนผังสาเหตุที่แบ่งผลระหว่างปริมาณผู้โดยสาร (+31.7 นาที) กับจำนวนเลนที่ลดลง (+7.3 นาที)</p>
+<p><strong>คำนวณอย่างไร:</strong> แบ่งผลด้วยวิธี Shapley สองปัจจัยภายในแบบจำลอง หน้าจอติดป้ายว่า NOT CAUSAL PROOF คือไม่ใช่การพิสูจน์สาเหตุในโลกจริง</p>
+<figure class='shot'><img src="screenshots/report/live-operations.jpg" alt=""><figcaption>Operations: Security A ระดับ CRITICAL มีคิว 312 คนในอีก 30 นาที</figcaption></figure>
+<h3>3.4 Simulator</h3>
+<p><strong>ใช้ทำอะไร:</strong> ทดลองก่อนตัดสินใจ รันผู้โดยสารชุดเดียวกันผ่านมาตรการ 4 แบบ แล้วเทียบผล</p>
+<p><strong>บนจอมีอะไร:</strong> สามขั้น (สถานการณ์ / เลือกกลยุทธ์ / เทียบและทบทวน) ตารางเทียบก่อนและหลัง เช่น เวลารอเฉลี่ย 20.4 → 9.8 นาที คิวสูงสุด 327 → 197 คน ใช้พนักงานเพิ่ม 2 คน</p>
+<p><strong>คำนวณอย่างไร:</strong> จำลองผู้โดยสารเป็นกลุ่มตามลำดับมาก่อนได้ก่อน ให้คะแนนแต่ละมาตรการจากเวลารอที่ลด นาทีที่ประหยัด และสัดส่วนผู้โดยสารเสี่ยง หักด้วยพนักงาน ระยะเดิน และต้นทุนที่เพิ่ม มาตรการที่ทำไม่ได้ (เช่น พนักงานสำรองไม่พอ) ถูกตัดออก</p>
+<figure class='shot'><img src="screenshots/report/live-simulator.jpg" alt=""><figcaption>Simulator: เทียบ 4 มาตรการ ระบบแนะนำ &quot;เปิด A5 + เบี่ยง 12%&quot;</figcaption></figure>
+<h3>3.5 Flights</h3>
+<p><strong>ใช้ทำอะไร:</strong> ดูว่าเที่ยวบินใดใช้จุดตรวจใด เพื่อเข้าใจว่าคิวที่จุดเดียวกระทบกี่เที่ยวบิน</p>
+<p><strong>บนจอมีอะไร:</strong> เที่ยวบินจำลอง 4 เที่ยว (DEMO401–404) เที่ยวละ 145 คน ทั้งหมดใช้ Security A กรองดูขาออก ขาเข้า หรือที่ล่าช้าได้</p>
+<figure class='shot'><img src="screenshots/report/live-flights.jpg" alt=""><figcaption>Flights: เที่ยวบินจำลอง 4 เที่ยวที่ใช้ Security A ร่วมกัน</figcaption></figure>
+<h3>3.6 Performance</h3>
+<p><strong>ใช้ทำอะไร:</strong> สรุปผลของมาตรการที่เลือก และแสดงความแม่นของแบบจำลองคิว</p>
+<p><strong>บนจอมีอะไร:</strong> ชั่วโมงผู้โดยสารที่ประหยัดได้ (154.8 ชั่วโมงในสถานการณ์เดียว) ตารางการใช้ทรัพยากรก่อนและหลัง และผลประเมินแบบจำลองทั้งชุดข้อมูลจำลองและข้อมูลจริงจากสหรัฐฯ แยกป้ายกัน</p>
+<p><strong>ข้อควรรู้:</strong> ตัวเลขเป็นผลของสถานการณ์เดียว ไม่ใช่ยอดสะสมรายวัน รายละเอียดการวัดอยู่ในส่วนที่ 4</p>
+<figure class='shot'><img src="screenshots/report/live-performance.jpg" alt=""><figcaption>Performance: ผลของมาตรการในสถานการณ์จำลอง และการใช้ทรัพยากร</figcaption></figure>
+<h3>3.7 Passenger flow</h3>
+<p><strong>ใช้ทำอะไร:</strong> ดูเส้นทางของผู้โดยสารทั้ง 580 คนผ่านอาคาร ตั้งแต่มาถึง check-in ฝากกระเป๋า จุดตรวจ ตรวจคนเข้าเมือง จนถึง gate</p>
+<p><strong>บนจอมีอะไร:</strong> แผนภาพการไหล ความหนาของเส้นแทนจำนวนคน ผู้โดยสารในประเทศ 290 คนข้ามขั้นตรวจคนเข้าเมือง</p>
+<figure class='shot'><img src="screenshots/report/live-passenger-flow.jpg" alt=""><figcaption>Passenger flow: เส้นทางของผู้โดยสาร 580 คนผ่านแต่ละขั้น</figcaption></figure>
+<h3>3.8 Passenger journey</h3>
+<p><strong>ใช้ทำอะไร:</strong> มุมของผู้โดยสาร บอกว่าเหลือเวลาอย่างปลอดภัยกี่นาที และควรเดินเส้นทางใด</p>
+<p><strong>คำนวณอย่างไร:</strong> เวลาปลอดภัย = เวลาถึงปิดขึ้นเครื่อง − เวลาเดินและผ่านจุดตรวจที่เหลือ − เวลาสำรอง 10 นาที ตัวอย่างบนจอ: 64 − 20 − 10 = 34 นาที ถ้า gate เปลี่ยนจาก C8 เป็น E7 เส้นทางที่เข้าถึงได้ยาวขึ้น 23 นาที เหลือ 11 นาที และระบบวางเส้นทางใหม่ให้</p>
+<figure class='shot'><img src="screenshots/report/live-journey.jpg" alt=""><figcaption>Passenger journey: Safe Time 34 นาที และเส้นทาง 5 ขั้นไป gate C8</figcaption></figure>
+<h3>3.9 Decision log</h3>
+<p><strong>ใช้ทำอะไร:</strong> ติดตามวงจรของการตัดสินใจหนึ่งครั้ง ตั้งแต่ระบบแนะนำ คนอนุมัติหรือปฏิเสธ จนถึงการวัดผลหลังดำเนินการ</p>
+<p><strong>บนจอมีอะไร:</strong> รายการการตัดสินใจในรอบนั้น และช่องบันทึกเวลารอที่สังเกตได้หลังทำ เพื่อเทียบกับที่พยากรณ์ไว้ ค่าที่กรอกในเดโมถูกติดป้ายว่าเป็นค่าจำลอง</p>
+<figure class='shot'><img src="screenshots/report/live-audit.jpg" alt=""><figcaption>Decision log: วงจรการตัดสินใจและการวัดผลหลังดำเนินการ</figcaption></figure>
+<h3>3.10 Data &amp; sources</h3>
+<p><strong>ใช้ทำอะไร:</strong> ให้ผู้ใช้และกรรมการตรวจได้ว่าตัวเลขแต่ละตัวมาจากข้อมูลประเภทใด</p>
+<p><strong>บนจอมีอะไร:</strong> คำอธิบายสี่ประเภทข้อมูล (จำลอง / ผลคำนวณ / สมมติฐาน / ข้อมูลจริงสาธารณะ) สถานะความสดของแต่ละแหล่ง และข้อมูลบริบทย้อนหลัง</p>
+<p><strong>ข้อควรรู้:</strong> หน้านี้เคยเปิดไม่ขึ้นบนเว็บจริง เพราะเซิร์ฟเวอร์ไม่มีไฟล์ผลเปรียบเทียบชุดหนึ่ง แก้แล้วในรอบนี้ ข้อมูลสาธารณะบางชุดจึงแสดงว่าไม่มีบนเว็บ</p>
+<figure class='shot'><img src="screenshots/report/live-sources.jpg" alt=""><figcaption>Data &amp; sources: ประเภทของข้อมูลและสิ่งที่แต่ละประเภทใช้รองรับ</figcaption></figure>
+<h3>3.11 System Integration</h3>
+<p><strong>ใช้ทำอะไร:</strong> อธิบายว่า One TrustX จะเชื่อมกับระบบจริงอย่างไร ระบุว่าตัวเชื่อมกับ AODB, Smart Flow, ระบบ gate, กระเป๋า และงานภาคพื้นเป็นแนวคิดสำหรับอนาคต ส่วนที่เชื่อมจริงในต้นแบบคือข้อมูลสาธารณะและตัวสร้างข้อมูลจำลอง</p>
+<figure class='shot'><img src="screenshots/report/live-integration.jpg" alt=""><figcaption>System Integration: ระบบเดิมของสนามบิน → ชั้นจัดรูปข้อมูล → One TrustX</figcaption></figure>
+<h3>3.12 Guided demonstration และ Ask One TrustX</h3>
+<p><strong>Guided demonstration:</strong> เดโม 9 ขั้นที่ผู้นำเสนอกดเดินเอง ตั้งแต่สถานะปกติ คลื่นผู้โดยสารเริ่ม ตรวจพบความแออัดล่วงหน้า เทียบมาตรการ คนอนุมัติ ผลต่อผู้โดยสาร เปลี่ยน gate จนถึงวัดผล ไม่มีการอนุมัติอัตโนมัติ</p>
+<p><strong>Ask One TrustX:</strong> ปุ่มถามคำถามเกี่ยวกับสถานการณ์ ตอบจากผลของแบบจำลองตามหัวข้อที่กำหนดไว้ และปฏิเสธหัวข้อนอกขอบเขต ไม่ได้ใช้ LLM</p>
+<p><strong>DEMO MODE:</strong> ปุ่มควบคุมเดโม เช่น เริ่มคลื่นผู้โดยสาร ปิดเลน เปลี่ยน gate และทดสอบข้อมูลไม่สด</p>
+<figure class='shot'><img src="screenshots/report/live-demo.jpg" alt=""><figcaption>Guided demonstration: เดโม 9 ขั้นที่ผู้นำเสนอควบคุมเอง</figcaption></figure>
+<h3>3.13 Baggage</h3>
+<p>โมดูลหลักของรอบนี้ อธิบายแยกทั้งภาค ข</p>
+<hr />
+<h2>ส่วนที่ 4: ข้อมูล วิธีทำ และการวัดผลของโมดูลทั่วไป</h2>
+<p>ส่วนนี้ครอบคลุมโมดูลคิว การจำลองมาตรการ และมุมผู้โดยสาร ซึ่งมีมาตั้งแต่เวอร์ชันบน GitHub รอบนี้ไม่ได้แก้ตรรกะของโมดูลเหล่านี้ ตัวเลขมาจากไฟล์ผลประเมินใน repository ที่สร้างไว้เมื่อ 12–13 ก.ย. 2026 ไม่ได้รันใหม่ในรอบนี้ ข้อมูลของโมดูลกระเป๋าอยู่ในภาค ข</p>
+<h3>4.1 ข้อมูลจริงสาธารณะ และระดับความน่าเชื่อถือ</h3>
+<table>
+<thead>
+<tr>
+<th>แหล่ง</th>
+<th>จำนวนและช่วงเวลา</th>
+<th>ใช้ทำอะไร</th>
+<th>ข้อจำกัด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>CBP Airport Wait Times (สหรัฐฯ)</td>
+<td>12,186 รายการ รายชั่วโมงต่ออาคาร ที่ JFK, LAX, SFO ม.ค.–มี.ค. 2025</td>
+<td>ตัวเทียบภายนอกของเวลารอคิวตรวจคนเข้าเมือง</td>
+<td>คนละประเทศและคนละกระบวนการ ใช้แทนข้อมูล BKK ไม่ได้</td>
+</tr>
+<tr>
+<td>BTS On-Time Performance (สหรัฐฯ)</td>
+<td>504,884 เที่ยวบิน ก.พ. 2025</td>
+<td>การกระจายของความล่าช้า</td>
+<td>เที่ยวบินในประเทศสหรัฐฯ เท่านั้น ข้อมูลขาด 17.8%</td>
+</tr>
+<tr>
+<td>CAAT สถิติรายวัน (ไทย)</td>
+<td>7 ไฟล์ ก.ย. 2023–เม.ย. 2025 ได้ยอดรวมประเทศ 188 วัน และยอด BKK รายวัน 3 วัน</td>
+<td>ขนาดของปริมาณผู้โดยสารไทย</td>
+<td>CAAT ระบุว่าเป็นข้อมูลเบื้องต้น และไม่ต่อเนื่องทุกวัน</td>
+</tr>
+<tr>
+<td>Open-Meteo</td>
+<td>8,760 ชั่วโมง ปี 2025 ที่ BKK</td>
+<td>บริบทสภาพอากาศ</td>
+<td>เป็นผลจากแบบจำลองอากาศ ไม่ใช่เซนเซอร์ในสนามบิน</td>
+</tr>
+<tr>
+<td>OurAirports</td>
+<td>สนามบิน 145 แห่ง</td>
+<td>พิกัดและข้อมูลอ้างอิงสนามบิน</td>
+<td>ข้อมูลเปิดจากอาสาสมัคร ขาด 27.4%</td>
+</tr>
+<tr>
+<td>UK CAA</td>
+<td>3 ตารางรายปี 2025</td>
+<td>ขนาดการปฏิบัติการของสนามบินเทียบเคียง</td>
+<td>คนละประเทศ</td>
+</tr>
+<tr>
+<td>OpenSky</td>
+<td>ตำแหน่งอากาศยาน (ตัวเลือกเสริม)</td>
+<td>บริบทการจราจรทางอากาศ</td>
+<td>ไม่ใช่ตารางบิน ไม่มีข้อมูลผู้โดยสารหรือคิว</td>
+</tr>
+</tbody>
+</table>
+<p>ทุกไฟล์ที่ดึงมาเก็บ URL ต้นทาง เวลาที่ดึง ช่วงเวลาของข้อมูล เงื่อนไขการใช้ และ SHA-256 ไว้คู่กัน ถ้า checksum ไม่ตรง สคริปต์จะหยุดแทนการเขียนทับ รายละเอียดต่อไฟล์อยู่ใน <code>docs/data-quality-report.md</code> ข้อมูลของ AOT และ TSA ดึงไม่ได้ จึงไม่มีในระบบ และหน้า Data &amp; sources แจ้งไว้</p>
+<p>ข้อมูลจริงทั้งหมดไม่ถูกนำไปเปลี่ยนชื่อเป็นข้อมูลปฏิบัติการของ BKK และไม่ถูกใช้เพิ่มความมั่นใจของผลจำลอง</p>
+<h3>4.2 ข้อมูลที่สร้างขึ้น</h3>
+<table>
+<thead>
+<tr>
+<th>ชุดข้อมูล</th>
+<th>จำนวน</th>
+<th>สร้างอย่างไร</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ประวัติคิวสำหรับฝึกและทดสอบ (<code>training.csv</code>)</td>
+<td>20,160 นาที (14 วัน)</td>
+<td>คิวเริ่มต้น 40 คน ผู้โดยสารเข้าตามคลื่นไซน์บวกสัญญาณรบกวน เลขสุ่ม 42 จำนวนเลนสลับ 3 และ 4</td>
+</tr>
+<tr>
+<td>การเดินทางของผู้โดยสาร (<code>passenger_journey.csv</code>)</td>
+<td>580 แถว ไม่ระบุตัวตน</td>
+<td>4 เที่ยวบิน เที่ยวละ 145 คน</td>
+</tr>
+<tr>
+<td>การไหลของผู้โดยสาร (<code>passenger_flow.csv</code>)</td>
+<td>72 แถว</td>
+<td>โปรไฟล์ผู้โดยสารเข้าต่อช่วง 15 นาที</td>
+</tr>
+<tr>
+<td>เที่ยวบิน gate งานภาคพื้น</td>
+<td>4, 4 และ 28 แถว</td>
+<td>ชุดตัวอย่างคงที่สำหรับเล่าเรื่อง</td>
+</tr>
+<tr>
+<td>สถานะเลนและจุดตรวจ</td>
+<td>21 และ 6 แถว</td>
+<td>Security A มี 5 เลน เปิด 4 / Security B มี 3 เลน</td>
+</tr>
+<tr>
+<td>แผนผังอาคาร (<code>airport_graph.csv</code>)</td>
+<td>16 เส้นเชื่อม</td>
+<td>อาคารสมมติ ระยะเดินกำหนดเอง ไม่ใช่ผังสุวรรณภูมิ</td>
+</tr>
+</tbody>
+</table>
+<p>สถานการณ์ตั้งต้นที่เห็นบนหน้า Overview: เวลาหยุดนิ่งที่ 17:00 Security A มีคิวรอ 12 นาที ผู้โดยสารเข้า 11.2, 19.2, 9 และ 1.6 คนต่อนาทีในแต่ละช่วง 15 นาที แต่ละเลนให้บริการ 2 คนต่อนาที ค่าเหล่านี้เป็นสมมติฐานทั้งหมด และระบุไว้ใน <code>docs/assumptions.md</code></p>
+<h3>4.3 วิธีทำของแต่ละโมดูล</h3>
+<ul>
+<li><strong>พยากรณ์คิว:</strong> คำนวณทีละนาทีจากสมดุลการไหล คือคิวใหม่เท่ากับคิวเดิมบวกผู้โดยสารเข้าลบกำลังให้บริการ ตัวอย่าง: (96 + 30 × (15.2 − 8)) ÷ 8 = 39 นาที เป็นแบบจำลองกำหนดแน่นอน ไม่ใช่ machine learning</li>
+<li><strong>ช่วงความไม่แน่นอน:</strong> บวกลบ 15% ของค่าประมาณ บวก 2 นาที เป็นสมมติฐาน ค่า "ความมั่นใจ 80%" บนหน้าจอเป็นค่าที่ตั้งไว้ ไม่ได้ผ่านการสอบเทียบ</li>
+<li><strong>จำลองมาตรการ:</strong> จำลองผู้โดยสารเป็นกลุ่มตามลำดับมาก่อนได้ก่อน รันสถานการณ์เดียวกัน 4 แบบ (ไม่ทำอะไร / เปิดเลน A5 / เบี่ยง 20% ไป Security B / เปิด A5 และเบี่ยง 12%) การเปิดเลนใช้พนักงาน 2 คน ผู้โดยสารที่ถูกเบี่ยงเดินเพิ่ม 4 นาที</li>
+<li><strong>การให้คะแนนมาตรการ:</strong> คะแนนรวมถ่วงน้ำหนักจากเวลารอที่ลดลง นาทีที่ประหยัด สัดส่วนผู้โดยสารเสี่ยงตกเครื่อง หักด้วยพนักงานที่เพิ่ม ระยะเดินที่เพิ่ม และต้นทุน น้ำหนักแสดงบนหน้าจอและปรับได้</li>
+<li><strong>สาเหตุของคิว:</strong> แบ่งผลระหว่างสองปัจจัย (ปริมาณผู้โดยสาร และจำนวนเลน) ด้วยวิธี Shapley ภายในแบบจำลอง หน้าจอระบุว่าไม่ใช่การพิสูจน์สาเหตุในโลกจริง</li>
+<li><strong>เวลาปลอดภัยของผู้โดยสาร:</strong> เวลาถึงปิดขึ้นเครื่อง ลบเวลาเดินและเวลาผ่านจุดตรวจที่เหลือ ลบเวลาสำรอง 10 นาที ตัวอย่าง: 64 − 20 − 10 = 34 นาที เมื่อเปลี่ยน gate จาก C8 เป็น E7 เส้นทางที่เข้าถึงได้ยาวขึ้น 23 นาที เหลือ 11 นาที</li>
+<li><strong>เมื่อข้อมูลไม่สด:</strong> ระบบหยุดแสดงคำแนะนำและแจ้งว่าการพยากรณ์ถูกพักไว้</li>
+</ul>
+<h3>4.4 การวัดผลของแบบจำลองคิว</h3>
+<p>ชุดที่ 1 ข้อมูลจำลอง 14 วัน แบ่งตามเวลา 70% แรกใช้ฝึก 30% หลังใช้ทดสอบ เว้นช่วง 60 นาทีระหว่างกัน ไม่สุ่มสลับ ตารางแสดงความคลาดเคลื่อนเฉลี่ย (นาที)</p>
+<table>
+<thead>
+<tr>
+<th>วิธี</th>
+<th>ล่วงหน้า 15 นาที</th>
+<th>ล่วงหน้า 30 นาที</th>
+<th>ล่วงหน้า 60 นาที</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ใช้ค่าปัจจุบันต่อไป (persistence)</td>
+<td>5.97</td>
+<td>11.70</td>
+<td>22.56</td>
+</tr>
+<tr>
+<td>ค่าเฉลี่ยเคลื่อนที่</td>
+<td>8.81</td>
+<td>14.41</td>
+<td>25.17</td>
+</tr>
+<tr>
+<td>สมดุลการไหล (ที่ระบบใช้)</td>
+<td>2.20</td>
+<td>4.57</td>
+<td>10.34</td>
+</tr>
+<tr>
+<td>Linear regression</td>
+<td>4.27</td>
+<td>5.91</td>
+<td>9.34</td>
+</tr>
+<tr>
+<td>Random forest</td>
+<td>1.75</td>
+<td>3.21</td>
+<td>6.13</td>
+</tr>
+</tbody>
+</table>
+<p>เทียบกับเป้าที่ทีมตั้งไว้ (ไม่ใช่มาตรฐานอุตสาหกรรม):</p>
+<table>
+<thead>
+<tr>
+<th>เป้า</th>
+<th>15 นาที</th>
+<th>30 นาที</th>
+<th>60 นาที</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>คลาดเคลื่อนเฉลี่ยไม่เกิน 5 นาที</td>
+<td>ผ่าน (2.20)</td>
+<td>ผ่าน (4.57)</td>
+<td>ไม่ผ่าน (10.34)</td>
+</tr>
+<tr>
+<td>จับภาวะแออัดได้อย่างน้อย 80%</td>
+<td>ผ่าน (99%)</td>
+<td>ผ่าน (98%)</td>
+<td>ผ่าน (95%)</td>
+</tr>
+<tr>
+<td>เตือนล่วงหน้าอย่างน้อย 15 นาที</td>
+<td>ไม่ผ่าน (14)</td>
+<td>ผ่าน (29)</td>
+<td>ผ่าน (58)</td>
+</tr>
+</tbody>
+</table>
+<p>Random forest แม่นกว่าบนข้อมูลจำลอง แต่ทีมไม่ได้นำมาใช้ เพราะข้อมูลทดสอบสร้างจากกลไกเดียวกับแบบจำลอง ผลจึงยังไม่ใช่หลักฐานอิสระ</p>
+<p>ชุดที่ 2 ข้อมูลจริงจาก CBP 12,178 รายการ ฝึกด้วย ม.ค. ตรวจด้วย ก.พ. ทดสอบด้วย มี.ค. 2025 เป็นการประมาณเวลารอในชั่วโมงเดียวกัน ไม่ใช่การพยากรณ์ล่วงหน้า เวลารอจริงมีค่ากลาง 17 นาที และ 10% ของชั่วโมงรอเกิน 37 นาที</p>
+<table>
+<thead>
+<tr>
+<th>วิธี</th>
+<th>คลาดเคลื่อนเฉลี่ย (นาที)</th>
+<th>F1 ของการจับภาวะแออัด</th>
+<th>อัตราเตือนผิด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ใช้ค่าปัจจุบันต่อไป</td>
+<td>8.40</td>
+<td>0.52</td>
+<td>10.6%</td>
+</tr>
+<tr>
+<td>ค่าเฉลี่ยเคลื่อนที่</td>
+<td>8.53</td>
+<td>0.43</td>
+<td>9.6%</td>
+</tr>
+<tr>
+<td>ตัวแทนภาระต่อช่องตรวจ</td>
+<td>19.36</td>
+<td>0.29</td>
+<td>19.3%</td>
+</tr>
+<tr>
+<td>Linear regression</td>
+<td>8.44</td>
+<td>0.12</td>
+<td>4.6%</td>
+</tr>
+<tr>
+<td>Random forest</td>
+<td>7.96</td>
+<td>0.26</td>
+<td>5.8%</td>
+</tr>
+</tbody>
+</table>
+<p>บนข้อมูลจริง ไม่มีวิธีใดดีกว่าวิธีพื้นฐานอย่างชัดเจน จึงไม่มีแบบจำลองใดถูกยกขึ้นใช้งาน ผลนี้ใช้ยืนยันเพียงว่าช่วงเวลารอในระบบจำลอง (12–39 นาที) อยู่ในช่วงที่พบได้จริง</p>
+<h3>4.5 การทดสอบซอฟต์แวร์ของโมดูลเหล่านี้</h3>
+<table>
+<thead>
+<tr>
+<th>ชุดทดสอบ</th>
+<th>จำนวน</th>
+<th>ตรวจอะไร</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>test_engine.py</code></td>
+<td>10 ข้อ</td>
+<td>สมดุลของคิว ผลของแต่ละมาตรการ การทำซ้ำได้</td>
+</tr>
+<tr>
+<td><code>test_api.py</code></td>
+<td>8 ข้อ</td>
+<td>endpoint การตรวจสิทธิ์ ข้อมูลไม่สด การบันทึกการตัดสินใจ</td>
+</tr>
+<tr>
+<td><code>test_pilot.py</code></td>
+<td>5 ข้อ</td>
+<td>ขั้นตอนการทดลองใช้งาน</td>
+</tr>
+</tbody>
+</table>
+<p>ทั้งหมดผ่านในการรันล่าสุดเมื่อ 8 ต.ค. 2026 (รวมอยู่ใน 45 ข้อของส่วนที่ 6)</p>
+<h3>4.6 ข้อจำกัดเฉพาะของโมดูลเหล่านี้</h3>
+<ul>
+<li>ไม่มีข้อมูลคิวหรือจุดตรวจจริงของ BKK อัตราให้บริการ 2 คนต่อนาทีต่อเลนเป็นสมมติฐาน</li>
+<li>มีคิวที่เปลี่ยนตามเวลาเพียงสองจุดตรวจ ขั้นอื่นใช้เวลาคงที่</li>
+<li>ผังอาคารเป็นภาพประกอบ ไม่ใช่ผังสุวรรณภูมิ</li>
+<li>ชุด validation เดิม 3,200 episodes ที่ให้ผล 61% / 78% / 74% / 50% ใช้อัตราส่วนที่กำหนดไว้ล่วงหน้า (ดูส่วนที่ 17) ไม่ควรนำไปอ้าง</li>
+<li>ผู้ช่วยตอบคำถามในระบบ (Ask One TrustX) ตอบจากผลของแบบจำลองตามหัวข้อที่กำหนด ไม่ได้ใช้ LLM</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 5: สถาปัตยกรรมและโครงสร้างโปรเจกต์</h2>
+<figure class='diagram'>
+    <div class='arch'>
+      <div class='arch-row two'>
+        <div class='box today'><b>วันนี้ · ข้อมูลจำลอง</b><small>baggage_flow.simulate()</small></div>
+        <div class='box future'><b>อนาคต · ระบบจริง</b><small>BRS/BHS · AODB · Ground handler (อ่านอย่างเดียว)</small></div>
+      </div>
+      <div class='down'>↓ รายการสแกนรวม + ตารางบิน ↓</div>
+      <div class='box core2'><b>baggage_flow.assess()</b><small>สถานะรายขั้น · คอขวด · เที่ยวบินเสี่ยง · คำแนะนำ</small></div>
+      <div class='down'>↓</div>
+      <div class='arch-row two'>
+        <div class='box'><b>FastAPI</b><small>/api/trustx/baggage/*</small></div>
+        <div class='box'><b>React</b><small>หน้า /baggage</small></div>
+      </div>
+      <div class='down'>↓</div>
+      <div class='box user'><b>ผู้ควบคุมงานอนุมัติ</b><small>ระบบไม่สั่งการอุปกรณ์ใด</small></div>
+    </div><figcaption>สถาปัตยกรรม: ตัวประเมินรับข้อมูลรูปแบบเดียวกันไม่ว่าจากแบบจำลองหรือระบบจริง</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>Endpoint</th>
+<th>หน้าที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>GET /api/trustx/baggage/scenarios</code></td>
+<td>รายการสถานการณ์และเวลาที่เลือกดูได้</td>
+</tr>
+<tr>
+<td><code>GET /api/trustx/baggage/control</code></td>
+<td>ผลประเมิน รับ <code>scenario</code>, <code>at</code>, <code>seed</code>, <code>resource_feed</code></td>
+</tr>
+<tr>
+<td><code>GET /api/trustx/baggage/calibration</code></td>
+<td>ค่าทุกตัวพร้อมประเภทและแหล่งที่มา</td>
+</tr>
+<tr>
+<td><code>GET /api/trustx/baggage/evaluation</code></td>
+<td>ผลจำลอง 30 รอบ</td>
+</tr>
+<tr>
+<td><code>GET /api/trustx/flights/{id}/shared-state</code></td>
+<td>สถานะร่วมเดิม ช่อง <code>baggage_control</code> คืนผลประเมินสถานการณ์น้ำท่วม</td>
+</tr>
+</tbody>
+</table>
+<p>เทคโนโลยี: React + TypeScript + Vite / FastAPI + Python / PostgreSQL หรือ SQLite สำหรับส่วนเดิม ส่วนกระเป๋าไม่เขียนฐานข้อมูล คำนวณจากเลขสุ่มและไฟล์ค่าตั้งต้น จึงทำซ้ำได้ทุกครั้ง ระบบไม่ใช้ LLM ในการตัดสินใจ</p>
+<h3>5.1 โครงสร้างโปรเจกต์</h3>
+<pre><code class="language-text">onetrustx/
+├── README.md
+├── run-local.sh                      เปิดระบบบนเครื่องโดยไม่ใช้ Docker
+├── infra/docker-compose.yml          PostgreSQL + API + frontend
+├── backend/
+│   ├── app/
+│   │   ├── baggage_flow.py           แบบจำลอง ตัวประเมิน และการให้คะแนน (ใหม่)
+│   │   ├── baggage_calibration.json  ค่าตั้งต้นพร้อมแหล่งที่มา (ใหม่)
+│   │   ├── baggage_metrics.py        ตารางคะแนนและการใส่ข้อมูลผิดเพื่อทดสอบ (ใหม่)
+│   │   ├── baggage_evaluation.json   ผลจำลอง 30 รอบ (ใหม่)
+│   │   ├── trust_api.py              REST API ของ One TrustX
+│   │   ├── trust_service.py          ชุดเหตุการณ์ TT401 และสถานะร่วม
+│   │   ├── trust_models.py           ตารางฐานข้อมูลส่วน One TrustX
+│   │   ├── main.py, engine.py        โมดูลคิวผู้โดยสารเดิม
+│   │   └── public_*.py               ข้อมูลบริบทสาธารณะ
+│   └── tests/
+│       ├── test_baggage_flow.py      15 ข้อ (ใหม่)
+│       ├── test_baggage_metrics.py   4 ข้อ (ใหม่)
+│       └── test_trustx.py, test_api.py, test_engine.py, test_pilot.py
+├── frontend/src/
+│   ├── App.tsx                       โครงระบบและแถบนำทาง (เพิ่มเมนู Baggage)
+│   ├── components/BaggageControl.tsx หน้ากระเป๋า (ใหม่)
+│   ├── executive.css                 สไตล์ของระบบ รวมส่วนหน้ากระเป๋า
+│   └── locales/th.json               คำแปลภาษาไทย
+├── data/
+│   ├── external/                     ไฟล์ต้นฉบับจากแหล่งสาธารณะ พร้อม checksum
+│   ├── normalized/                   ข้อมูลสาธารณะที่จัดรูปแล้ว
+│   ├── synthetic/baggage_flow/       รายการสแกนและตารางบินจำลอง (ใหม่)
+│   └── scenarios/scenario_library.json
+├── scripts/
+│   ├── experiments/run_baggage_evaluation.py   ส่งออกข้อมูลและให้คะแนน (ใหม่)
+│   ├── data/fetch_weather_incident.py          ดึงฝนช่วงเหตุการณ์ (ใหม่)
+│   └── render_data_pdf.py                      สร้าง PDF ภาษาไทย
+└── docs/
+    ├── onetrustx-system-report-th.md/pdf       เอกสารนี้
+    ├── preliminary-pitch-th.md                 โครง pitch 7 นาที
+    ├── data-provenance-th.md                   คู่มือโครงการฉบับก่อน
+    └── decisions/                              บันทึกเหตุผลการตัดสินใจ
+</code></pre>
+<hr />
+<h2>ส่วนที่ 6: การตรวจสอบ</h2>
+<table>
+<thead>
+<tr>
+<th>รายการ</th>
+<th>ผล</th>
+<th>วันที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Backend tests (<code>pytest</code>)</td>
+<td>ผ่าน 45 ข้อ</td>
+<td>8 ต.ค. 2026</td>
+</tr>
+<tr>
+<td>Lint (<code>ruff check app</code>)</td>
+<td>ผ่าน</td>
+<td>8 ต.ค. 2026</td>
+</tr>
+<tr>
+<td>Frontend type-check (<code>tsc --noEmit</code>)</td>
+<td>ผ่าน</td>
+<td>8 ต.ค. 2026</td>
+</tr>
+<tr>
+<td>Frontend tests (<code>vitest</code>)</td>
+<td>ผ่าน 2 ข้อ</td>
+<td>8 ต.ค. 2026</td>
+</tr>
+<tr>
+<td>Production build (<code>npm run build</code>)</td>
+<td>ผ่าน</td>
+<td>8 ต.ค. 2026</td>
+</tr>
+<tr>
+<td>เปิดหน้า <code>/baggage</code> ในเบราว์เซอร์ ครบ 5 สถานการณ์ ทั้งภาษาอังกฤษและไทย</td>
+<td>แสดงผลถูกต้อง ไม่มี error ใน console หน้าเดิมทุกหน้ายังเปิดได้</td>
+<td>8 ต.ค. 2026</td>
+</tr>
+</tbody>
+</table>
+<p>สิ่งที่เทสต์ตรวจโดยเฉพาะ:</p>
+<ul>
+<li>สถานการณ์ปกติขึ้น NORMAL ทุกจุดตรวจ</li>
+<li>สถานการณ์น้ำท่วมชี้ที่ Loading ก่อนกระเป๋าใบแรกตกเที่ยวบิน 30 นาที</li>
+<li>ปิด feed กำลังคนแล้วสาเหตุเป็น UNKNOWN แต่ยังชี้ตำแหน่งได้</li>
+<li>ข้อมูล loading ขาดแล้วระบบขอให้ตรวจสอบและซ่อนตัวเลข</li>
+<li>ตัวประเมินไม่ใช้สแกนที่ยังมาไม่ถึง</li>
+<li>จำนวนกระเป๋าที่โหลดบวกที่ตกเที่ยวบิน เท่ากับจำนวนที่คาดไว้ทุกเที่ยวบิน</li>
+<li>ค่าทุกตัวมีประเภทและแหล่งที่มา ค่าที่ไม่ใช่สมมติฐานต้องมีลิงก์</li>
+</ul>
+<p>ตรวจบนเว็บจริงหลัง deploy: เปิดครบ 14 หน้ารวม Baggage ไม่มี error ใน console</p>
+<p>ยังไม่ได้ตรวจ: Docker stack และ Playwright e2e ข้อความที่มาจาก backend (เช่น คำแนะนำและหลักฐาน) ยังแสดงเป็นภาษาอังกฤษในโหมดไทย และแถบเมนูบนจอมือถือล้นขอบ 81 พิกเซลทุกหน้า ซึ่งเป็นอยู่ก่อนแล้ว</p>
+<h3>6.1 การเผยแพร่ขึ้นเว็บจริง</h3>
+<p>เว็บ onetrustx.vercel.app ประกอบด้วยสองโปรเจกต์บน Vercel และ deploy ด้วยคำสั่งจากเครื่องพัฒนา ไม่ได้ผูกกับ GitHub</p>
+<table>
+<thead>
+<tr>
+<th>ส่วน</th>
+<th>โปรเจกต์บน Vercel</th>
+<th>ที่อยู่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>หน้าเว็บ</td>
+<td><code>airport-timetwin-frontend</code></td>
+<td>onetrustx.vercel.app</td>
+</tr>
+<tr>
+<td>API</td>
+<td><code>backend</code></td>
+<td>backend-mauve-six-34.vercel.app (หน้าเว็บเรียกผ่าน <code>/api</code>)</td>
+</tr>
+</tbody>
+</table>
+<p>ขั้นตอนที่ใช้เมื่อ 8 ต.ค. 2026:</p>
+<ol>
+<li>ในโฟลเดอร์ <code>backend</code> รัน <code>vercel --prod</code> แล้วตรวจว่า <code>/api/trustx/baggage/scenarios</code> ตอบ 200</li>
+<li>ในโฟลเดอร์ <code>frontend</code> รัน <code>vercel --prod</code></li>
+<li>โดเมน onetrustx.vercel.app ถูกผูกแบบกำหนดเอง จึงไม่ย้ายตาม deploy ใหม่ ต้องรัน <code>vercel alias set &lt;ชื่อ deployment ใหม่&gt; onetrustx.vercel.app</code></li>
+<li>เปิดเว็บจริงตรวจทุกหน้า</li>
+</ol>
+<p>เวอร์ชันที่โดเมนชี้อยู่คือ <code>airport-timetwin-frontend-9drl3b0in</code> ถ้าต้องย้อนกลับไปเวอร์ชันก่อนมีหน้า Baggage ให้ชี้โดเมนไปที่ <code>airport-timetwin-frontend-72mipagqy</code></p>
+<p>ข้อควรระวัง: โค้ดที่อยู่บนเว็บตอนนี้ยังไม่ได้ commit และ push ขึ้น GitHub จึงมีอยู่เฉพาะในเครื่องพัฒนาและบน Vercel ชื่อโปรเจกต์บน Vercel และชื่อฐานข้อมูล Postgres ยังใช้ชื่อเดิม (timetwin) เพราะการเปลี่ยนจะกระทบข้อมูลและการผูกโดเมน</p>
+<hr />
+<section class='part'><span>ONE TRUSTX</span><h1>ภาค ข · ลงลึกเรื่องกระเป๋า ตามโครงเดิมของโครงการ</h1><p>Pain Point → Solution → Impact โครงเดิมจากรอบแรก ลงลึกจนคำนวณได้จริงในเรื่องกระเป๋า</p></section>
+<h2>ส่วนที่ 7: โครงเดิมของโครงการ และสิ่งที่ลงลึกในรอบนี้</h2>
+<p>โครงของโครงการยังเป็นโครงเดิมจากรอบแรก (สไลด์ 3 หน้า: Pain Point, Solution, Impact) รอบนี้ไม่ได้เปลี่ยนโครง แต่เลือกเรื่องกระเป๋าเป็นกรณีที่ลงลึกจนคำนวณได้จริง ตามคำแนะนำของ mentor ให้เลือกปัญหาเดียว</p>
+<h3>7.1 โครงเดิมสามส่วน และสิ่งที่ลงลึกในรอบนี้</h3>
+<table>
+<thead>
+<tr>
+<th>โครงเดิม (สไลด์รอบแรก)</th>
+<th>ข้อความเดิม</th>
+<th>ลงลึกเรื่องกระเป๋าอย่างไร</th>
+<th>อยู่ในส่วนที่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pain Point</td>
+<td>หลายองค์กร หลายระบบ ข้อมูลไม่ได้อยู่บนมาตรฐานเดียวกัน การตัดสินใจจึงช้า</td>
+<td>กระเป๋าค้างสะสมเมื่อเกิดเหตุผิดปกติ ข้อมูลสแกน ตารางบิน และกำลังคนอยู่คนละฝ่าย</td>
+<td>8–9</td>
+</tr>
+<tr>
+<td>Solution</td>
+<td>Data Integration Layer → Trusted Shared Event Ledger → Common Operation State → AI Decision Intelligence</td>
+<td>สี่ชั้นเดิม ใช้กับข้อมูลกระเป๋าจริง ๆ ทีละชั้น</td>
+<td>10–13</td>
+</tr>
+<tr>
+<td>Impact</td>
+<td>Trust · Intelligence · Operation และคุณค่าต่อแต่ละฝ่าย</td>
+<td>ตัวชี้วัดสามเสาเดิม วัดจากแบบจำลองกระเป๋า</td>
+<td>14–16</td>
+</tr>
+</tbody>
+</table>
+<h3>7.2 ผู้มีส่วนเกี่ยวข้องเดิม 7 กลุ่ม ในกรณีกระเป๋า</h3>
+<p>สไลด์รอบแรกระบุผู้มีส่วนเกี่ยวข้อง 7 กลุ่ม ในกรณีกระเป๋าแต่ละกลุ่มมีบทบาทดังนี้</p>
+<table>
+<thead>
+<tr>
+<th>กลุ่ม</th>
+<th>ข้อมูลที่ให้</th>
+<th>ได้อะไรกลับ</th>
+<th>สถานะในต้นแบบ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baggage Operator (BRS/BHS)</td>
+<td>จำนวนสแกนรายขั้น รายเที่ยวบิน</td>
+<td>เห็นว่าขั้นใดเป็นคอขวด</td>
+<td>ใช้แล้ว (ข้อมูลจำลอง)</td>
+</tr>
+<tr>
+<td>Airport (AODB)</td>
+<td>เวลาออก เวลาจอด gate</td>
+<td>เที่ยวบินใดเสี่ยงจากกระเป๋า</td>
+<td>ใช้แล้ว (ข้อมูลจำลอง)</td>
+</tr>
+<tr>
+<td>Airline</td>
+<td>จำนวนกระเป๋าที่คาดไว้ และเที่ยวบินต่อ</td>
+<td>กระเป๋าต่อเครื่องชุดใดเสี่ยง ควรรอหรือส่งตาม</td>
+<td>ใช้แล้ว (ข้อมูลจำลอง)</td>
+</tr>
+<tr>
+<td>Ground Handler</td>
+<td>กำลังคน รถขนกระเป๋า</td>
+<td>ลำดับเที่ยวบินที่ควรทำก่อน</td>
+<td>ใช้แล้วเป็นส่วนเสริม</td>
+</tr>
+<tr>
+<td>Cargo Operator</td>
+<td>ยังไม่ใช้</td>
+<td>ยังไม่มี</td>
+<td>ขั้นขยายถัดไป</td>
+</tr>
+<tr>
+<td>Security / Immigration</td>
+<td>ยังไม่ใช้กับกระเป๋า</td>
+<td>ยังไม่มี</td>
+<td>มีในโมดูลคิวผู้โดยสาร</td>
+</tr>
+<tr>
+<td>ATC / Other (สภาพอากาศ)</td>
+<td>ฝนรายชั่วโมง</td>
+<td>บริบทของเหตุ</td>
+<td>ใช้เป็นบริบท ยังไม่ใช้เตือน</td>
+</tr>
+</tbody>
+</table>
+<h3>7.3 จุดที่ระบบจริงยังไม่ตรงกับสไลด์รอบแรก</h3>
+<ul>
+<li><strong>Blockchain's Ledger:</strong> สไลด์เขียนว่าใช้ blockchain ระบบจริงเก็บเหตุการณ์เป็นบันทึกที่มี checksum ที่มา และลำดับ ไม่ได้ใช้ blockchain ต้องเลือกว่าจะปรับคำบนสไลด์ หรือจะพัฒนาส่วนนี้</li>
+<li><strong>โลโก้ ChatGPT ในกล่อง AI:</strong> ระบบจริงคำนวณด้วยกฎที่ตรวจย้อนได้ ไม่ได้ใช้ LLM</li>
+<li><strong>ตัวเลข Impact เดิม</strong> (86%, 100%, 61%, 78%, 50%, 117.39 พันล้านบาท) ไม่มีที่มาหรือเป็นค่าที่กำหนดไว้ ถูกแทนด้วยผลจากแบบจำลองกระเป๋าในส่วนที่ 14</li>
+<li><strong>"$60.3B / Year"</strong> บนสไลด์ Pain Point ผิดสิบเท่า ค่าที่ถูกจาก SITA คือประมาณ 6.3 พันล้านดอลลาร์</li>
+</ul>
+<p>ข้อเสนอสำหรับสองข้อแรก: แก้คำบนสไลด์ให้ตรงกับระบบ คือใช้คำว่า "บันทึกเหตุการณ์ร่วมที่ตรวจย้อนได้" แทน blockchain และ "กฎการตัดสินใจที่ตรวจย้อนได้" แทนโลโก้ ChatGPT เพราะทำได้ทันทีและตอบคำถามกรรมการได้ตรง ถ้าทีมต้องการคง blockchain หรือ LLM ไว้ ต้องพัฒนาส่วนนั้นจริงก่อนนำเสนอ</p>
+<p>สิ่งที่ยังขาดเมื่อเทียบกับโครงเดิม และควรทำในรอบ prototype:</p>
+<ul>
+<li>นำการตรวจข้อมูลขัดแย้งระหว่างฝ่าย (แกนของชั้น Ledger) มาใช้กับข้อมูลกระเป๋า เช่น ground handler แจ้งว่าโหลดครบ แต่จำนวนสแกนยังไม่ครบ</li>
+<li>วัดเสา Operation ด้วยการทดลองกับผู้ใช้จริง: เวลาตั้งแต่เกิดเหตุจนมีผู้รับผิดชอบ</li>
+<li>ส่งการแจ้งเตือนไปยังแต่ละฝ่าย (Coordinate) ซึ่งตอนนี้ระบบระบุผู้รับผิดชอบแต่ยังไม่ส่งออก</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 8: Pain Point · ปัญหาและบริบทธุรกิจ</h2>
+<h3>8.1 ขนาดของปัญหาในอุตสาหกรรม</h3>
+<p>SITA Baggage IT Insights 2026 รายงานข้อมูลปี 2025 ว่า:</p>
+<ul>
+<li>กระเป๋าที่จัดการผิดพลาด (mishandled) ทั่วโลกประมาณ 24 ล้านใบ ลดลงจากปีก่อน</li>
+<li>อัตรา 4.9 ใบต่อผู้โดยสาร 1,000 คน</li>
+<li>ต้นทุนของอุตสาหกรรมประมาณ 6.3 พันล้านดอลลาร์ต่อปี เฉลี่ย 260 ดอลลาร์ต่อใบ</li>
+<li>39% ของกรณีเกิดในขั้นตอนต่อเครื่อง (transfer)</li>
+</ul>
+<p>คำว่า mishandled หมายถึงล่าช้า เสียหาย หรือส่งผิดปลายทาง ไม่ได้แปลว่าหายถาวร ตัวเลข 33.4 ล้านใบที่ SKY อ้างในวัน Kick-off เป็นข้อมูลปี 2024</p>
+<h3>8.2 เหตุการณ์จริงที่ยืนยันปัญหา</h3>
+<p>ปลายเดือนกันยายน 2026 ที่ท่าอากาศยานสุวรรณภูมิ:</p>
+<table>
+<thead>
+<tr>
+<th>วันที่</th>
+<th>สิ่งที่เกิดขึ้น</th>
+<th>แหล่ง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>25 ก.ย.</td>
+<td>ฝนที่จุดใกล้สนามบิน 116.1 มม. ในวันเดียว</td>
+<td>Open-Meteo (ข้อมูลจริง)</td>
+</tr>
+<tr>
+<td>26 ก.ย.</td>
+<td>CAAT ออกประกาศ 30/2569 ว่าฝนและน้ำท่วมขังกระทบการเดินทางเข้าออกสนามบิน</td>
+<td>CAAT</td>
+</tr>
+<tr>
+<td>26–27 ก.ย.</td>
+<td>พนักงานภาคพื้นของการบินไทยเดินทางมาทำงานไม่ได้ รถขนกระเป๋าบางส่วนเสีย เที่ยวบินขาออกล่าช้า ผู้โดยสารขาเข้ารอกระเป๋านาน</td>
+<td>The Nation</td>
+</tr>
+<tr>
+<td>28 ก.ย.</td>
+<td>กองทัพส่งกำลังพล 131 นายมาช่วย</td>
+<td>The Nation</td>
+</tr>
+<tr>
+<td>29 ก.ย.</td>
+<td>CEO การบินไทยระบุว่ามีกระเป๋าค้างประมาณ 5,000 ใบ</td>
+<td>The Nation</td>
+</tr>
+<tr>
+<td>30 ก.ย.</td>
+<td>สะสมกว่า 10,000 ใบช่วง 26–29 ก.ย. คืนแล้วประมาณ 1,800 ใบ เหลือประมาณ 8,000 ใบ งดรับ cargo 30 ก.ย.–6 ต.ค. และลดเที่ยวบิน</td>
+<td>The Star / Bernama</td>
+</tr>
+<tr>
+<td>3–4 ต.ค.</td>
+<td>เหลือ 1,092 ใบ</td>
+<td>The Nation</td>
+</tr>
+</tbody>
+</table>
+<figure class='diagram'><div class='chain '><div class='node real'><b>ฝนหนัก</b><small>116 มม. ใน 25 ก.ย.</small></div><span class='arrow'>→</span><div class='node real'><b>ถนนน้ำท่วม</b><small>CAAT ประกาศ 26 ก.ย.</small></div><span class='arrow'>→</span><div class='node real'><b>พนักงานมาไม่ได้</b><small>รถขนกระเป๋าเสียซ้ำ</small></div><span class='arrow'>→</span><div class='node assume'><b>กำลังจัดการลด</b><small>ไม่มีตัวเลขเผยแพร่</small></div><span class='arrow'>→</span><div class='node real'><b>กระเป๋าค้างสะสม</b><small>กว่า 10,000 ใบ</small></div><span class='arrow'>→</span><div class='node real'><b>เที่ยวบินได้รับผล</b><small>ลดเที่ยวบิน งดรับ cargo</small></div></div><p class='legend'><i class='dot real'></i>มีแหล่งข่าวหรือข้อมูลจริงรองรับ <i class='dot assume'></i>ไม่มีตัวเลขเผยแพร่ ทีมต้องสมมติ</p><figcaption>ลำดับเหตุของเหตุการณ์สุวรรณภูมิ ปลาย ก.ย. 2026 ที่ใช้เป็นแม่แบบสถานการณ์</figcaption></figure>
+<p>เหตุการณ์นี้ใช้เป็นหลักฐานว่าลำดับเหตุ "ฝน → คนมาไม่ได้ → กำลังการจัดการลด → กระเป๋าค้าง → เที่ยวบินได้รับผล" เกิดขึ้นจริง ไม่ใช่ข้อมูลนำเข้าของระบบ และไม่ใช่ผลงานของ One TrustX</p>
+<h3>8.3 ช่องว่างที่ระบบเข้าไปช่วย</h3>
+<p>ในเหตุการณ์จริง ทุกฝ่ายรู้ว่าคนไม่พอ สิ่งที่ยากคือการตัดสินใจภายใต้กำลังที่ลดลง: เที่ยวบินไหนต้องช่วยก่อน กระเป๋าต่อเครื่องชุดไหนเสี่ยงที่สุด และเมื่อใดที่การเร่งงานไม่พอแล้วต้องลดภาระ เช่น ชะลอเที่ยวบินหรือส่งกระเป๋าตามไปเที่ยวถัดไป ข้อมูลที่ใช้ตอบคำถามเหล่านี้อยู่คนละระบบ (การสแกนกระเป๋า ตารางบิน กำลังคน) One TrustX นำมารวมเป็นภาพเดียวและจัดลำดับให้</p>
+<figure class='diagram'>
+    <div class='pos'>
+      <div class='col'>
+        <div class='box sky'><b>BRS / BHS</b><small>จำนวนสแกนรายขั้น</small><em>SKY มีอยู่แล้ว</em></div>
+        <div class='box sky'><b>AODB</b><small>เวลาออก เวลาจอด gate</small><em>SKY มีอยู่แล้ว</em></div>
+        <div class='box opt'><b>Ground handler</b><small>กำลังคน รถขนกระเป๋า</small><em>ส่วนเสริม ใช้บอกสาเหตุ</em></div>
+      </div>
+      <div class='arrow big'>→</div>
+      <div class='core'>
+        <span>ONE TRUSTX</span>
+        <ol><li>ปกติหรือไม่</li><li>ติดที่ขั้นไหน</li><li>กระทบเที่ยวบินไหน กี่ใบ</li><li>ทำอะไรก่อน ก่อนกี่โมง</li></ol>
+      </div>
+      <div class='arrow big'>→</div>
+      <div class='col'>
+        <div class='box user'><b>ผู้ควบคุมงานกระเป๋า</b><small>อนุมัติ ปฏิเสธ หรือแก้คำแนะนำ</small></div>
+        <div class='box user'><b>Airline OCC</b><small>ตัดสินใจรอหรือส่งกระเป๋าตาม</small></div>
+      </div>
+    </div><figcaption>One TrustX อยู่เหนือระบบเดิม อ่านข้อมูลอย่างเดียว และให้คนเป็นผู้ตัดสินใจ</figcaption></figure>
+<p>ระบบไม่ได้สร้างพนักงานเพิ่ม และเอกสารนี้ไม่อ้างว่าเหตุการณ์จริงจะจบเร็วขึ้นถ้ามีระบบนี้</p>
+<h3>8.4 ผู้ใช้</h3>
+<table>
+<thead>
+<tr>
+<th>บทบาท</th>
+<th>ใช้ระบบทำอะไร</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Baggage / Ground Operations Controller (ผู้ใช้หลัก)</td>
+<td>ดูว่าติดที่ขั้นไหน จัดลำดับเที่ยวบิน อนุมัติคำแนะนำ</td>
+</tr>
+<tr>
+<td>Airline Operations Control</td>
+<td>ตัดสินใจรอหรือไม่รอกระเป๋า และการส่งกระเป๋าตามไป</td>
+</tr>
+<tr>
+<td>Airport Operations</td>
+<td>เห็นภาพรวมข้ามฝ่าย</td>
+</tr>
+<tr>
+<td>ผู้โดยสาร</td>
+<td>ได้ประโยชน์ทางอ้อม ไม่ได้ใช้ระบบ</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>ส่วนที่ 9: Pain Point · ระบบช่วยได้จริงหรือไม่ เมื่อพนักงานมาไม่ได้</h2>
+<p>คำถามที่ต้องตอบตรง ๆ: เหตุการณ์ ก.ย. 2026 เกิดจากพนักงานเดินทางมาไม่ได้ ซึ่งซอฟต์แวร์แก้ไม่ได้ แล้ว One TrustX ช่วยอะไร</p>
+<h3>9.1 สิ่งที่ระบบแก้ไม่ได้</h3>
+<ul>
+<li>ระบบไม่ทำให้พนักงานมาถึงสนามบิน และไม่เพิ่มกำลังการขนถ่าย</li>
+<li>ถ้ากำลังที่เหลือน้อยกว่าปริมาณงานมาก จะมีกระเป๋าตกค้างไม่ว่าจัดลำดับดีเพียงใด ในแบบจำลองน้ำท่วม แม้จัดลำดับตามคำแนะนำ ก็ยังมีกระเป๋าตกเที่ยวบิน 142.5 ใบ (ค่ากลาง)</li>
+<li>เอกสารนี้ไม่อ้างว่าเหตุการณ์จริงจะจบเร็วขึ้นถ้ามีระบบนี้ เพราะไม่มีข้อมูลการปฏิบัติงานจริงมาพิสูจน์</li>
+</ul>
+<h3>9.2 สิ่งที่ระบบช่วยได้ เมื่อกำลังคนลดลงแล้ว</h3>
+<p>เมื่อคนเหลือครึ่งเดียว คำถามเปลี่ยนจาก "ทำอย่างไรให้ทัน" เป็น "ใช้กำลังที่เหลือกับอะไรก่อน" ระบบช่วยสามเรื่อง:</p>
+<table>
+<thead>
+<tr>
+<th>เรื่อง</th>
+<th>ถ้าไม่มีภาพรวม</th>
+<th>สิ่งที่ระบบให้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>จัดลำดับ</td>
+<td>แต่ละทีมทำเที่ยวบินของตัวเอง กำลังถูกใช้กับเที่ยวบินที่ยังมีเวลา ขณะที่เที่ยวบินที่ใกล้ปิดขาดคน</td>
+<td>ลำดับเที่ยวบินตามเวลาปิดห้องเก็บสัมภาระ และจำนวนกระเป๋าต่อเครื่องที่เสี่ยง</td>
+</tr>
+<tr>
+<td>รู้เร็วว่าเร่งไม่ทัน</td>
+<td>รู้เมื่อกระเป๋าตกเที่ยวบินไปแล้ว</td>
+<td>เตือนเมื่อกระเป๋าที่รอโตเร็วกว่าอัตราที่เคลียร์ได้ พร้อมข้อความว่าการจัดลำดับอย่างเดียวไม่พอ ให้พิจารณาลดภาระ</td>
+</tr>
+<tr>
+<td>ภาพเดียวกันทุกฝ่าย</td>
+<td>สายการบิน ground handler และสนามบินถือตัวเลขคนละชุด</td>
+<td>จำนวนกระเป๋ารอรายขั้นและรายเที่ยวบินชุดเดียว ใช้ตัดสินใจร่วมและแจ้งผู้โดยสาร</td>
+</tr>
+</tbody>
+</table>
+<p>เรื่องที่สองเชื่อมกับเหตุการณ์จริงโดยตรง: มาตรการลดภาระ (งดรับ cargo และลดเที่ยวบิน) ถูกรายงานเมื่อ 30 ก.ย. ซึ่งเป็นวันที่ห้าของเหตุการณ์ หลังกระเป๋าสะสมเกิน 10,000 ใบ ระบบที่แสดงทุก 5 นาทีว่ากระเป๋ารอเพิ่มขึ้นเร็วกว่าที่เคลียร์ได้ จะให้ข้อมูลสำหรับตัดสินใจเรื่องนี้ตั้งแต่ชั่วโมงแรก ๆ ส่วนจะตัดสินใจเร็วขึ้นจริงหรือไม่ ขึ้นกับผู้มีอำนาจ ไม่ใช่ระบบ</p>
+<h3>9.3 ตัวเลขจากแบบจำลอง</h3>
+<p>ในสถานการณ์น้ำท่วมจำลอง 30 รอบ (กำลังคนเหลือ 55%):</p>
+<ul>
+<li>แบ่งกำลังเท่ากันทุกเที่ยวบิน: กระเป๋าตกเที่ยวบิน 297.5 ใบ ในจำนวนนี้เป็นกระเป๋าต่อเครื่อง 61.5 ใบ</li>
+<li>จัดลำดับตามคำแนะนำ: 142.5 ใบ กระเป๋าต่อเครื่อง 15.5 ใบ</li>
+<li>ระบบเตือนก่อนกระเป๋าใบแรกตกเที่ยวบิน 55 นาที (ต่ำสุด 25 สูงสุด 125)</li>
+</ul>
+<p>ตัวเลขนี้ขึ้นกับสมมติฐานว่าวิธีเดิมคือการแบ่งกำลังเท่ากัน ถ้า ground handler จริงจัดลำดับได้ดีอยู่แล้ว ประโยชน์จะน้อยกว่านี้ นี่คือข้อที่ต้องถามผู้เชี่ยวชาญก่อนรอบ prototype</p>
+<h3>9.4 สิ่งที่ยังไม่ได้ทำ แต่ตรงกับต้นเหตุมากกว่า</h3>
+<p>ต้นเหตุคือคนมาไม่ถึง ฝนตก 116 มม. ในวันที่ 25 ก.ย. หนึ่งวันก่อนเหตุการณ์เริ่ม ระบบปัจจุบันมีข้อมูลฝนนี้เป็นบริบทเท่านั้น ยังไม่ได้ใช้เตือนล่วงหน้า ขั้นถัดไปที่ควรทำคือเตือนความเสี่ยงด้านกำลังคนจากพยากรณ์ฝนและน้ำท่วมถนน เพื่อให้ผู้จัดการกะเตรียมการได้ก่อน เช่น ให้พนักงานพักใกล้สนามบินหรือจัดรถรับส่ง ส่วนนี้ยังเป็นแผน ไม่มีในระบบ</p>
+<h3>9.5 คำตอบสั้นสำหรับกรรมการ</h3>
+<blockquote>
+<p>ระบบไม่ได้แก้ปัญหาคนมาไม่ได้ แต่ช่วยให้ใช้คนที่เหลือกับเที่ยวบินและกระเป๋าที่สำคัญที่สุดก่อน และบอกให้รู้ตั้งแต่ต้นว่าเมื่อใดการเร่งงานไม่พอและต้องลดภาระ ผลที่มีตอนนี้มาจากแบบจำลอง ยังต้องพิสูจน์กับข้อมูลจริง</p>
+</blockquote>
+<hr />
+<h2>ส่วนที่ 10: Solution · สี่ชั้นเดิมของ One TrustX กับข้อมูลกระเป๋า</h2>
+<p>Solution ของ One TrustX ยังเป็นสี่ชั้นเดิม ส่วนนี้แสดงว่าแต่ละชั้นทำอะไรกับข้อมูลกระเป๋า รายละเอียดของแต่ละชั้นอยู่ในส่วนที่ 11–13</p>
+<figure class='diagram'><div class='pos'><div class='col' style='flex:.55'><div class='box sky'><b>Baggage Operator</b><small>BRS / BHS</small></div><div class='box sky'><b>Airport</b><small>AODB</small></div><div class='box sky'><b>Airline</b><small>DCS · เที่ยวบินต่อ</small></div><div class='box sky'><b>Ground Handler</b><small>คน · รถขนกระเป๋า</small></div></div><div class='arrow big'>→</div><div class='layers' style='flex:1.6'><div class='layer l2'><b>1 · Data Integration Layer</b><span>สแกนรายขั้น + ตารางบิน + กระเป๋าที่คาดไว้ + กำลังคน → รูปแบบเดียว</span></div><div class='down'>↓</div><div class='layer l1'><b>2 · Trusted Shared Event Ledger</b><span>ป้ายที่มา เวลาเกิดเหตุและเวลาที่ได้รับ ตรวจความสด ไม่ตัดสินจากข้อมูลที่ขาด</span></div><div class='down'>↓</div><div class='layer l4'><b>3 · Common Operation State</b><span>สถานะเดียวของ 6 ขั้น: กระเป๋าที่รอ เวลารอ สถานะรวม</span></div><div class='down'>↓</div><div class='layer l3'><b>4 · AI Decision Intelligence</b><span>Detect คอขวด · Predict เที่ยวบินเสี่ยง · Recommend ลำดับ · Coordinate ผู้รับผิดชอบและเส้นตาย</span></div></div><div class='arrow big'>→</div><div class='col' style='flex:.55'><div class='box user'><b>คนตัดสินใจ</b><small>อนุมัติ ปฏิเสธ แก้ไข</small></div></div></div><figcaption>สี่ชั้นเดิมของ One TrustX จากสไลด์รอบแรก ใช้กับข้อมูลกระเป๋า</figcaption></figure>
+<table>
+<thead>
+<tr>
+<th>ชั้นเดิม</th>
+<th>ทำอะไรกับกระเป๋า</th>
+<th>ทำแล้วแค่ไหน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>1. Data Integration Layer</td>
+<td>รับจำนวนสแกนรายขั้น ตารางบิน จำนวนกระเป๋าที่คาดไว้ และข้อมูลกำลังคน แปลงเป็นรูปแบบเดียว: ขั้น เที่ยวบิน ประเภทกระเป๋า จำนวน เวลาเกิดเหตุ เวลาที่ได้รับ</td>
+<td>ทำแล้วกับข้อมูลจำลอง ตัวเชื่อมกับระบบจริงยังเป็นแผน</td>
+</tr>
+<tr>
+<td>2. Trusted Shared Event Ledger</td>
+<td>ทุกรายการมีป้ายที่มาและเวลาที่ได้รับ ตรวจว่าข้อมูลสดหรือไม่ ถ้าขั้นใดไม่มีสแกนใหม่ขณะมีกระเป๋ารอ จะไม่นำไปตัดสิน</td>
+<td>ทำแล้วเรื่องที่มาและความสด การตรวจข้อมูลขัดแย้งระหว่างฝ่ายมีใน backend ของชุดเที่ยวบินเดียว ยังไม่ได้ใช้กับกระเป๋า ไม่ใช้ blockchain</td>
+</tr>
+<tr>
+<td>3. Common Operation State</td>
+<td>สถานะเดียวที่ทุกฝ่ายเห็นตรงกัน: 6 ขั้นของกระเป๋า จำนวนที่รอ เวลารอ และสถานะรวม</td>
+<td>ทำแล้ว คือหน้า Baggage</td>
+</tr>
+<tr>
+<td>4. AI Decision Intelligence</td>
+<td>Detect หาคอขวด / Predict เที่ยวบินและกระเป๋าที่จะไม่ทัน / Recommend ลำดับที่ควรทำก่อน / Coordinate ระบุผู้รับผิดชอบและเส้นตาย</td>
+<td>ทำแล้วด้วยกฎที่ตรวจย้อนได้ ยังไม่มีการส่งแจ้งเตือนไปยังแต่ละฝ่าย</td>
+</tr>
+</tbody>
+</table>
+<h3>10.1 Detect · Predict · Recommend · Coordinate ในกรณีกระเป๋า</h3>
+<table>
+<thead>
+<tr>
+<th>ขั้นเดิม</th>
+<th>คำถาม</th>
+<th>วิธีทำ</th>
+<th>ตัวอย่างจากสถานการณ์น้ำท่วม 08:30</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Detect</td>
+<td>ติดที่ไหน</td>
+<td>เวลารอของกระเป๋าใบแรกสุดในแต่ละขั้น เทียบเกณฑ์</td>
+<td>Loading รอ 35 นาที เกินเกณฑ์ 30</td>
+</tr>
+<tr>
+<td>Predict</td>
+<td>จะกระทบอะไร</td>
+<td>กระเป๋าที่เหลือเทียบกับอัตราโหลดจริง เรียงตามเวลาปิด</td>
+<td>3 เที่ยวบิน 60 ใบ ต่อเครื่อง 44 ใบ</td>
+</tr>
+<tr>
+<td>Recommend</td>
+<td>ทำอะไรก่อน</td>
+<td>เที่ยวบินที่ปิดก่อนได้ก่อน</td>
+<td>TT403 ก่อน แล้ว TT404, TT405</td>
+</tr>
+<tr>
+<td>Coordinate</td>
+<td>ใครทำ ก่อนเมื่อใด</td>
+<td>ระบุผู้รับผิดชอบตามขั้นที่ติด และเส้นตาย</td>
+<td>Ground handler ก่อน 08:55 คนอนุมัติ</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<h2>ส่วนที่ 11: Solution · หน้า Baggage ใช้งานอย่างไร</h2>
+<h3>11.1 หน้ากระเป๋าในระบบ One TrustX</h3>
+<p>หน้ากระเป๋าเป็นเมนู <strong>Baggage</strong> ในแถบนำทางเดียวกับ Overview, Future Flow, Operations, Simulator, Flights และ Performance ใช้หน้าตา ตัวเลือกภาษา และแถบแจ้งว่าเป็นข้อมูลจำลองแบบเดียวกับหน้าอื่น ที่อยู่คือ <code>/baggage</code></p>
+<p>หน้านี้อยู่บนเว็บจริงแล้วที่ onetrustx.vercel.app/baggage ภาพแรกแคปจากเว็บจริง ภาพขยายแต่ละสถานการณ์แคปจากระบบชุดเดียวกันบนเครื่องพัฒนา ภาพทั้งหมดเป็นข้อมูลจำลอง</p>
+<figure class='shot'><img src="screenshots/report/live-baggage.jpg" alt=""><figcaption>หน้า Baggage ในระบบ: เมนูอยู่ถัดจาก Overview เลือกสถานการณ์และเวลาได้จากแถบบน</figcaption></figure>
+<p><strong>ขั้นที่ 1: เลือกสถานการณ์และเวลา</strong> เมื่อเลือก "Normal operations" ทุกขั้นเป็นสีเขียว สถานะรวมเป็น NORMAL และไม่มี action</p>
+<figure class='shot'><img src="screenshots/report/bag-normal.png" alt=""><figcaption>สถานการณ์ปกติ เวลา 08:30: ทุกขั้น OK ไม่มีคอขวด เที่ยวบินเสี่ยง 0 จาก 10</figcaption></figure>
+<p><strong>ขั้นที่ 2: ดูว่าติดที่ไหน</strong> เปลี่ยนเป็นสถานการณ์น้ำท่วม ขั้น Loading เปลี่ยนเป็น DELAY พร้อมจำนวนกระเป๋าที่รอและเวลาที่ใบแรกสุดรอมาแล้ว การ์ดสี่ใบตอบ ติดที่ไหน / กระทบกี่เที่ยวบิน / ใครรับผิดชอบ / ต้องตัดสินใจก่อนกี่โมง</p>
+<figure class='shot'><img src="screenshots/report/bag-flood.png" alt=""><figcaption>สถานการณ์น้ำท่วม เวลา 08:30: Loading มีกระเป๋ารอ 202 ใบ ใบที่รอนานสุด 35 นาที เที่ยวบินเสี่ยง 3 จาก 10</figcaption></figure>
+<p><strong>ขั้นที่ 3: อ่านเหตุผลและลำดับที่แนะนำ</strong> ด้านซ้ายคือหลักฐานที่ทำให้ระบบสรุปเช่นนั้น ด้านขวาคือคำแนะนำ ตารางล่างเรียงเที่ยวบินตามเวลาปิดห้องเก็บสัมภาระ ผู้ควบคุมงานเป็นผู้ตัดสินใจ</p>
+<figure class='shot'><img src="screenshots/report/bag-flood-action.png" alt=""><figcaption>หลักฐาน คำแนะนำ และลำดับเที่ยวบิน: TT403 ก่อน เพราะปิด 08:55</figcaption></figure>
+<p><strong>ขั้นที่ 4: ปิดข้อมูลกำลังคน</strong> เมื่อเอาเครื่องหมายถูกออก ระบบยังชี้ว่าติดที่ Loading ได้เหมือนเดิม แต่ช่องสาเหตุเปลี่ยนเป็น UNKNOWN นี่คือสิ่งที่ระบบทำได้ด้วยข้อมูลของ SKY เพียงอย่างเดียว</p>
+<figure class='shot'><img src="screenshots/report/bag-flood-nofeed.png" alt=""><figcaption>ไม่มีข้อมูลจาก ground handler: รู้ตำแหน่งคอขวด แต่ไม่ระบุสาเหตุ</figcaption></figure>
+<p><strong>ขั้นที่ 5: สถานการณ์อื่น</strong> เครื่องคัดแยกขัดข้องทำให้คอขวดย้ายไปที่ Sorting ส่วนเที่ยวบินขาเข้าที่ช้าทำให้ขั้น Transfer ขึ้น RISK โดยไม่มีคอขวด เพราะปัญหาคือเวลาต่อเครื่องไม่พอ</p>
+<figure class='shot'><img src="screenshots/report/bag-bhs.png" alt=""><figcaption>เครื่องคัดแยกขัดข้อง เวลา 08:30: คอขวดอยู่ที่ Sorting</figcaption></figure>
+<figure class='shot'><img src="screenshots/report/bag-late.png" alt=""><figcaption>ขาเข้าช้า เวลา 12:00: Transfer ขึ้น RISK กระเป๋าต่อเครื่อง 44 ใบเสี่ยง ต้องตัดสินใจก่อน 12:35</figcaption></figure>
+<p><strong>ขั้นที่ 6: เมื่อข้อมูลขาด</strong> ถ้าการสแกน loading หยุดเข้ามา ระบบขึ้น VERIFY DATA ซ่อนตัวเลขที่เชื่อไม่ได้ และแนะนำให้ยืนยันสถานะทางวิทยุก่อน</p>
+<figure class='shot'><img src="screenshots/report/bag-stale.png" alt=""><figcaption>ข้อมูลสแกน loading ขาด เวลา 09:00: ขึ้น NO SCANS และ N/A แทนตัวเลข</figcaption></figure>
+<p><strong>ขั้นที่ 7: ดูผลจำลองซ้ำ</strong> ท้ายหน้าเดียวกันมีตารางผล 30 รอบของทุกสถานการณ์</p>
+<figure class='shot'><img src="screenshots/report/bag-evaluation.png" alt=""><figcaption>ตารางผลจำลองซ้ำ 30 รอบต่อสถานการณ์ ท้ายหน้า Baggage</figcaption></figure>
+<h3>11.2 สถานการณ์ที่สลับได้</h3>
+<table>
+<thead>
+<tr>
+<th>สถานการณ์</th>
+<th>สิ่งที่จำลอง</th>
+<th>สิ่งที่ระบบควรแสดง</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ปกติ</td>
+<td>กำลังคนและอุปกรณ์ตามแผน</td>
+<td>NORMAL ไม่มี action</td>
+</tr>
+<tr>
+<td>น้ำท่วม คนมาไม่ได้</td>
+<td>งานที่ใช้คนเหลือ 55% ทั้งกะ รถขนกระเป๋าเสียช่วงกลางกะ</td>
+<td>ติดที่ Loading พร้อมลำดับเที่ยวบิน</td>
+</tr>
+<tr>
+<td>เครื่องคัดแยกขัดข้อง</td>
+<td>กำลังคัดแยกเหลือหนึ่งในสี่เป็นเวลา 75 นาที</td>
+<td>ติดที่ Sorting</td>
+</tr>
+<tr>
+<td>ขาเข้าช้า</td>
+<td>เที่ยวบินขาเข้า 4 เที่ยวช้า 55 นาที</td>
+<td>เตือนกระเป๋าต่อเครื่องที่เวลาไม่พอ</td>
+</tr>
+<tr>
+<td>ข้อมูลสแกนขาด</td>
+<td>งานปกติ แต่ข้อมูล loading มาช้า 45 นาที</td>
+<td>ให้ตรวจสอบข้อมูลก่อน ไม่แจ้งว่ากระเป๋าล่าช้า</td>
+</tr>
+</tbody>
+</table>
+<h3>11.3 พฤติกรรมที่ออกแบบไว้โดยเจตนา</h3>
+<ul>
+<li>หาตำแหน่งคอขวดจากจำนวนสแกนและตารางบินเท่านั้น ซึ่งเป็นข้อมูลที่ SKY มีใน BRS และ AODB</li>
+<li>ข้อมูลกำลังคนจาก ground handler ใช้บอกสาเหตุ ถ้าไม่มี ระบบแสดง "UNKNOWN" แทนการเดา</li>
+<li>ถ้าขั้นใดไม่มีสแกนใหม่ขณะที่ยังมีกระเป๋ารอ ระบบซ่อนตัวเลขและขอให้ตรวจสอบ เพราะแยกไม่ได้ว่าขั้นนั้นหยุดจริงหรือข้อมูลไม่มา</li>
+<li>ทุกคำแนะนำต้องมีคนอนุมัติ ระบบไม่สั่งการอุปกรณ์ใด</li>
+<li>ใช้เฉพาะจำนวนรวมรายเที่ยวบินและรายขั้น ไม่ใช้ชื่อผู้โดยสาร เลขหนังสือเดินทาง หรือเลขป้ายกระเป๋า</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 12: Solution · ข้อมูลของโมดูลกระเป๋าและที่มา</h2>
+<h3>12.1 ข้อมูลสามชั้น</h3>
+<figure class='diagram'>
+    <div class='layers'>
+      <div class='layer l1'><b>ชั้นที่ 1 · ข้อมูลจริงสาธารณะ</b><span>ฝนรายชั่วโมงที่ BKK · เวลาปิดรับกระเป๋าของสายการบิน · จุดสแกนตาม IATA 753 · สถิติผู้โดยสารและเที่ยวบิน</span></div>
+      <div class='layer l2'><b>ชั้นที่ 2 · รูปแบบจากเหตุการณ์จริงและค่าอ้างอิง</b><span>ลำดับเหตุของเหตุการณ์ ก.ย. 2026 · SITA: 39% ของกรณีผิดพลาดเกิดที่ transfer</span></div>
+      <div class='layer l3'><b>ชั้นที่ 3 · สมมติฐานของทีม (ประกาศชัด)</b><span>กำลังคนเหลือ 55% · กระเป๋า 0.9 ใบต่อคน · เกณฑ์เวลารอ · เวลาปิดห้องเก็บสัมภาระ</span></div>
+      <div class='down'>↓ รวมไว้ใน baggage_calibration.json พร้อมประเภทและลิงก์ ↓</div>
+      <div class='layer l4'><b>ข้อมูลปฏิบัติการจำลอง</b><span>เที่ยวบิน กระเป๋า และการสแกน สร้างจากค่าข้างบนด้วยเลขสุ่มที่ทำซ้ำได้</span></div>
+    </div><figcaption>ข้อมูลสามชั้น: ของจริงกำหนดโครง สมมติฐานถูกประกาศ ข้อมูลปฏิบัติการเป็นของจำลองทั้งหมด</figcaption></figure>
+<h3>12.2 ป้ายประเภทข้อมูล</h3>
+<table>
+<thead>
+<tr>
+<th>ป้าย</th>
+<th>ความหมาย</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>REAL_PUBLIC</td>
+<td>ข้อเท็จจริงที่เผยแพร่โดยแหล่งทางการ</td>
+</tr>
+<tr>
+<td>BENCHMARK</td>
+<td>ค่าอ้างอิงระดับอุตสาหกรรม</td>
+</tr>
+<tr>
+<td>DERIVED</td>
+<td>คำนวณจากข้อมูลจริง</td>
+</tr>
+<tr>
+<td>ASSUMPTION</td>
+<td>ค่าที่ทีมตั้งเอง ไม่ใช่ตัวเลขของสายการบินหรือสนามบินใด</td>
+</tr>
+<tr>
+<td>SYNTHETIC</td>
+<td>ข้อมูลปฏิบัติการที่สร้างขึ้น</td>
+</tr>
+<tr>
+<td>SIMULATED</td>
+<td>ผลจากการรันแบบจำลอง</td>
+</tr>
+</tbody>
+</table>
+<h3>12.3 ค่าที่ขับสถานการณ์ (จาก <code>backend/app/baggage_calibration.json</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>ค่า</th>
+<th>ตัวเลข</th>
+<th>ประเภท</th>
+<th>ที่มา</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ปิดรับกระเป๋าก่อนออก</td>
+<td>60 นาที</td>
+<td>REAL_PUBLIC</td>
+<td>นโยบาย check-in ของการบินไทย</td>
+</tr>
+<tr>
+<td>จุดสแกนบังคับ</td>
+<td>รับ โหลด ส่งต่อ ถึง</td>
+<td>REAL_PUBLIC</td>
+<td>IATA Resolution 753</td>
+</tr>
+<tr>
+<td>ผู้โดยสารเฉลี่ยต่อเที่ยวบิน</td>
+<td>170 คน</td>
+<td>DERIVED</td>
+<td>BKK ปีงบ 2025: 62.9 ล้านคน หาร 370,823 เที่ยว ตามที่สื่อรายงาน ต้องเทียบรายงานประจำปี AOT</td>
+</tr>
+<tr>
+<td>สัดส่วนกรณีผิดพลาดจาก transfer</td>
+<td>39%</td>
+<td>BENCHMARK</td>
+<td>SITA 2026 ใช้อธิบายเหตุผลการจัดลำดับ ไม่ใช่ค่านำเข้า</td>
+</tr>
+<tr>
+<td>กระเป๋าต่อผู้โดยสาร</td>
+<td>0.9</td>
+<td>ASSUMPTION</td>
+<td>ไม่พบตัวเลขสาธารณะของ BKK</td>
+</tr>
+<tr>
+<td>สัดส่วนกระเป๋าต่อเครื่อง</td>
+<td>20%</td>
+<td>ASSUMPTION</td>
+<td>ต้องใช้ข้อมูลสายการบินมาแทน</td>
+</tr>
+<tr>
+<td>เที่ยวบินขาออกในช่วงจำลอง</td>
+<td>12</td>
+<td>ASSUMPTION</td>
+<td>BKK เฉลี่ยประมาณ 21 เที่ยวขาออกต่อชั่วโมงทุก handler รวมกัน</td>
+</tr>
+<tr>
+<td>กำลังสำรองปกติ</td>
+<td>1.3 เท่า</td>
+<td>ASSUMPTION</td>
+<td>รอแทนด้วยค่าที่วัดจาก BRS</td>
+</tr>
+<tr>
+<td>ปิดห้องเก็บสัมภาระก่อนออก</td>
+<td>20 นาที</td>
+<td>ASSUMPTION</td>
+<td>ต้องยืนยันกับผู้เชี่ยวชาญ</td>
+</tr>
+<tr>
+<td>กำลังคนช่วงน้ำท่วม</td>
+<td>55%</td>
+<td>ASSUMPTION</td>
+<td>ข่าวรายงานว่าคนมาไม่ได้ แต่ไม่มีตัวเลขสัดส่วน</td>
+</tr>
+<tr>
+<td>เกณฑ์เวลารอ ขั้นขาออก</td>
+<td>เฝ้าระวัง 15 ล่าช้า 30 นาที</td>
+<td>ASSUMPTION</td>
+<td>ต้องยืนยันกับผู้ควบคุมงาน</td>
+</tr>
+<tr>
+<td>เกณฑ์เวลารอ transfer และ arrival</td>
+<td>30 และ 45 นาที</td>
+<td>ASSUMPTION</td>
+<td>ต้องเทียบกับ service level ของ handler</td>
+</tr>
+<tr>
+<td>เวลาต่อเครื่องขั้นต่ำของกระเป๋า</td>
+<td>40 นาที</td>
+<td>ASSUMPTION</td>
+<td>รอแทนด้วยค่าทางการของสนามบิน</td>
+</tr>
+<tr>
+<td>ช่วงเวลาที่ประเมินความเสี่ยง</td>
+<td>90 นาที</td>
+<td>ASSUMPTION</td>
+<td>ไกลกว่านี้ไม่ประเมิน</td>
+</tr>
+<tr>
+<td>ข้อมูลถือว่าขาด</td>
+<td>15 นาที</td>
+<td>ASSUMPTION</td>
+<td>–</td>
+</tr>
+</tbody>
+</table>
+<h3>12.4 ปริมาณฝนจริง (Open-Meteo จุดใกล้ BKK)</h3>
+<table>
+<thead>
+<tr>
+<th>วันที่</th>
+<th>มม./วัน</th>
+<th>สูงสุด มม./ชม.</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>24 ก.ย. 2026</td>
+<td>22.4</td>
+<td>8.6</td>
+</tr>
+<tr>
+<td>25 ก.ย. 2026</td>
+<td>116.1</td>
+<td>13.4</td>
+</tr>
+<tr>
+<td>26 ก.ย. 2026</td>
+<td>66.1</td>
+<td>7.1</td>
+</tr>
+<tr>
+<td>27 ก.ย. 2026</td>
+<td>59.2</td>
+<td>9.0</td>
+</tr>
+<tr>
+<td>28 ก.ย. 2026</td>
+<td>38.8</td>
+<td>4.9</td>
+</tr>
+<tr>
+<td>29 ก.ย. 2026</td>
+<td>3.1</td>
+<td>1.0</td>
+</tr>
+</tbody>
+</table>
+<p>เป็นข้อมูลจากแบบจำลองอากาศย้อนหลัง ไม่ใช่มาตรวัดฝนในสนามบิน ไฟล์ต้นฉบับพร้อม checksum อยู่ที่ <code>data/external/openmeteo/bkk-2026-09-incident.json</code></p>
+<h3>12.5 ข้อมูลจำลองที่ระบบสร้าง</h3>
+<table>
+<thead>
+<tr>
+<th>ไฟล์</th>
+<th>เนื้อหา</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>data/synthetic/baggage_flow/flights.csv</code></td>
+<td>ตารางบินจำลองของทั้ง 5 สถานการณ์ (เที่ยวบิน TT4xx ขาออก TT8xx ขาเข้า)</td>
+</tr>
+<tr>
+<td><code>data/synthetic/baggage_flow/BAG-*.csv</code></td>
+<td>รายการสแกนรวมรายเที่ยวบิน รายขั้น ทุก 5 นาที รวมประมาณ 8,000 แถว</td>
+</tr>
+<tr>
+<td><code>backend/app/baggage_evaluation.json</code></td>
+<td>ผลจำลอง 30 รอบต่อสถานการณ์</td>
+</tr>
+</tbody>
+</table>
+<p>โครงสร้างของรายการสแกนหนึ่งแถว:</p>
+<pre><code class="language-text">scenario_id   รหัสสถานการณ์
+seed          เลขสุ่มที่ใช้สร้าง (ทำซ้ำได้)
+stage         check_in / screening / sorting / loading / transfer / arrival
+flight        เที่ยวบินที่กระเป๋าชุดนี้สังกัด
+bag_class     LOCAL / TRANSFER / TERMINATING
+count         จำนวนใบ
+event_min     นาทีที่สแกนเกิดขึ้น
+ingest_min    นาทีที่ระบบได้รับข้อมูล (ใช้ทดสอบข้อมูลมาช้า)
+source_type   SYNTHETIC
+</code></pre>
+<h3>12.6 แหล่งข้อมูลของโมดูลอื่น</h3>
+<p>OpenSky, OurAirports, CAAT, BTS, CBP และ UK CAA เป็นข้อมูลของโมดูลคิวผู้โดยสารและหน้าบริบท ไม่ได้ใช้กับหน้ากระเป๋า รายละเอียดอยู่ในส่วนที่ 4</p>
+<hr />
+<h2>ส่วนที่ 13: Solution · การทำงาน การคำนวณ และการวิเคราะห์</h2>
+<p>โค้ดอยู่ใน <code>backend/app/baggage_flow.py</code> แบ่งเป็นสองส่วนที่แยกกันโดยเจตนา</p>
+<h3>13.1 <code>simulate</code>: โลกจำลอง</h3>
+<figure class='diagram'><div class='lanes'><div class='lane '><span class='lane-title'>ขาออก</span><div class='chain tight'><div class='node scan'><b>Check-in</b><small>รับกระเป๋า</small></div><span class='arrow'>→</span><div class='node '><b>Screening</b><small>อัตโนมัติ</small></div><span class='arrow'>→</span><div class='node '><b>Sorting</b><small>อัตโนมัติ</small></div><span class='arrow'>→</span><div class='node manual'><b>Loading</b><small>ใช้คน</small></div><span class='arrow'>→</span><div class='node end'><b>ออกเดินทาง</b><small>ปิดห้องสัมภาระ −20 นาที</small></div></div></div><div class='lane '><span class='lane-title'>ต่อเครื่อง</span><div class='chain tight'><div class='node end'><b>เครื่องจอด</b><small>ขาเข้า</small></div><span class='arrow'>→</span><div class='node manual'><b>Transfer</b><small>ใช้คน</small></div><span class='arrow'>→</span><div class='node '><b>Sorting</b><small>รวมกับขาออก</small></div><span class='arrow'>→</span><div class='node manual'><b>Loading</b><small>ใช้คน</small></div><span class='arrow'>→</span><div class='node end'><b>ออกเดินทาง</b><small>เที่ยวบินต่อ</small></div></div></div><div class='lane '><span class='lane-title'>ขาเข้า</span><div class='chain tight'><div class='node end'><b>เครื่องจอด</b><small>ขาเข้า</small></div><span class='arrow'>→</span><div class='node manual'><b>Arrival</b><small>ใช้คน</small></div><span class='arrow'>→</span><div class='node scan'><b>สายพานรับกระเป๋า</b><small>คืนผู้โดยสาร</small></div></div></div><p class='legend'><i class='dot manual'></i>ขั้นที่ใช้คน กำลังลดเมื่อพนักงานมาไม่ได้ <i class='dot scan'></i>จุดสแกนตาม IATA 753 ทุกลูกศรคือจุดเปลี่ยนมือ</p></div><figcaption>เส้นทางกระเป๋าสามแบบในแบบจำลอง</figcaption></figure>
+<ul>
+<li>เวลาเดินทีละ 5 นาที รวม 540 นาที เริ่ม 05:00 ของวันที่ 26 ก.ย. 2026</li>
+<li>กระเป๋าท้องถิ่นเข้าระบบช่วง 180 ถึง 60 นาทีก่อนออก หนาแน่นสุดที่ 110 นาที</li>
+<li>กระเป๋าต่อเครื่องและกระเป๋าปลายทางเข้าระบบเมื่อเที่ยวบินขาเข้าจอด</li>
+<li>เส้นทาง: ท้องถิ่น → screening → sorting → loading / ต่อเครื่อง → transfer → sorting → loading / ปลายทาง → arrival</li>
+<li>กำลังปกติของขั้นอัตโนมัติคิดจาก 5 นาทีที่หนาแน่นสุด ขั้นที่ใช้คนคิดจากชั่วโมงที่หนาแน่นสุด คูณ 1.3</li>
+<li>กระเป๋าที่ยังไม่ถูกโหลดเมื่อถึงเวลาปิดห้องเก็บสัมภาระ นับเป็นตกเที่ยวบิน</li>
+<li>วิธีจัดสรรกำลังมีสองแบบ: <code>PLAN</code> แบ่งเท่ากันทุกเที่ยวบิน และ <code>PRIORITY</code> ให้เที่ยวบินที่ปิดก่อนได้ก่อน</li>
+</ul>
+<h3>13.2 <code>assess</code>: ส่วนที่เป็น One TrustX</h3>
+<p>รับข้อมูลได้เพียงสามอย่าง: รายการสแกนที่ได้รับแล้ว ณ เวลานั้น ตารางบินพร้อมจำนวนกระเป๋าที่คาดไว้ และ feed กำลังคนถ้ามี ไม่อ่านค่ากำลังการผลิตหรือความจริงจากแบบจำลอง</p>
+<pre><code class="language-text">สำหรับแต่ละขั้น:
+  กระเป๋ารอ      = ที่เข้าขั้นนี้แล้ว - ที่สแกนผ่านขั้นนี้แล้ว
+  เวลารอ         = อายุของกระเป๋าที่เข้าก่อนสุดและยังไม่ถูกสแกน
+  สถานะ          = OK / WATCH / DELAY ตามเกณฑ์เวลารอ
+                   STALE ถ้ามีกระเป๋ารอแต่ไม่มีสแกนใหม่เกิน 15 นาที
+
+คอขวด            = ขั้นที่เวลารอนานสุดในกลุ่ม WATCH หรือ DELAY
+
+สำหรับเที่ยวบินที่ปิดภายใน 90 นาที เรียงตามเวลาปิด:
+  ถ้ามีคอขวด:    กระเป๋าที่เหลือสะสม เทียบกับ อัตราโหลด 30 นาทีล่าสุด x เวลาที่เหลือ
+  ถ้าขาเข้าช้า:  เวลาจอด + 40 นาที เกินเวลาปิด → กระเป๋าต่อเครื่องเสี่ยงทั้งชุด
+
+สถานะรวม         = VERIFY_DATA &gt; AT_RISK &gt; WATCH &gt; NORMAL
+</code></pre>
+<h3>13.3 <code>evaluate</code>: การให้คะแนน</h3>
+<p>รันทั้งสองวิธีจัดสรรบนเลขสุ่มเดียวกัน 30 ค่า ตรวจสถานะทุก 15 นาที แล้วเทียบกับความจริงของแบบจำลอง: กระเป๋าตกเที่ยวบินกี่ใบ เตือนก่อนใบแรกตกกี่นาที เที่ยวบินที่เตือนตรงกับที่ตกจริงเท่าใด และสัดส่วนครั้งที่เตือน</p>
+<h3>13.4 ตัวอย่างการคำนวณจริงจากหน้าจอ</h3>
+<p>สถานการณ์น้ำท่วม เวลา 08:30 (ข้อมูลจำลอง เลขสุ่ม 42):</p>
+<p><strong>ขั้นที่ 1 หาว่าติดที่ไหน</strong> ขั้น Loading มีกระเป๋าเข้ามาแล้วมากกว่าที่สแกนโหลด 202 ใบ กระเป๋าใบแรกสุดที่ยังไม่ถูกโหลดเข้ามาตั้งแต่ 07:55 จึงรอมาแล้ว 35 นาที เกินเกณฑ์ 30 นาที สถานะเป็น DELAY ขั้นอื่นรอไม่เกินเกณฑ์ คอขวดจึงอยู่ที่ Loading</p>
+<p><strong>ขั้นที่ 2 วัดอัตราจริง</strong> ใน 30 นาทีล่าสุดมีการสแกนโหลด 95 ใบ อัตราคือ 95 ÷ 30 = 3.17 ใบต่อนาที</p>
+<p><strong>ขั้นที่ 3 ตรวจทีละเที่ยวบิน เรียงตามเวลาปิดห้องเก็บสัมภาระ</strong></p>
+<table>
+<thead>
+<tr>
+<th>เที่ยวบิน</th>
+<th>ปิด (เหลือ)</th>
+<th>ยังไม่โหลด</th>
+<th>สะสมรวมเที่ยวบินก่อนหน้า</th>
+<th>โหลดได้ทัน</th>
+<th>เสี่ยงตกเที่ยวบิน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>TT403</td>
+<td>08:55 (25 นาที)</td>
+<td>185 − 100 = 85</td>
+<td>85</td>
+<td>3.17 × 25 = 79</td>
+<td>85 − 79 = 6</td>
+</tr>
+<tr>
+<td>TT404</td>
+<td>09:20 (50 นาที)</td>
+<td>173 − 70 = 103</td>
+<td>188</td>
+<td>3.17 × 50 = 158</td>
+<td>188 − 158 = 30</td>
+</tr>
+<tr>
+<td>TT405</td>
+<td>09:50 (80 นาที)</td>
+<td>126 − 37 = 89</td>
+<td>277</td>
+<td>3.17 × 80 = 253</td>
+<td>277 − 253 = 24</td>
+</tr>
+</tbody>
+</table>
+<p>รวม 60 ใบใน 3 เที่ยวบิน ตรงกับที่หน้าจอแสดง</p>
+<p><strong>ขั้นที่ 4 ออกคำแนะนำ</strong> ให้กำลัง loading กับ TT403 ก่อน เพราะปิดเร็วที่สุด แล้วตามด้วย TT404 และ TT405 ผู้รับผิดชอบคือ ground handler ต้องตัดสินใจก่อน 08:55</p>
+<p><strong>ขั้นที่ 5 ระบุสาเหตุ</strong> ถ้ามีข้อมูลจาก ground handler ระบบแสดงว่า "พนักงาน 55% ของแผน รถขนกระเป๋า 4 จาก 5 คัน" ถ้าไม่มี ระบบแสดงว่ายังระบุสาเหตุไม่ได้</p>
+<p>การคำนวณทั้งหมดเป็นกฎที่ตรวจย้อนได้ ไม่ใช้ machine learning และไม่ใช้ LLM</p>
+<hr />
+<h2>ส่วนที่ 14: Impact · ผลที่ได้จากการจำลอง</h2>
+<p>จำลอง 30 รอบต่อสถานการณ์ แต่ละรอบสุ่มจำนวนผู้โดยสารและกระเป๋าต่างกัน ตัวเลขเป็นค่ากลาง ในวงเล็บคือต่ำสุดถึงสูงสุด</p>
+<table>
+<thead>
+<tr>
+<th>สถานการณ์</th>
+<th>กระเป๋าตกเที่ยวบิน เมื่อแบ่งกำลังเท่ากัน</th>
+<th>กระเป๋าตกเที่ยวบิน เมื่อจัดลำดับตามคำแนะนำ</th>
+<th>เตือนล่วงหน้า (นาที)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ปกติ</td>
+<td>0</td>
+<td>0</td>
+<td>ไม่มีการเตือน</td>
+</tr>
+<tr>
+<td>น้ำท่วม คนมาไม่ได้</td>
+<td>297.5 (212–410)</td>
+<td>142.5 (0–299)</td>
+<td>55 (25–125)</td>
+</tr>
+<tr>
+<td>เครื่องคัดแยกขัดข้อง</td>
+<td>7 (0–68)</td>
+<td>0 (0–0)</td>
+<td>55 (40–80)</td>
+</tr>
+<tr>
+<td>ขาเข้าช้า</td>
+<td>16.5 (0–63)</td>
+<td>7.5 (0–40)</td>
+<td>85 (80–200)</td>
+</tr>
+<tr>
+<td>ข้อมูลสแกนขาด</td>
+<td>0</td>
+<td>0</td>
+<td>ไม่มีการเตือนผิด</td>
+</tr>
+</tbody>
+</table>
+<figure class='diagram'><div class='barchart'><div class='bar-row'><span class='bar-label'>ปกติ</span><div class='bars'>
+          <div class='bar plan' style='width:0.6%'></div><b>0</b>
+          <div class='bar prio' style='width:0.6%'></div><b>0</b></div></div><div class='bar-row'><span class='bar-label'>น้ำท่วม คนมาไม่ได้</span><div class='bars'>
+          <div class='bar plan' style='width:100.0%'></div><b>297.5</b>
+          <div class='bar prio' style='width:47.9%'></div><b>142.5</b></div></div><div class='bar-row'><span class='bar-label'>เครื่องคัดแยกขัดข้อง</span><div class='bars'>
+          <div class='bar plan' style='width:2.4%'></div><b>7</b>
+          <div class='bar prio' style='width:0.6%'></div><b>0</b></div></div><div class='bar-row'><span class='bar-label'>ขาเข้าช้า</span><div class='bars'>
+          <div class='bar plan' style='width:5.5%'></div><b>16.5</b>
+          <div class='bar prio' style='width:2.5%'></div><b>7.5</b></div></div><div class='bar-row'><span class='bar-label'>ข้อมูลสแกนขาด</span><div class='bars'>
+          <div class='bar plan' style='width:0.6%'></div><b>0</b>
+          <div class='bar prio' style='width:0.6%'></div><b>0</b></div></div></div><p class='legend'><i class='dot plan'></i>แบ่งกำลังเท่ากันทุกเที่ยวบิน (สมมติฐาน) <i class='dot prio'></i>จัดลำดับตามคำแนะนำ</p><figcaption>กระเป๋าที่ตกเที่ยวบิน ค่ากลางจากการจำลอง 30 รอบต่อสถานการณ์ (ผลจำลอง ไม่ใช่ผลสนามบินจริง)</figcaption></figure>
+<p>ความแม่นของการเตือนระดับเที่ยวบิน:</p>
+<table>
+<thead>
+<tr>
+<th>สถานการณ์</th>
+<th>เที่ยวบินที่ถูกเตือน</th>
+<th>เที่ยวบินที่กระเป๋าตกจริง</th>
+<th>เตือนถูก (precision)</th>
+<th>จับได้ (recall)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>น้ำท่วม คนมาไม่ได้</td>
+<td>204</td>
+<td>221</td>
+<td>0.91</td>
+<td>0.84</td>
+</tr>
+<tr>
+<td>เครื่องคัดแยกขัดข้อง</td>
+<td>46</td>
+<td>26</td>
+<td>0.33</td>
+<td>0.58</td>
+</tr>
+<tr>
+<td>ขาเข้าช้า</td>
+<td>52</td>
+<td>33</td>
+<td>0.63</td>
+<td>1.00</td>
+</tr>
+</tbody>
+</table>
+<h3>14.1 วิธีอ่านผลนี้อย่างถูกต้อง</h3>
+<ul>
+<li>เป็นผลจำลองทั้งหมด ใช้พิสูจน์ว่าวิธีคิดทำงานได้ ไม่ใช่ผลที่คาดว่าจะเกิดที่สนามบิน</li>
+<li>"แบ่งกำลังเท่ากัน" เป็นวิธีทำงานแบบเดิมที่ทีมสมมติขึ้น ถ้า handler จริงจัดลำดับได้ดีอยู่แล้ว ส่วนต่างจะน้อยกว่านี้</li>
+<li>กรณีเครื่องคัดแยกขัดข้อง ระบบเตือนผิดสองในสามเที่ยวบิน เพราะคาดการณ์ว่าความช้าจะคงอยู่ ขณะที่ในแบบจำลองเครื่องกลับมาทำงานหลัง 75 นาที ตัวเลขนี้ไม่ได้ถูกปรับแต่ง</li>
+<li>การเตือนและความจริงที่ใช้ตรวจมาจากแบบจำลองเดียวกัน จึงยังไม่ใช่การทดสอบอิสระ</li>
+<li>ตัวเลขชุดเก่าบนสไลด์รอบแรก (86%, 100%, 61%, 78%, 50%, 117.39 พันล้านบาท) ไม่มีที่มาหรือเป็นค่าคงที่ในโค้ด ห้ามนำมาใช้</li>
+</ul>
+<h3>14.2 ผลตามสามเสาเดิมของสไลด์ Impact</h3>
+<table>
+<thead>
+<tr>
+<th>เสาเดิม</th>
+<th>ตัวชี้วัดบนสไลด์รอบแรก</th>
+<th>ตัวชี้วัดที่วัดได้จริงในกรณีกระเป๋า</th>
+<th>ผล (แบบจำลอง)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Trust</td>
+<td>Data Consistency 100% / Event Verification 85.7%</td>
+<td>ค่าตั้งต้นทุกตัวมีประเภทและที่มา</td>
+<td>ครบทุกค่า มีเทสต์บังคับ</td>
+</tr>
+<tr>
+<td>Trust</td>
+<td>เหมือนข้างบน</td>
+<td>เมื่อข้อมูลสแกนขาด ระบบไม่แจ้งผิดว่ากระเป๋าล่าช้า</td>
+<td>เตือนผิด 0 ครั้งใน 30 รอบ</td>
+</tr>
+<tr>
+<td>Intelligence</td>
+<td>Risk Detection Accuracy 86%</td>
+<td>เที่ยวบินที่เตือนตรงกับที่กระเป๋าตกจริง (น้ำท่วม)</td>
+<td>เตือนถูก 0.91 จับได้ 0.84</td>
+</tr>
+<tr>
+<td>Intelligence</td>
+<td>AI Recommendation Accuracy 100%</td>
+<td>กระเป๋าตกเที่ยวบินเมื่อทำตามลำดับที่แนะนำ (น้ำท่วม)</td>
+<td>297.5 → 142.5 ใบ</td>
+</tr>
+<tr>
+<td>Intelligence</td>
+<td>Airport 31 วินาทีเร็วขึ้น</td>
+<td>เตือนก่อนกระเป๋าใบแรกตกเที่ยวบิน (น้ำท่วม)</td>
+<td>55 นาที (25–125)</td>
+</tr>
+<tr>
+<td>Operation</td>
+<td>Coordination Time 18 → 7 วินาที</td>
+<td>เวลาที่มีให้ตัดสินใจก่อนเที่ยวบินแรกปิด (น้ำท่วม)</td>
+<td>80 นาที (5–90) เวลาประสานงานของคนต้องทดลองกับผู้ใช้</td>
+</tr>
+<tr>
+<td>Operation</td>
+<td>Delay Risk Reduction 50%</td>
+<td>กระเป๋าตกเที่ยวบินรวม 30 รอบ (น้ำท่วม)</td>
+<td>ลดลง 53.5% (9,082 → 4,227 ใบ)</td>
+</tr>
+<tr>
+<td>Trust</td>
+<td>Data Consistency 100%</td>
+<td>สถานะผิดโดยไม่เตือน เมื่อข้อมูลมีความผิด</td>
+<td>41% → 7% เมื่อมีชั้นตรวจ</td>
+</tr>
+<tr>
+<td>Trust</td>
+<td>Event Verification 85.7%</td>
+<td>ข้อมูลผิดที่กฎตรวจจับได้</td>
+<td>7,636 จาก 7,636 รายการ ปฏิเสธผิด 0</td>
+</tr>
+</tbody>
+</table>
+<h3>14.3 คุณค่าต่อแต่ละฝ่าย (โครงเดิม) ในกรณีกระเป๋า</h3>
+<table>
+<thead>
+<tr>
+<th>ฝ่าย</th>
+<th>คุณค่าบนสไลด์รอบแรก</th>
+<th>คุณค่าที่อ้างได้ตอนนี้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Airline</td>
+<td>ลดความเสี่ยงเที่ยวบินล่าช้า 50%</td>
+<td>รู้ล่วงหน้าว่าเที่ยวบินใดกระเป๋าจะไม่ครบ เพื่อตัดสินใจรอหรือส่งตาม ยังไม่มีตัวเลขความล่าช้า</td>
+</tr>
+<tr>
+<td>Airport</td>
+<td>คาดการณ์ล่วงหน้าเร็วขึ้น 61%</td>
+<td>เห็นคอขวดรายขั้นจากข้อมูลที่มีอยู่ เตือนล่วงหน้า 55 นาทีในแบบจำลอง</td>
+</tr>
+<tr>
+<td>Ground Handler</td>
+<td>ลดเวลาประสานงาน 78%</td>
+<td>ได้ลำดับเที่ยวบินที่ควรทำก่อนเมื่อคนไม่พอ</td>
+</tr>
+<tr>
+<td>Passenger</td>
+<td>ลดเวลาที่ได้รับผลกระทบ 54%</td>
+<td>กระเป๋าตกเที่ยวบินน้อยลงในแบบจำลอง ยังไม่ได้วัดผลต่อผู้โดยสารโดยตรง</td>
+</tr>
+<tr>
+<td>Industry &amp; Economy</td>
+<td>117.39 พันล้านบาท</td>
+<td>ไม่อ้างมูลค่าเงิน ใช้ค่าอ้างอิง SITA 260 ดอลลาร์ต่อใบเพื่ออธิบายขนาดปัญหาเท่านั้น</td>
+</tr>
+</tbody>
+</table>
+<h3>14.4 ความต่อเนื่องกับค่าที่เสนอไปแล้วในรอบแรก</h3>
+<p>ทีมเสนอตัวเลขชุดหนึ่งไปแล้วในสไลด์รอบแรก ตารางนี้เทียบค่าเดิมกับค่าที่วัดได้จากแบบจำลองกระเป๋า แบบจำลองถูกสร้างและรันก่อนการเทียบนี้ ไม่มีการปรับค่าเพื่อให้ตรงกับของเดิม</p>
+<table>
+<thead>
+<tr>
+<th>ค่าเดิมบนสไลด์</th>
+<th>ค่าที่วัดได้</th>
+<th>ใกล้เคียงหรือไม่</th>
+<th>ป้ายที่ต้องใช้</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Risk Detection Accuracy 86%</td>
+<td>87% (F1 ของการเตือนระดับเที่ยวบิน สถานการณ์น้ำท่วม: เตือนถูก 0.91 จับได้ 0.84) รวมทุกสถานการณ์ 80%</td>
+<td>ใกล้เคียง</td>
+<td>"ตรวจจับเที่ยวบินเสี่ยง F1 87% ในสถานการณ์น้ำท่วม (แบบจำลอง)"</td>
+</tr>
+<tr>
+<td>Delay Risk Reduction 50%</td>
+<td>53.5% (กระเป๋าตกเที่ยวบินรวม 30 รอบ ลดจาก 9,082 เหลือ 4,227 ใบ สถานการณ์น้ำท่วม)</td>
+<td>ใกล้เคียง แต่วัดคนละสิ่ง</td>
+<td>"กระเป๋าตกเที่ยวบินลดลง 53.5% (แบบจำลอง)" ไม่ใช่ความล่าช้าของเที่ยวบิน</td>
+</tr>
+<tr>
+<td>Passenger 54%</td>
+<td>62.9% (กระเป๋าต่อเครื่องตกเที่ยวบินรวม 30 รอบ ลดจาก 1,862 เหลือ 690 ใบ สถานการณ์น้ำท่วม) และ 36.7% ในสถานการณ์ขาเข้าช้า</td>
+<td>อยู่ในช่วงเดียวกัน แต่วัดคนละสิ่ง</td>
+<td>"กระเป๋าต่อเครื่องตกเที่ยวบินลดลง 63% ในสถานการณ์น้ำท่วม (แบบจำลอง)"</td>
+</tr>
+<tr>
+<td>Coordinator Reduction Time 78%</td>
+<td>เวลาที่ผู้ควบคุมงานมีก่อนเที่ยวบินแรกปิด: 80 นาที (5–90) หลังระบบระบุชื่อเที่ยวบิน</td>
+<td>คนละหน่วย</td>
+<td>"มีเวลาตัดสินใจ 80 นาทีก่อนเที่ยวบินแรกปิด (แบบจำลอง)" เวลาประสานงานของคนยังต้องทดลองกับผู้ใช้</td>
+</tr>
+<tr>
+<td>AI Recommendation Accuracy 100%</td>
+<td>ใน 90 รอบของสามสถานการณ์ผิดปกติ การทำตามลำดับที่แนะนำให้ผลดีกว่า 62 รอบ เท่ากัน 28 รอบ แย่กว่า 0 รอบ</td>
+<td>เลขเท่ากัน ความหมายต่างกัน</td>
+<td>"คำแนะนำไม่ทำให้ผลแย่ลงใน 100% ของรอบจำลอง" ไม่ใช่ accuracy</td>
+</tr>
+<tr>
+<td>Data Consistency 100%</td>
+<td>เมื่อใส่ข้อมูลผิดเข้าไป สถานะที่ระบบแสดงตรงกับของจริง 62% ขอให้ตรวจสอบ 31% ผิดโดยไม่เตือน 7% (ถ้าไม่มีชั้นตรวจ: 42% / 17% / 41%)</td>
+<td>ต่ำกว่าเดิม</td>
+<td>"สถานะผิดโดยไม่เตือนลดจาก 41% เหลือ 7% (แบบจำลอง)"</td>
+</tr>
+<tr>
+<td>Event Verification 85.7%</td>
+<td>กฎตรวจจับข้อมูลผิดที่ใส่เข้าไปได้ 7,636 จาก 7,636 รายการ และไม่ปฏิเสธข้อมูลที่ถูกต้องเลยจาก 87,890 รายการ</td>
+<td>สูงกว่าเดิม แต่เป็นการทดสอบกับความผิดชนิดที่กฎรู้จัก</td>
+<td>"ตรวจจับข้อมูลผิด 4 ชนิดที่ทดสอบได้ครบ (แบบจำลอง)"</td>
+</tr>
+<tr>
+<td>Coordination Time 18 → 7 วินาที (61%)</td>
+<td>วัดไม่ได้จากแบบจำลอง เพราะเป็นเวลาของคน</td>
+<td>ไม่มี</td>
+<td>เอาออก และใช้วิธีวัดในหัวข้อถัดไปเมื่อทดลองกับผู้ใช้</td>
+</tr>
+<tr>
+<td>Airport 31 วินาทีเร็วขึ้น</td>
+<td>เตือนล่วงหน้า 55 นาที (25–125) ก่อนกระเป๋าใบแรกตกเที่ยวบิน</td>
+<td>คนละหน่วย</td>
+<td>"เตือนล่วงหน้า 55 นาที (แบบจำลอง)"</td>
+</tr>
+<tr>
+<td>117.39 พันล้านบาท และกราฟ loss</td>
+<td>ต้นทุนที่เลี่ยงได้ 42,077 ดอลลาร์ต่อกะที่เกิดน้ำท่วม (กระเป๋าที่ไม่ตกเที่ยวบิน 161.8 ใบ × 260 ดอลลาร์ตาม SITA) สำหรับ 12 เที่ยวบิน</td>
+<td>คนละระดับ</td>
+<td>"เลี่ยงต้นทุนได้ประมาณ 42,000 ดอลลาร์ต่อกะที่เกิดเหตุ (แบบจำลอง)" ไม่ขยายเป็นตัวเลขระดับประเทศ</td>
+</tr>
+<tr>
+<td>$60.3B / Year</td>
+<td>$6.3B ตาม SITA</td>
+<td>ผิดสิบเท่า</td>
+<td>แก้เป็น $6.3B</td>
+</tr>
+</tbody>
+</table>
+<p>สิ่งที่ทำได้เพื่อรักษาความต่อเนื่อง: คงโครงสามเสาและตำแหน่งของตัวเลขบนสไลด์ไว้ ใช้ค่าที่วัดได้ทุกตัวพร้อมป้ายใหม่ และบอกกรรมการตรง ๆ ว่ารอบแรกเป็นค่าประมาณเบื้องต้นจากชุดจำลองเที่ยวบินเดียว รอบนี้วัดจากแบบจำลองกระเป๋าที่ละเอียดขึ้น ตัวเลขหลักจึงอยู่ในระดับเดียวกัน</p>
+<p>สิ่งที่ไม่ควรทำ: ปรับสมมติฐานของแบบจำลองเพื่อให้ได้ตัวเลขเท่าเดิม หรือคงตัวเลขเดิมไว้ใต้ชื่อตัวชี้วัดเดิม เพราะถ้ากรรมการขอดูที่มา ทีมจะแสดงไม่ได้ และค่าทั้งหมดขึ้นกับสมมติฐานว่าวิธีเดิมคือการแบ่งกำลังเท่ากันทุกเที่ยวบิน</p>
+<h3>14.5 ตารางคะแนน: ทุกค่าพร้อมนิยาม สูตร และวิธีวัด</h3>
+<p>ทุกค่าในตารางนี้คำนวณจากการรันแบบจำลอง 30 รอบต่อสถานการณ์ด้วย <code>scripts/experiments/run_baggage_evaluation.py</code> ผลเก็บใน <code>backend/app/baggage_evaluation.json</code> ไม่มีค่าใดเป็นค่าคงที่ในโค้ด รันซ้ำได้ผลเดิม</p>
+<p><strong>เสา Trust</strong> วัดด้วยการใส่ข้อมูลผิดที่รู้คำตอบเข้าไปในข้อมูลสแกน แล้วดูว่ากฎตรวจจับได้เท่าใด (60 รอบ: สถานการณ์ปกติและน้ำท่วม)</p>
+<table>
+<thead>
+<tr>
+<th>ตัวชี้วัด</th>
+<th>นิยามและสูตร</th>
+<th>ผล</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ตรวจจับข้อมูลซ้ำ</td>
+<td>รายการที่ส่งมาสองครั้งและถูกตัดออก ÷ รายการซ้ำที่ใส่</td>
+<td>1,919 ÷ 1,919 = 100%</td>
+</tr>
+<tr>
+<td>ตรวจจับข้อมูลมาช้า</td>
+<td>รายการที่มาช้ากว่า 15 นาทีและถูกทำเครื่องหมาย ÷ ที่ใส่</td>
+<td>1,956 ÷ 1,956 = 100%</td>
+</tr>
+<tr>
+<td>ตรวจจับจำนวนผิดปกติ</td>
+<td>รายการที่จำนวนเป็นศูนย์ ติดลบ หรือเกินขนาดเที่ยวบิน และถูกปฏิเสธ ÷ ที่ใส่</td>
+<td>1,872 ÷ 1,872 = 100%</td>
+</tr>
+<tr>
+<td>ตรวจจับเที่ยวบินที่ไม่มีในตาราง</td>
+<td>รายการที่ถูกปฏิเสธ ÷ ที่ใส่</td>
+<td>1,889 ÷ 1,889 = 100%</td>
+</tr>
+<tr>
+<td>ตรวจจับสแกนที่หายทั้งขั้น</td>
+<td>คู่เที่ยวบินและขั้นที่ถูกชี้ว่าขาด ÷ ที่ลบออก</td>
+<td>168 ÷ 168 = 100%</td>
+</tr>
+<tr>
+<td>ปฏิเสธข้อมูลที่ถูกต้อง</td>
+<td>รายการถูกต้องที่ถูกปฏิเสธ ÷ รายการถูกต้องทั้งหมด</td>
+<td>0 ÷ 87,890 = 0%</td>
+</tr>
+<tr>
+<td>สถานะตรงกับของจริง</td>
+<td>จุดตรวจที่สถานะรวมตรงกับที่ได้จากข้อมูลสะอาด ÷ จุดตรวจทั้งหมด 1,920 จุด</td>
+<td>มีชั้นตรวจ 62.2% / ไม่มี 42.3%</td>
+</tr>
+<tr>
+<td>ระบบขอให้ตรวจสอบข้อมูล</td>
+<td>จุดตรวจที่ขึ้น VERIFY DATA แทนสถานะจริง</td>
+<td>มีชั้นตรวจ 31.2% / ไม่มี 17.1%</td>
+</tr>
+<tr>
+<td>สถานะผิดโดยไม่เตือน</td>
+<td>จุดตรวจที่สถานะต่างจากของจริงและไม่ขอให้ตรวจสอบ</td>
+<td>มีชั้นตรวจ 6.6% / ไม่มี 40.5%</td>
+</tr>
+<tr>
+<td>ค่าตั้งต้นมีที่มา</td>
+<td>ค่าที่มีประเภทและแหล่งที่มา ÷ ค่าทั้งหมด</td>
+<td>15 ÷ 15 = 100% (จริง 2 อ้างอิง 1 คำนวณ 1 สมมติฐาน 11)</td>
+</tr>
+</tbody>
+</table>
+<p>อัตราตรวจจับ 100% หมายความว่ากฎจับความผิดสี่ชนิดที่ออกแบบไว้ได้ครบ ไม่ได้พิสูจน์ว่าจับความผิดชนิดอื่นในข้อมูลจริงได้ ค่าที่สะท้อนคุณภาพจริงกว่าคือสามบรรทัดเรื่องสถานะ: ชั้นตรวจลดสถานะที่ผิดโดยไม่เตือนจาก 40.5% เหลือ 6.6% แต่สถานะที่ตรงพอดียังมีเพียง 62.2% เพราะเมื่อสแกนหาย ระบบเลือกขอให้ตรวจสอบแทนการเดา</p>
+<p><strong>เสา Intelligence</strong> (30 รอบต่อสถานการณ์)</p>
+<table>
+<thead>
+<tr>
+<th>ตัวชี้วัด</th>
+<th>นิยามและสูตร</th>
+<th>น้ำท่วม</th>
+<th>เครื่องคัดแยกขัดข้อง</th>
+<th>ขาเข้าช้า</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เตือนถูก (precision)</td>
+<td>เที่ยวบินที่เตือนและกระเป๋าตกจริง ÷ เที่ยวบินที่เตือน</td>
+<td>0.91</td>
+<td>0.33</td>
+<td>0.63</td>
+</tr>
+<tr>
+<td>จับได้ (recall)</td>
+<td>เที่ยวบินที่เตือนและกระเป๋าตกจริง ÷ เที่ยวบินที่กระเป๋าตกจริง</td>
+<td>0.84</td>
+<td>0.58</td>
+<td>1.00</td>
+</tr>
+<tr>
+<td>F1</td>
+<td>2 × precision × recall ÷ (precision + recall)</td>
+<td>0.87</td>
+<td>0.42</td>
+<td>0.77</td>
+</tr>
+<tr>
+<td>เตือนล่วงหน้า</td>
+<td>นาทีจากการเตือนครั้งแรกถึงกระเป๋าใบแรกตกเที่ยวบิน ค่ากลาง</td>
+<td>55</td>
+<td>55</td>
+<td>85</td>
+</tr>
+<tr>
+<td>คำแนะนำไม่ทำให้แย่ลง</td>
+<td>รอบที่ลำดับที่แนะนำให้กระเป๋าตกน้อยกว่าหรือเท่ากับวิธีเดิม ÷ รอบทั้งหมด</td>
+<td>30 ÷ 30</td>
+<td>30 ÷ 30</td>
+<td>30 ÷ 30</td>
+</tr>
+<tr>
+<td>คำแนะนำดีกว่า</td>
+<td>รอบที่กระเป๋าตกน้อยกว่าวิธีเดิม ÷ รอบทั้งหมด</td>
+<td>30 ÷ 30</td>
+<td>18 ÷ 30</td>
+<td>14 ÷ 30</td>
+</tr>
+</tbody>
+</table>
+<p>รวมสามสถานการณ์: precision 0.78 recall 0.84 F1 0.80 การเตือนผิดในสถานการณ์ปกติและข้อมูลขาด: 0 จาก 960 จุดตรวจต่อสถานการณ์</p>
+<p><strong>เสา Operation</strong> (30 รอบต่อสถานการณ์)</p>
+<table>
+<thead>
+<tr>
+<th>ตัวชี้วัด</th>
+<th>นิยามและสูตร</th>
+<th>น้ำท่วม</th>
+<th>เครื่องคัดแยกขัดข้อง</th>
+<th>ขาเข้าช้า</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>กระเป๋าตกเที่ยวบิน วิธีเดิม</td>
+<td>ผลรวม 30 รอบ เมื่อแบ่งกำลังเท่ากัน</td>
+<td>9,082</td>
+<td>454</td>
+<td>553</td>
+</tr>
+<tr>
+<td>กระเป๋าตกเที่ยวบิน ตามคำแนะนำ</td>
+<td>ผลรวม 30 รอบ เมื่อจัดลำดับ</td>
+<td>4,227</td>
+<td>0</td>
+<td>350</td>
+</tr>
+<tr>
+<td>ลดลง</td>
+<td>(เดิม − ใหม่) ÷ เดิม</td>
+<td>53.5%</td>
+<td>100%</td>
+<td>36.7%</td>
+</tr>
+<tr>
+<td>กระเป๋าต่อเครื่องตกเที่ยวบิน ลดลง</td>
+<td>สูตรเดียวกัน นับเฉพาะกระเป๋าต่อเครื่อง</td>
+<td>62.9%</td>
+<td>100%</td>
+<td>36.7%</td>
+</tr>
+<tr>
+<td>เวลาที่มีให้ตัดสินใจ</td>
+<td>นาทีจากการระบุชื่อเที่ยวบินครั้งแรกถึงเที่ยวบินนั้นปิดห้องเก็บสัมภาระ ค่ากลาง (ต่ำสุด–สูงสุด)</td>
+<td>80 (5–90)</td>
+<td>80 (10–90)</td>
+<td>85 (80–90)</td>
+</tr>
+<tr>
+<td>ต้นทุนที่เลี่ยงได้ต่อกะ</td>
+<td>กระเป๋าที่ไม่ตกเที่ยวบินเฉลี่ยต่อรอบ × 260 ดอลลาร์ (SITA)</td>
+<td>42,077 ดอลลาร์</td>
+<td>3,935 ดอลลาร์</td>
+<td>1,759 ดอลลาร์</td>
+</tr>
+</tbody>
+</table>
+<p>ค่าร้อยละในตารางนี้คิดจากผลรวม 30 รอบ จึงต่างเล็กน้อยจากตารางค่ากลางตอนต้นของส่วนที่ 14 (เช่น น้ำท่วม 53.5% เทียบกับ 52.1% จากค่ากลาง และขาเข้าช้า 36.7% เทียบกับ 54.5%) ค่าจากผลรวมเป็นค่าที่ควรใช้อ้าง เพราะไม่ไวต่อรอบที่กระเป๋าตกน้อย</p>
+<p><strong>ค่าที่แบบจำลองวัดไม่ได้ และวิธีวัดเมื่อมีผู้ใช้จริง</strong></p>
+<table>
+<thead>
+<tr>
+<th>ตัวชี้วัด</th>
+<th>ทำไมยังวัดไม่ได้</th>
+<th>วิธีวัด</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เวลาประสานงานของคน</td>
+<td>เป็นเวลาที่คนใช้คุยและตกลงกัน แบบจำลองไม่มีคน</td>
+<td>ให้ผู้ควบคุมงาน 6–10 คนทำสถานการณ์เดียวกันสองแบบ (มีหน้าจอ และไม่มี) จับเวลาจากสัญญาณแรกจนมีผู้รับผิดชอบรับงาน เทียบค่ากลาง</td>
+</tr>
+<tr>
+<td>ความล่าช้าของเที่ยวบิน</td>
+<td>แบบจำลองนับกระเป๋าที่ตก ไม่ได้จำลองการรอหรือเลื่อนเที่ยวบิน</td>
+<td>เพิ่มกฎการรอกระเป๋าในแบบจำลอง หรือเทียบกับข้อมูลย้อนหลังในช่วง shadow mode</td>
+</tr>
+<tr>
+<td>มูลค่าทางการเงินระดับสนามบิน</td>
+<td>ไม่มีข้อมูลความถี่ของเหตุผิดปกติและปริมาณจริง</td>
+<td>ต้นทุนต่อกะ × จำนวนกะที่เกิดเหตุต่อปี จากข้อมูลจริงของผู้ให้บริการ</td>
+</tr>
+</tbody>
+</table>
+<h2>ข้อจำกัดที่ใช้กับทุกค่า: เป็นผลจากแบบจำลอง วิธีเดิมที่ใช้เทียบเป็นสมมติฐาน อัตราความผิดของข้อมูลที่ใส่ (2% ต่อชนิด) เป็นสมมติฐานที่กำหนดความยากของการทดสอบ และความจริงที่ใช้ตรวจมาจากแบบจำลองเดียวกัน</h2>
+<h2>ส่วนที่ 15: Impact · ตรงเป้า SKY แล้วหรือยัง</h2>
+<h3>15.1 เทียบกับสิ่งที่ mentor และ buddy ขอ (7 ต.ค. 2026)</h3>
+<table>
+<thead>
+<tr>
+<th>สิ่งที่ขอ</th>
+<th>สถานะ</th>
+<th>หลักฐาน</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>เลือกปัญหาเดียว</td>
+<td>ทำแล้ว</td>
+<td>กระเป๋าค้างสะสมช่วงเหตุผิดปกติ</td>
+</tr>
+<tr>
+<td>บอกว่าปัญหาเกิดจากส่วนไหน</td>
+<td>ทำแล้ว</td>
+<td>แถบ 6 ขั้น แต่ละขั้นมีจำนวนกระเป๋ารอและเวลารอของใบที่รอนานสุด</td>
+</tr>
+<tr>
+<td>มองแล้วรู้ว่า "ไม่มีปัญหา"</td>
+<td>ทำแล้ว</td>
+<td>สถานการณ์ปกติขึ้น NORMAL และไม่เตือนเลยตลอดการจำลอง 30 รอบ</td>
+</tr>
+<tr>
+<td>แก้ให้ใคร</td>
+<td>ทำแล้ว</td>
+<td>ระบุเจ้าของ action และเวลาที่ต้องตัดสินใจ</td>
+</tr>
+<tr>
+<td>ใช้ข้อมูลส่วนไหน จากใคร</td>
+<td>ทำแล้ว</td>
+<td>หน้าจอแสดงรายการข้อมูลที่ใช้จริงในแต่ละครั้ง</td>
+</tr>
+<tr>
+<td>สาเหตุของปัญหา</td>
+<td>ทำได้บางส่วน</td>
+<td>บอกได้เมื่อมี feed จาก ground handler ถ้าไม่มี ระบบแจ้งว่ายังระบุสาเหตุไม่ได้</td>
+</tr>
+<tr>
+<td>เรื่องขยาย พูดตอนจบเท่านั้น</td>
+<td>เป็นเรื่องของ deck</td>
+<td>ยังไม่ได้ทำ deck</td>
+</tr>
+</tbody>
+</table>
+<h3>15.2 เทียบกับผลิตภัณฑ์ที่ SKY มีอยู่</h3>
+<table>
+<thead>
+<tr>
+<th>ระบบของ SKY</th>
+<th>ตอบคำถาม</th>
+<th>One TrustX ทำต่างอย่างไร</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>BRS</td>
+<td>กระเป๋าใบนี้อยู่ที่ไหน ขึ้นเครื่องถูกลำหรือไม่ มี alert กรณีผู้โดยสาร no-show และกระเป๋าลงผิดตู้</td>
+<td>ไม่ติดตามรายใบ ใช้จำนวนสแกนรวมรายขั้นเทียบเวลาออกของเที่ยวบิน</td>
+</tr>
+<tr>
+<td>AODB</td>
+<td>เที่ยวบินออกและถึงกี่โมง gate ไหน</td>
+<td>ใช้เป็นเส้นตายในการจัดลำดับ</td>
+</tr>
+<tr>
+<td>A-CDM</td>
+<td>ทุกฝ่ายทำงานตาม milestone ของเที่ยวบิน</td>
+<td>ไม่สร้าง A-CDM ใหม่ ให้ข้อมูลความเสี่ยงด้านกระเป๋ารายเที่ยวบิน</td>
+</tr>
+<tr>
+<td>Smart Flows</td>
+<td>ผู้โดยสารมาถึงเมื่อใด หนาแน่นตรงไหน</td>
+<td>ยังไม่ใช้ เป็นสัญญาณล่วงหน้าในระยะถัดไป</td>
+</tr>
+</tbody>
+</table>
+<p>ข้อมูลความสามารถของ BRS มาจากหน้าเว็บสาธารณะของ SKY ICT การใช้งานจริงภายในอาจมีมากกว่านี้ ต้องยืนยันกับ mentor</p>
+<h3>15.3 สิ่งที่ยังไม่ตรงเป้า</h3>
+<ul>
+<li>ยังไม่ได้ยืนยันกับ SKY ว่า BRS ส่งออกเวลาสแกนรายขั้นได้ ซึ่งเป็นสมมติฐานหลักของวิธีตรวจจับ</li>
+<li>เกณฑ์เวลารอและวิธีทำงานแบบเดิมที่ใช้เทียบ ยังไม่ผ่านผู้เชี่ยวชาญงานกระเป๋า</li>
+<li>สถานการณ์น้ำท่วมในแบบจำลองยังไม่สะท้อนกระเป๋าขาเข้าค้าง ซึ่งเป็นภาพหลักของเหตุการณ์จริง</li>
+<li>โค้ดรอบนี้ยังไม่ได้ commit และ push ขึ้น GitHub</li>
+<li>ยังไม่มี deck สำหรับ Preliminary Pitch (ส่ง 20 ต.ค. 2026)</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 16: Impact · ความเป็นไปได้และขั้นถัดไป</h2>
+<h3>16.1 เหตุผลที่ทำได้จริง</h3>
+<ul>
+<li>เริ่มจากข้อมูลสองแหล่งที่ SKY ดูแลอยู่แล้ว (BRS และ AODB) ไม่ต้องติดเซนเซอร์ใหม่</li>
+<li>ข้อมูลที่ต้องขอจากบริษัทอื่น (กำลังคนของ ground handler) เป็นส่วนเสริม ระบบทำงานได้โดยไม่มี</li>
+<li>ใช้จำนวนรวม ไม่ใช้ข้อมูลส่วนบุคคล จึงลดภาระด้าน PDPA ในระยะแรก</li>
+<li>เริ่มแบบอ่านอย่างเดียว ถ้า One TrustX หยุดทำงาน ระบบต้นทางไม่ได้รับผล</li>
+</ul>
+<h3>16.2 คำถามที่ต้องถาม SKY ก่อนรอบ prototype</h3>
+<ol>
+<li>BRS เก็บเวลาสแกนรายขั้น (รับ คัดแยก โหลด ส่งต่อ ถึง) และส่งออกเป็นจำนวนรวมรายเที่ยวบินได้หรือไม่</li>
+<li>มีข้อมูลจำนวนกระเป๋าที่คาดไว้ต่อเที่ยวบินก่อนเครื่องออกหรือไม่</li>
+<li>เกณฑ์เวลารอที่ผู้ควบคุมงานถือว่า "เริ่มมีปัญหา" คือเท่าใด</li>
+<li>เมื่อคนไม่พอ ปัจจุบันจัดลำดับเที่ยวบินอย่างไร</li>
+</ol>
+<h3>16.3 แผนงาน</h3>
+<table>
+<thead>
+<tr>
+<th>ระยะ</th>
+<th>งาน</th>
+<th>ผลลัพธ์</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ก่อน 20 ต.ค. 2026</td>
+<td>ทำ deck 8 หัวข้อ และชีต Q&amp;A</td>
+<td>ไฟล์ onetrustx_PreliminaryPitch.pdf</td>
+</tr>
+<tr>
+<td>Prototype</td>
+<td>ยืนยันเกณฑ์กับผู้เชี่ยวชาญ ปรับสถานการณ์น้ำท่วมให้มีกระเป๋าขาเข้าค้าง</td>
+<td>สถานการณ์ที่ผู้เชี่ยวชาญรับรอง</td>
+</tr>
+<tr>
+<td>Validation</td>
+<td>ให้ผู้ควบคุมงานทดลองใช้บนสถานการณ์จำลอง</td>
+<td>อัตราเตือนผิดและความเห็นต่อคำแนะนำ</td>
+</tr>
+<tr>
+<td>Shadow mode</td>
+<td>ต่อข้อมูลจริงแบบไม่ระบุตัวตน อ่านอย่างเดียว</td>
+<td>ผลเทียบกับการทำงานจริง</td>
+</tr>
+<tr>
+<td>ขยาย</td>
+<td>cargo, turnaround, gate</td>
+<td>เฉพาะส่วนที่พิสูจน์คุณค่าแล้ว</td>
+</tr>
+</tbody>
+</table>
+<hr />
+<section class='part'><span>ONE TRUSTX</span><h1>ภาค ค · ภาคผนวก</h1><p>สิ่งที่เปลี่ยนจากเวอร์ชันก่อน ข้อจำกัด และแหล่งอ้างอิง</p></section>
+<h2>ส่วนที่ 17: เปลี่ยนอะไรจากเวอร์ชันบน GitHub</h2>
+<p>เวอร์ชันก่อนหน้าที่ใช้เทียบคือโค้ดบน GitHub (<code>Dxrksvng/OneTrustX</code> commit <code>386d911</code> วันที่ 28 ก.ย. 2026) และเอกสารของเวอร์ชันนั้นคือ "Airport TimeTwin · Data provenance and demo methodology" ฉบับ 15 ก.ย. 2026 จำนวน 19 หน้า repository เป็นแบบ private การเทียบทำจากสำเนาในเครื่องซึ่งตรงกับ commit ล่าสุดบน GitHub</p>
+<p>งานทั้งหมดในรายงานนี้ถูก deploy ขึ้นเว็บจริงแล้วเมื่อ 8 ต.ค. 2026 แต่ยังไม่ได้ commit หรือ push เวอร์ชันบน GitHub จึงยังเป็นของเดิม</p>
+<figure class='diagram'><div class='ba'><div class='ba-row head'><span></span><div>บน GitHub · 28 ก.ย. 2026</div><div>ปัจจุบัน · 8 ต.ค. 2026</div></div><div class='ba-row'><span>จุดขาย</span><div class='old'>แพลตฟอร์มคิวผู้โดยสาร และความจริงร่วมของหลายฝ่าย</div><div class='new'>กระเป๋าค้างสะสมช่วงเหตุผิดปกติ เรื่องเดียว</div></div><div class='ba-row'><span>หน้ากระเป๋า</span><div class='old'>ไม่มี มีแต่สถานะเที่ยวบิน TT401 เที่ยวเดียว</div><div class='new'>6 ขั้น 5 สถานการณ์ คำนวณจากการสแกน</div></div><div class='ba-row'><span>สถานะปกติ</span><div class='old'>แสดงไม่ได้</div><div class='new'>แสดงได้ และไม่เตือนผิดใน 30 รอบ</div></div><div class='ba-row'><span>ข้อมูลกระเป๋า</span><div class='old'>4 แถว เวลาเดียว</div><div class='new'>ราว 8,000 รายการสแกน</div></div><div class='ba-row'><span>ที่มาของค่า</span><div class='old'>อธิบายในเอกสาร ไม่ผูกกับโค้ด</div><div class='new'>ทุกค่ามีประเภทและลิงก์ มีเทสต์บังคับ</div></div><div class='ba-row'><span>ตัวเลขผล</span><div class='old'>61% / 78% / 74% / 50% จากอัตราส่วนที่ตั้งไว้</div><div class='new'>ผลจากแบบจำลองการไหล มีต่ำสุดและสูงสุด</div></div><div class='ba-row'><span>ตำแหน่งในระบบ</span><div class='old'>ไฟล์ที่ไม่ได้ต่อเข้าเมนู</div><div class='new'>เมนู Baggage ในแถบนำทางหลัก</div></div></div><figcaption>สิ่งที่เปลี่ยนจากเวอร์ชันบน GitHub</figcaption></figure>
+<h3>17.1 เทียบทีละด้าน</h3>
+<table>
+<thead>
+<tr>
+<th>ด้าน</th>
+<th>เวอร์ชันบน GitHub (28 ก.ย. 2026)</th>
+<th>ปัจจุบัน (8 ต.ค. 2026)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>ชื่อและจุดขาย</td>
+<td>Airport TimeTwin ปนกับ One TrustX README เขียนว่า "Predictive Airport Flow &amp; Passenger Journey Decision Platform"</td>
+<td>One TrustX เรื่องเดียว: กระเป๋าค้างสะสมช่วงเหตุผิดปกติ</td>
+</tr>
+<tr>
+<td>ปัญหาที่แก้</td>
+<td>คิวผู้โดยสารที่จุดตรวจ และ "ความจริงร่วม" ของหลายฝ่ายสำหรับเที่ยวบินเดียว</td>
+<td>กระเป๋าติดที่ขั้นไหน กระทบเที่ยวบินใด ทำอะไรก่อน</td>
+</tr>
+<tr>
+<td>ผู้ใช้หลัก</td>
+<td>ผู้ควบคุมการปฏิบัติการทั่วไป และผู้โดยสาร</td>
+<td>ผู้ควบคุมงานกระเป๋าและงานภาคพื้น</td>
+</tr>
+<tr>
+<td>หน้ากระเป๋า</td>
+<td>ไม่มีในเมนู มีไฟล์ <code>TrustXPages.tsx</code> ที่ไม่ได้ต่อเข้าระบบ</td>
+<td>เมนู Baggage ในแถบนำทางหลัก 6 ขั้น สลับได้ 5 สถานการณ์ ไฟล์ <code>TrustXPages.tsx</code> ถูกลบ</td>
+</tr>
+<tr>
+<td>ที่อยู่ของหน้า</td>
+<td><code>/trustx</code> ถูกพากลับไปหน้า Overview</td>
+<td><code>/baggage</code> (และ <code>/trustx</code> พามาที่หน้านี้)</td>
+</tr>
+<tr>
+<td>ข้อมูลกระเป๋า</td>
+<td>4 แถว ค่าเท่ากัน เวลาเดียว</td>
+<td>ประมาณ 8,000 รายการสแกน มีเวลาเกิดเหตุและเวลาที่ระบบได้รับแยกกัน</td>
+</tr>
+<tr>
+<td>เที่ยวบิน</td>
+<td>1 เที่ยว (TT401)</td>
+<td>ขาออก 12 ขาเข้า 12 ต่อสถานการณ์</td>
+</tr>
+<tr>
+<td>ที่มาของค่า</td>
+<td>อธิบายเป็นข้อความในเอกสาร ไม่ผูกกับโค้ด</td>
+<td><code>baggage_calibration.json</code> ระบุประเภทและลิงก์ทุกค่า มีเทสต์บังคับ</td>
+</tr>
+<tr>
+<td>ข้อมูลจริงที่อ้างอิง</td>
+<td>Open-Meteo ปี 2025, OurAirports, CAAT, BTS, CBP, UK CAA (บริบทคิว)</td>
+<td>เพิ่มฝนจริงช่วงเหตุการณ์ ก.ย. 2026, นโยบาย check-in, IATA 753, SITA 2026, ข่าวเหตุการณ์</td>
+</tr>
+<tr>
+<td>ตัวเลขผล</td>
+<td>ลดเวลาประสานงาน 61% ลดเวลา reconcile 78% เห็นความเสี่ยงเร็วขึ้น 74% ลด delay proxy 50%</td>
+<td>กระเป๋าตกเที่ยวบิน การเตือนล่วงหน้า precision และ recall ต่อสถานการณ์</td>
+</tr>
+<tr>
+<td>ที่มาของตัวเลขผล</td>
+<td>อัตราส่วนถูกกำหนดไว้ในตัวสร้างข้อมูล แล้วรัน 8 สถานการณ์ x 100 seed</td>
+<td>ผลจากแบบจำลองการไหล ไม่มีการกำหนดอัตราการดีขึ้นไว้ล่วงหน้า</td>
+</tr>
+<tr>
+<td>การทดสอบ backend</td>
+<td>26 ข้อ</td>
+<td>45 ข้อ</td>
+</tr>
+<tr>
+<td>เอกสารหลัก</td>
+<td>เน้นวิธีสร้างข้อมูลคิวและคู่มือหน้าจอโมดูลคิว</td>
+<td>รายงานฉบับนี้</td>
+</tr>
+</tbody>
+</table>
+<p>ตัวเลขผลของเวอร์ชันก่อนหน้าตรวจย้อนได้ในโค้ด: <code>generate_validation_pack.py</code> คูณค่าพื้นฐานด้วย 0.39, 0.22 และ 0.26 สำหรับเงื่อนไข One TrustX + AI จึงได้ผลลด 61%, 78% และ 74% ทุกครั้งโดยไม่ขึ้นกับสถานการณ์ และตั้ง delay proxy ไว้ที่ 0.50 ตัวเลขเหล่านี้จึงเป็นค่าที่กำหนด ไม่ใช่สิ่งที่ระบบค้นพบ</p>
+<h3>17.2 ขนาดของการเปลี่ยนแปลง (เทียบกับ commit <code>386d911</code>)</h3>
+<table>
+<thead>
+<tr>
+<th>ส่วน</th>
+<th>ไฟล์ที่แก้</th>
+<th>บรรทัดเพิ่ม / ลบ</th>
+<th>ไฟล์ใหม่</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>backend/app</code></td>
+<td>4</td>
+<td>+36 / -3</td>
+<td>3 (<code>baggage_flow.py</code> และไฟล์ข้อมูล 2 ไฟล์)</td>
+</tr>
+<tr>
+<td><code>backend/tests</code></td>
+<td>1</td>
+<td>+5 / 0</td>
+<td>1 (<code>test_baggage_flow.py</code>)</td>
+</tr>
+<tr>
+<td><code>frontend/src</code></td>
+<td>8 (ลบ 2)</td>
+<td>+321 / -58</td>
+<td>1 (<code>BaggageControl.tsx</code>)</td>
+</tr>
+<tr>
+<td><code>scripts</code></td>
+<td>3</td>
+<td>+210 / -29</td>
+<td>3</td>
+</tr>
+<tr>
+<td><code>docs</code></td>
+<td>15</td>
+<td>+793 / -533</td>
+<td>12 ไม่นับภาพหน้าจอ</td>
+</tr>
+<tr>
+<td>รวมทั้งโครงการ</td>
+<td>42</td>
+<td>+1,382 / -638</td>
+<td>30 ไม่นับภาพหน้าจอ</td>
+</tr>
+</tbody>
+</table>
+<p>ใน <code>frontend/src</code> ไฟล์ที่ลบคือ <code>TrustXPages.tsx</code> และ <code>trustx.css</code> บรรทัดที่เพิ่มส่วนใหญ่เป็นสไตล์ของหน้า Baggage และคำแปลภาษาไทย</p>
+<h3>17.3 ขั้นกลางที่ไม่ได้อยู่บน GitHub</h3>
+<p>ระหว่างสองเวอร์ชันมีรุ่นวันที่ 7 ต.ค. 2026 ซึ่งทำหน้ากระเป๋าไว้ในไฟล์ <code>TrustXPages.tsx</code> ผลบนหน้าจอเป็นค่าคงที่ในโค้ด และหน้าไม่ได้ต่อเข้ากับระบบ รุ่นนั้นถูกลบและแทนด้วยหน้า Baggage ในระบบหลักเมื่อ 8 ต.ค.</p>
+<h3>17.4 สิ่งที่คงไว้จากเวอร์ชันก่อนหน้า</h3>
+<ul>
+<li>โมดูลคิวผู้โดยสารทั้งหมด (Overview, Future Flow, Operations, Simulator, Flights, Journey)</li>
+<li>API ชุดเหตุการณ์ TT401 (events, conflicts, recommendations) ฝั่ง backend</li>
+<li>scenario S1–S14 และชุด validation 3,200 episodes ยังอยู่ใน repository แต่ตัวเลข 61% / 78% / 74% / 50% ไม่ควรนำไปอ้าง</li>
+<li>การแบ่งประเภทข้อมูล 5 แบบ และหลักการ "คนเป็นผู้ตัดสินใจ"</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 18: ข้อจำกัดและความเสี่ยง</h2>
+<ul>
+<li>ไม่มีข้อมูลปฏิบัติการจริงของสนามบิน สายการบิน หรือ ground handler ใดในระบบ</li>
+<li>แบบจำลองรวม "จัดเตรียม ขนส่ง และโหลด" เป็นขั้นเดียว ในงานจริงเป็นหลายขั้นและการโหลดเกิดใกล้เวลาออก</li>
+<li>เที่ยวบินขาเข้าที่จะช้า ระบบรู้เวลาจอดล่วงหน้าเสมอ ในงานจริงขึ้นกับว่า AODB อัปเดตเวลาคาดการณ์เร็วแค่ไหน</li>
+<li>เกณฑ์ทั้งหมดเป็นสมมติฐาน การเปลี่ยนเกณฑ์จะเปลี่ยนอัตราเตือนผิด</li>
+<li>วิธีทำงานแบบเดิมที่ใช้เทียบเป็นสมมติฐาน</li>
+<li>ระบบแยกไม่ได้ว่าขั้นหนึ่งหยุดจริงหรือข้อมูลไม่มา ต้องมีสัญญาณสถานะของ feed ในระบบจริง</li>
+<li>ส่วน demo ใช้ header บทบาทที่ปลอมได้ ห้ามเปิดให้เข้าถึงจากภายนอกในฐานะระบบที่ยืนยันตัวตนแล้ว</li>
+<li>ก่อนใช้ข้อมูลที่ระบุตัวบุคคล ต้องผ่านการทบทวนตาม PDPA</li>
+</ul>
+<hr />
+<h2>ส่วนที่ 19: แหล่งอ้างอิง</h2>
+<ol>
+<li><a href="https://www.sita.aero/about-us/pressroom/news-releases/tech-drove-down-mishandled-bag-rates-by-23-in-2025-but-mishandling-still-costs-the-industry-$6.3-billion-a-year">SITA Baggage IT Insights 2026 (ข่าวแจก)</a></li>
+<li><a href="https://www.iata.org/en/programs/ops-infra/baggage/baggage-tracking/">IATA Baggage Tracking และ Resolution 753</a></li>
+<li><a href="https://www.skyict.co.th/en/project-showcase/brs">SKY ICT: Baggage Reconciliation System</a></li>
+<li><a href="https://www.caat.or.th/caat-media/218400/">CAAT NEWS 30/2569 วันที่ 26 ก.ย. 2026</a></li>
+<li><a href="https://www.nationthailand.com/news/general/40071553">The Nation: Thai Airways baggage delays hit Suvarnabhumi on Sept 26–27</a></li>
+<li><a href="https://www.nationthailand.com/business/corporate/40071613">The Nation: Thai Airways clears delayed baggage after floods</a></li>
+<li><a href="https://www.nationthailand.com/business/corporate/40071851">The Nation: Thai Airways expects to clear 1,092-bag backlog</a></li>
+<li><a href="https://www.thestar.com.my/aseanplus/aseanplus-news/2026/10/01/thailand039s-suvarnabhumi-airport-baggage-backlog-expected-to-clear-within-3-4-days">The Star: Suvarnabhumi baggage backlog expected to clear within 3-4 days</a></li>
+<li><a href="https://www.thaiairways.com/en-th/content/check-in/">Thai Airways: Check-in</a></li>
+<li><a href="https://www.nationthailand.com/business/corporate/40055094">The Nation: AOT fiscal year 2025 traffic</a></li>
+<li><a href="https://open-meteo.com/en/docs/historical-weather-api">Open-Meteo Historical Weather API</a></li>
+<li><a href="https://awt.cbp.gov/">US CBP Airport Wait Times</a></li>
+<li><a href="https://www.transtats.bts.gov/">US BTS TranStats On-Time Performance</a></li>
+<li><a href="https://www.caat.or.th/">CAAT สถิติการขนส่งทางอากาศ</a></li>
+<li><a href="https://ourairports.com/data/">OurAirports open data</a></li>
+<li><a href="https://www.caa.co.uk/data-and-analysis/uk-aviation-market/airports/uk-airport-data/">UK CAA Airport Data</a></li>
+</ol>
+<p>แหล่งที่ยังเปิดไม่ได้และไม่ได้ใช้อ้าง: บทความ Reuters วันที่ 29 ก.ย. 2026 และ Khaosod English วันที่ 27 ก.ย. 2026</p>
+<p>บันทึกการตัดสินใจที่เกี่ยวข้องอยู่ใน <code>docs/decisions/</code> ลงวันที่ 7 และ 8 ต.ค. 2026</p></body></html>

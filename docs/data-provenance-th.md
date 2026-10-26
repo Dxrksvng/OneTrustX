@@ -1,690 +1,912 @@
-# Airport TimeTwin
-## เอกสารที่มา การสร้างข้อมูล Demo และการประเมินความน่าเชื่อถือ
+# One TrustX
+## คู่มือโครงการฉบับสมบูรณ์: Baggage Disruption Intelligence & Recovery Coordination
 
-**ฉบับสำหรับ Hackathon · 15 กันยายน 2026**
+**ฉบับปรับตาม insight โดยตรงจาก SKY Innovation Spark 2026 · 7 ตุลาคม 2026**
 
-เอกสารนี้อธิบายว่าระบบ Airport TimeTwin ใช้ข้อมูลอะไร ข้อมูลมาจากไหน ข้อมูลจริงถูกใช้ในบทบาทใด ข้อมูลใดเป็นข้อมูลจำลอง วิธีสร้างสถานการณ์ Demo และระดับความน่าเชื่อถือที่ควรอ้างอิง
+เอกสารนี้อธิบาย One TrustX ตั้งแต่เหตุผลที่สร้างโครงการ การเปลี่ยนทิศทางล่าสุด ปัญหาที่เลือกแก้ ผู้ใช้ คุณค่าทางธุรกิจ ข้อมูลที่ต้องใช้ สิ่งที่ระบบทำและยังทำไม่ได้ วิธีนำเสนอ ไปจนถึงรายละเอียดเชิงเทคนิคในภาคผนวก โดยช่วงต้นเขียนให้ผู้อ่านที่ไม่ใช่สายเทคเข้าใจได้ และช่วงท้ายใช้เป็นหลักฐานสำหรับทีมพัฒนา ผู้เชี่ยวชาญ และคำถามเชิงลึกจากกรรมการ
 
-## 1. บทสรุปสำหรับกรรมการ
+---
 
-Airport TimeTwin เป็น **decision-support prototype** สำหรับทดลองผลของมาตรการจัดการผู้โดยสารในสนามบิน เช่น การเปิดเลนสำรอง การ redirect ผู้โดยสาร และการเปลี่ยนเส้นทางไป Gate ระบบไม่ได้อ้างว่าเป็นระบบพยากรณ์คิวสุวรรณภูมิจาก telemetry จริง
+## ส่วนที่ 1: สรุปสำหรับผู้บริหารและกรรมการ
 
-ข้อมูลในระบบแบ่งเป็นห้าประเภท:
+### 1.1 One TrustX คืออะไร
 
-| ประเภท | ความหมาย | ตัวอย่าง |
+One TrustX คือระบบช่วยตัดสินใจสำหรับการรับมือเหตุขัดข้องในการปฏิบัติการสนามบิน โดยเริ่มจากปัญหาเดียวที่ชัดเจนคือ **กระเป๋าขาออกล่าช้าและเสี่ยงไปไม่ทันเที่ยวบิน**
+
+ระบบไม่ได้เข้ามาแทน Baggage Reconciliation System (BRS), Baggage Handling System (BHS), Airport Operational Database (AODB) หรือ Airport Collaborative Decision Making (A-CDM) แต่ใช้สัญญาณจากระบบเหล่านั้นร่วมกับข้อมูลกำลังคน อุปกรณ์ เที่ยวบินต่อ และเหตุภายนอก เพื่อช่วยตอบคำถามสำคัญสี่ข้อในจอเดียว:
+
+1. ตอนนี้กระบวนการกระเป๋าปกติหรือไม่
+2. ถ้าไม่ปกติ ปัญหาอยู่ที่ขั้นไหนและน่าจะเกิดจากอะไร
+3. ปัญหาจะกระทบเที่ยวบินหรือกระเป๋ากลุ่มใดต่อ
+4. เจ้าหน้าที่ควรพิจารณาแก้อะไรก่อน ใครเป็นผู้รับผิดชอบ และต้องทำก่อนเมื่อใด
+
+ประโยคสรุปที่ต้องการให้กรรมการจำได้คือ:
+
+> **BRS tracks and reconciles the bag. One TrustX creates a cross-operational recovery view around the disruption.**
+
+หรือภาษาไทย:
+
+> **BRS ช่วยติดตามและตรวจสอบกระเป๋า ส่วน One TrustX ช่วยให้ทีมปฏิบัติการเห็นภาพรวมของเหตุขัดข้องและจัดลำดับการกู้สถานการณ์**
+
+### 1.2 ปัญหาที่เลือกแก้
+
+ปัญหาหลักคือ เมื่อกระเป๋าเริ่มค้างที่ขั้นใดขั้นหนึ่ง ข้อมูลที่ใช้เข้าใจสถานการณ์มักอยู่คนละระบบและคนละฝ่าย เช่น:
+
+- BRS/BHS เห็น milestone และสถานะการลำเลียง
+- AODB เห็นเวลาเที่ยวบินและ gate
+- Ground Handler เห็นจำนวนพนักงาน รถลาก cart หรือ ULD
+- สายการบินเห็นเที่ยวบินต่อและเวลาที่เหลือ
+- ฝ่ายสนามบินเห็นข้อจำกัดของพื้นที่และระบบ
+- แหล่งภายนอกเห็นฝน น้ำท่วม หรือเหตุที่ทำให้คนและอุปกรณ์มาถึงล่าช้า
+
+ข้อมูลแต่ละส่วนอาจถูกต้องในขอบเขตของตนเอง แต่ผู้ควบคุมงานยังต้องนำมาประกอบกันเพื่อรู้ว่าเป็นปัญหาเฉพาะกระเป๋าหนึ่งใบ หรือกำลังกลายเป็น backlog ที่กระทบหลายเที่ยวบิน One TrustX จึงเน้นการสร้าง **shared recovery view** ไม่ใช่สร้างระบบติดตามกระเป๋าใหม่
+
+### 1.3 ใครเป็นผู้ใช้
+
+| บทบาท | หน้าที่ในปัญหานี้ | สิ่งที่ต้องการจากระบบ |
 |---|---|---|
-| `REAL_PUBLIC` | ข้อมูลจริงจากแหล่งสาธารณะ | OurAirports, Open-Meteo, BTS, CBP, CAAT, UK CAA |
-| `SYNTHETIC` | แถวข้อมูลที่สร้างขึ้นเพื่อเป็น fixture/demo | เที่ยวบิน คิว เลน ผู้โดยสาร และเหตุการณ์ |
-| `ASSUMPTION` | ค่าที่สมมติเพื่อให้แบบจำลองทำงาน | service rate, terminal topology, staff limit |
-| `DERIVED` | ค่าที่คำนวณต่อจากข้อมูลต้นทาง | weather feature, aggregate |
-| `SIMULATED` | ผลลัพธ์จากการรัน engine | forecast, wait, recommendation, Safe Time |
+| Baggage/Ground Operations Controller | จัดลำดับงาน คน และอุปกรณ์ | จุดคอขวด ผลกระทบ และ action ที่ควรพิจารณาก่อน |
+| Ground Handler Supervisor | บริหารทีม รถลาก cart และ ULD | งานที่ต้องเร่งและ deadline |
+| Airline Operations Control (OCC) | ตัดสินใจด้านเที่ยวบินและ connection | กระเป๋าที่เสี่ยงและผลต่อ flight readiness |
+| Airport Operations | ประสานทรัพยากรและระบบสนามบิน | ภาพรวมข้ามฝ่ายและสถานะการแก้ไข |
+| ผู้โดยสาร | ผู้ได้รับผลกระทบปลายทาง | กระเป๋ามาถึงถูกต้องและได้รับข้อมูลที่น่าเชื่อถือ |
 
-หน้าเว็บ production ที่ deploy อยู่ในปัจจุบันใช้ backend demo แบบ `SYNTHETIC/SIMULATED` เป็นหลัก ข้อมูลสาธารณะถูกจัดเก็บและออกแบบไว้เป็น public context/benchmark แต่ยังไม่ถูกใช้แทน checkpoint telemetry จริงของ BKK
+ผู้ใช้หลักของหน้าจอในรอบนี้คือ **Baggage/Ground Operations Controller** ไม่ใช่ผู้โดยสาร เพราะโจทย์หลักคือการตรวจพบและกู้สถานการณ์ก่อนผลกระทบลามไปถึงผู้โดยสาร
 
-ข้อสรุปด้านความน่าเชื่อถือ: ระบบน่าเชื่อถือในฐานะ **การสาธิตกลไกการตัดสินใจและการจำลองแบบ reproducible** แต่ยังไม่น่าเชื่อถือพอที่จะอ้างตัวเลขคิวหรือผลประโยชน์จริงของสนามบินจนกว่าจะ calibrate และ validate กับข้อมูล aggregate จากสนามบินจริง
+### 1.4 คุณค่าที่เสนอ
 
-## 2. คำถามที่ระบบกำลังแก้
+One TrustX เสนอคุณค่า 5 ด้าน:
 
-โจทย์ไม่ใช่การบอกว่า “คิวจริงตอนนี้เท่าไร” แต่คือ:
+- **Visibility:** เห็นสถานะกระบวนการกระเป๋าทีละขั้น ไม่ใช่เฉพาะรายการ exception
+- **Context:** เชื่อมสถานะกระเป๋ากับเส้นตายเที่ยวบิน คน อุปกรณ์ และเหตุภายนอก
+- **Prioritisation:** จัดลำดับว่าควรช่วยเที่ยวบินหรือกลุ่มกระเป๋าใดก่อน
+- **Coordination:** ระบุ owner, dependency และ deadline ของ action ให้แต่ละฝ่ายเห็นตรงกัน
+- **Accountability:** เก็บที่มาข้อมูล เหตุผล คำแนะนำ การอนุมัติ และประวัติการตัดสินใจ
 
-> ถ้าเกิด arrival wave และเรามีทรัพยากรจำกัด ควรเปรียบเทียบมาตรการใดก่อนให้ผู้ปฏิบัติงานตัดสินใจ
+ระบบไม่สั่งการอุปกรณ์สนามบินโดยอัตโนมัติ เจ้าหน้าที่เป็นผู้ Accept, Reject หรือ Override คำแนะนำเสมอ
 
-ระบบจึงต้องรักษา demand เดียวกัน แล้วทดลองทางเลือกหลายแบบ เช่น No Action, เปิดเลน, redirect และมาตรการผสม เพื่อให้เห็น trade-off ระหว่าง wait reduction, staff, walking และ feasibility
+---
 
-## 3. แหล่งข้อมูลจริงและเหตุผลที่นำมาใช้
+## ส่วนที่ 2: เหตุผลที่โครงการเปลี่ยนทิศทาง
 
-| Dataset | แหล่งอ้างอิง | บทบาทในระบบ | ขอบเขตที่ห้ามสรุปเกินจริง |
+### 2.1 แนวคิดเดิม
+
+แนวคิดเดิมของ One TrustX คือ Trusted Operational Coordination Layer สำหรับหลายฝ่ายใน aviation โดยพยายามรวมข้อมูล สร้าง Common Operational State ใช้ AI ช่วยวิเคราะห์ และรองรับหลาย use case เช่น passenger flow, flight delay, gate, baggage และ disruption
+
+แนวคิดนี้มีจุดแข็งด้าน architecture แต่กว้างเกินไปสำหรับ pitch 7 นาที เพราะกรรมการอาจไม่เห็นว่า:
+
+- ปัญหาแรกที่จะแก้คืออะไร
+- ใครเป็นผู้ใช้หลัก
+- สาเหตุของปัญหาคืออะไร
+- ต้องขอข้อมูลใดจากใคร
+- ผลลัพธ์บนหน้าจอช่วยตัดสินใจอะไร
+- แตกต่างจากผลิตภัณฑ์ของ SKY ที่มีอยู่แล้วอย่างไร
+
+### 2.2 Insight โดยตรงจาก SKY และ mentor
+
+ข้อมูลจาก Kick-off และคำแนะนำของ mentor ระบุประเด็นสำคัญว่า:
+
+- ให้เลือกเพียงหนึ่งปัญหาที่ต้องการแก้จริง
+- อธิบายว่าปัญหาเกิดจากขั้นใดและมีเหตุอะไรบ้าง
+- ระบุให้ชัดว่าแก้ปัญหาให้ใคร
+- ระบุว่าต้องแชร์ข้อมูลส่วนใด จากฝ่ายใด
+- หน้าจอต้องมองแล้วรู้ได้ทันทีว่าไม่มีปัญหา หรือปัญหาเกิดที่ส่วนไหน
+- เรื่องการขยายไป use case อื่นควรกล่าวเฉพาะช่วงท้าย
+- SKY มี Smart Flows, BRS และ AODB อยู่แล้ว และกำลังเดินไปสู่ A-CDM/TAM และ Unified Data Platform
+- ในกระบวนการกระเป๋า จุดเสี่ยงสำคัญอยู่ที่ handoff หรือการเปลี่ยนความรับผิดชอบระหว่างฝ่าย
+- เป้าหมายสนามบินและ aviation hub ต้องพิจารณา People, Process และ IT ร่วมกัน ไม่ใช่ติดตั้งระบบเพิ่มโดยไม่แก้ workflow
+
+Insight นี้ทำให้ทีมตัดสินใจว่า One TrustX ต้องไม่เล่าว่าเป็นแพลตฟอร์มรวมทุกอย่าง แต่ต้องแสดงให้เห็นว่า architecture เดิมนำมาแก้ปัญหากระเป๋าที่เฉพาะเจาะจงได้อย่างไร
+
+### 2.3 สิ่งที่เปลี่ยน และสิ่งที่ยังคงเดิม
+
+| ด้าน | ก่อนปรับ | หลังปรับล่าสุด |
+|---|---|---|
+| Hero use case | การประสานงานสนามบินหลายเรื่อง | กระเป๋าขาออกล่าช้าและ disruption recovery |
+| Problem statement | ข้อมูลหลายฝ่ายไม่เชื่อมกัน | กระเป๋าค้างที่ขั้นไหน เพราะอะไร กระทบใคร และแก้อะไรก่อน |
+| ผู้ใช้ | หลาย stakeholder พร้อมกัน | Baggage/Ground Operations Controller เป็นหลัก |
+| หน้าหลัก | Common Operational State ทั่วไป | Baggage Delay Control View |
+| Positioning | coordination platform กว้าง | focused recovery-prioritisation layer |
+| ระบบเดิม | event, trust, simulation, recommendation, audit | คงไว้ทั้งหมดและนำมาใช้กับ baggage |
+| Future scope | ปรากฏตลอดเรื่อง | กล่าวช่วงท้าย: turnaround, gate, passenger, cargo |
+
+การเปลี่ยนนี้เป็นการเปลี่ยน **จุดเริ่มต้นและเรื่องเล่า** ไม่ใช่การรื้อ architecture เดิม
+
+### 2.4 ลำดับวิวัฒนาการของโครงการจนถึงเวอร์ชันปัจจุบัน
+
+| ช่วง | แนวคิด/สิ่งที่พัฒนา | ข้อมูลหรือเหตุผลที่ทำให้เปลี่ยน | ผลต่อเวอร์ชันปัจจุบัน |
 |---|---|---|---|
-| Airport metadata | [OurAirports](https://ourairports.com/data/) | airport/runway reference | ไม่ใช่ passenger telemetry |
-| Historical weather | [Open-Meteo](https://open-meteo.com/en/docs) | context และ weather feature | เป็น model/reanalysis ไม่ใช่ METAR sensor |
-| Aircraft states | [OpenSky REST API](https://openskynetwork.github.io/opensky-api/rest.html) | aircraft movement context | ไม่ใช่ boarding, queue หรือ passenger count |
-| BTS flights | [US BTS TranStats](https://transtats.bts.gov/) | external flight benchmark | เป็นข้อมูล US domestic ไม่ใช่ตารางบิน BKK |
-| CBP wait times | [CBP Airport Wait Times](https://awt.cbp.gov/) | external immigration benchmark | ไม่ใช่ Security service rate ของ BKK |
-| Thailand aviation statistics | [CAAT](https://www.caat.or.th/) | historical public aviation context | coverage ไม่ต่อเนื่องและไม่ใช่ checkpoint telemetry |
-| UK airport statistics | [UK CAA](https://www.caa.co.uk/data-and-analysis/) | external scale/traffic context | ไม่ใช่ข้อมูลปฏิบัติการของไทย |
+| ระยะเริ่มต้น | โมดูล queue simulation สำหรับคาดการณ์คิว ทดลองเปิดเลน/redirect และ Passenger Safe Time | ต้องการสาธิต decision support ด้วยข้อมูลที่หาได้และจำลองซ้ำได้ | ได้ simulation engine, what-if, human decision, audit และ passenger modules ซึ่งยังคงอยู่ |
+| ระยะ One TrustX แรก | เพิ่ม Trusted Event Layer, Common Operational State และการประสานหลาย stakeholder | ปัญหาการตัดสินใจไม่ได้มีเพียงคิว แต่เกิดจากข้อมูลหลายแหล่งไม่ตรงกัน | ได้ event lineage, conflict reconciliation, recommendation และ scenario validation |
+| ระยะขยาย scenario | เพิ่ม operational/disaster scenarios และ failure injection | ต้องการทดสอบ missing, late, duplicate, contradictory และ stale events | ได้ scenario library และ validation pack แต่ผลยังเป็น synthetic proxy |
+| หลัง SKY Kick-off | พบว่า SKY มี Smart Flows, BRS, AODB และทิศทาง A-CDM/TAM อยู่แล้ว | แนวคิด “รวมข้อมูลทุกฝ่าย” เสี่ยงซ้ำกับผลิตภัณฑ์/ทิศทางของ SKY | หยุดวาง positioning ว่าเป็นฐานข้อมูลกลางหรือ A-CDM ใหม่ |
+| หลัง feedback mentor | ต้องเลือกหนึ่งปัญหา บอกสาเหตุ ผู้ใช้ แหล่งข้อมูล และทำจอที่เห็นปัญหาทันที | Insight โดยตรงจาก SKY Innovation Spark วันที่ 7 ต.ค. 2026 | เลือก delayed outbound baggage เป็น hero use case |
+| Scope narrowing | เปลี่ยนจาก baggage tracking เป็น baggage-disruption recovery | BRS ของ SKY ติดตาม milestone เชื่อม AODB/BHS และมี alert บางประเภทอยู่แล้ว | One TrustX เน้น cross-system bottleneck, impact และ recovery priority |
+| เวอร์ชันปัจจุบัน | Baggage Delay Control View + ระบบเดิมทั้งหมด | ต้องแสดง “ปกติไหม–ติดตรงไหน–กระทบอะไร–ทำอะไรต่อ” | เพิ่ม `baggage_control` contract, stage view, owner/deadline และ unknown-data handling |
 
-รายงานที่บันทึกจำนวน records, period, missingness, URL และ checksum อยู่ใน [Data Quality Report](data-quality-report.md) ตัวอย่างชุดข้อมูลที่ถูก normalize คือ BTS 504,884 records, CBP 12,186 observations, Open-Meteo BKK 8,760 hourly records และ OurAirports 145 records ตามรายงานของ repository
+การเปลี่ยนแต่ละระยะไม่ใช่การลบงานก่อนหน้า แต่เป็นการจัดชั้นใหม่:
 
-ข้อมูลจริงเหล่านี้ไม่ถูกนำมาใส่ชื่อใหม่เป็นข้อมูล BKK และไม่ถูกใช้เพื่ออ้างว่าโมเดลผ่านการ validate แล้ว หาก fetch public source ล้มเหลว ระบบต้องเก็บ stale marker หรือใช้ fallback ที่ติดป้าย synthetic แทนการ relabel เป็น real
+```text
+Queue-simulation capabilities
+  queue simulation / passenger journey / what-if
+                 ↓ เป็น capability สนับสนุน
+One TrustX foundation
+  trusted events / shared state / conflict / recommendation / audit
+                 ↓ นำมาใช้กับปัญหาที่เฉพาะขึ้น
+Current hero use case
+  baggage disruption detection and recovery prioritisation
+```
 
-### 3.1 เหตุผลและระดับความน่าเชื่อถือของแต่ละแหล่ง
+### 2.5 เหตุผลที่เวอร์ชันปัจจุบันเหมาะกับรอบ Preliminary Pitch
 
-| แหล่ง | ความน่าเชื่อถือของแหล่ง | เหตุผลที่เลือก | วิธีใช้ที่เหมาะสม |
+- มีปัญหาเดียวที่อธิบายได้ภายในหนึ่งประโยค
+- มีผู้ใช้หลักและ decision ที่ชัดเจน
+- เชื่อมกับ pain point เรื่อง handoff ที่ SKY ให้ข้อมูลโดยตรง
+- ไม่แข่งขันกับ BRS/AODB แต่เพิ่ม value จากการใช้ข้อมูลร่วมกัน
+- แสดง feasibility เพราะเริ่มจาก infrastructure ที่มีอยู่
+- มีหน้าจอที่ตอบ feedback mentor โดยตรง
+- ยังรักษา vision ระยะยาวของ One TrustX ไว้ แต่ย้ายไปกล่าวในช่วงท้าย
+
+---
+
+## ส่วนที่ 3: กระบวนการกระเป๋าและจุดที่ระบบเข้าไปช่วย
+
+### 3.1 ภาพกระบวนการแบบง่าย
+
+```text
+Passenger handover / Check-in
+              ↓
+Screening and Baggage Handling
+              ↓
+Sorting
+              ↓
+Loading onto aircraft
+              ↓
+Transfer / Connection (ถ้ามี)
+              ↓
+Unloading and Arrival
+              ↓
+Return to passenger
+```
+
+ทุกลูกศรเป็น handoff ซึ่งอาจเกี่ยวข้องกับคน ระบบ อุปกรณ์ และความรับผิดชอบที่ต่างกัน IATA Resolution 753 กำหนดการติดตามอย่างน้อยที่ acceptance, loading, transfer และ arrival เพื่อให้ตรวจสอบ custody ของกระเป๋าได้
+
+### 3.2 ตัวอย่างสาเหตุความล่าช้า
+
+| ขั้น | สาเหตุที่เป็นไปได้ | ข้อมูลที่ใช้ตรวจ |
+|---|---|---|
+| Check-in/Acceptance | ผู้โดยสารมากระจุกตัว, bag drop ช้า | transaction timestamp, passenger-flow aggregate |
+| Screening | ส่งตรวจซ้ำ, เครื่องตรวจหรือสายพานขัดข้อง | BHS status, screening exception |
+| Sorting | routing ผิด, chute หรือ conveyor มีปัญหา | sortation event, location, device status |
+| Loading | คนไม่พอ, cart/tug/ULD ไม่พร้อม, gate เปลี่ยน | BRS milestone, resource/task state, AODB |
+| Transfer | ขาเข้าล่าช้า, connection window สั้น | inbound ETA, onward ETD, transfer event |
+| Arrival | unloading หรือ belt allocation ช้า | unload event, belt status, staffing |
+
+ตารางนี้เป็นกรอบสมมติฐานสำหรับ validation กับผู้เชี่ยวชาญ ไม่ใช่ข้อสรุปว่าทุกสนามบินมีสาเหตุเหมือนกัน
+
+### 3.3 ตัวอย่างเหตุการณ์ในระบบจำลอง
+
+ใน controlled fixture ปัจจุบัน:
+
+- เที่ยวบินจำลอง TT401 กำลังเข้าใกล้ boarding close
+- Boarding ถูกแจ้งว่า complete
+- Gate ถูกแจ้งว่า ready
+- แต่ baggage loading ยังอยู่ที่ 82%
+- ระบบจึงไม่อนุญาตให้สถานะอื่นกลบ dependency ของกระเป๋า
+- Common Operational State เป็น `AT_RISK`
+- Bottleneck คือ `Loading`
+- Recommendation คือให้ Ground Handler พิจารณาส่ง resource สำรอง GH-03 ก่อน boarding close
+
+นี่เป็นตัวอย่างเพื่อพิสูจน์ workflow ของระบบ ไม่ใช่เหตุการณ์จริงของเที่ยวบินหรือสนามบินใด
+
+---
+
+## ส่วนที่ 4: หน้าจอและประสบการณ์ผู้ใช้
+
+### 4.1 Baggage Delay Control View
+
+หน้าหลักใหม่ออกแบบให้ตอบคำถามตามลำดับความคิดของเจ้าหน้าที่:
+
+```text
+NORMAL? → WHERE? → WHY? → IMPACT? → NEXT ACTION? → OWNER? → DEADLINE?
+```
+
+องค์ประกอบหลักประกอบด้วย:
+
+1. Overall baggage-flow status
+2. Stage status: Check-in, Screening, Sorting, Loading, Transfer, Arrival
+3. Root bottleneck และเหตุผล
+4. หลักฐานหรือ source ที่รองรับข้อสรุป
+5. เที่ยวบินและ operation ที่ได้รับผล
+6. Recovery action ที่แนะนำ
+7. Action owner และ deadline
+8. Human approval status
+9. Data-source boundary และ privacy note
+
+สถานะตัวอย่าง:
+
+```text
+Check-in   Screening   Sorting   Loading   Transfer   Arrival
+   OK          OK         OK       DELAY      RISK       OK
+                                     │
+                                     ├─ เหตุ: loading milestone ต่ำกว่าแผน
+                                     ├─ กระทบ: flight readiness
+                                     └─ ทำต่อ: พิจารณาส่ง resource สำรอง
+```
+
+### 4.2 โมดูลเดิมที่ยังอยู่
+
+One TrustX ไม่ได้ตัดความสามารถเดิมออก ระบบยังมี:
+
+- Event Explorer: ดูเหตุการณ์ ที่มา เวลา lineage และ verification
+- Conflict Center: ดูข้อมูลที่ขัดแย้งและ reconcile ตามกฎ
+- Shared State: ดูสถานะร่วมและหลักฐานประกอบ
+- Intelligence: detect, predict และ recommend
+- Coordination: owner, dependency และ action status
+- Scenario Matrix: ทดลองสถานการณ์หลายระดับ
+- Performance: แยกผล prototype ออกจาก production claim
+- Audit: บันทึกว่าใครตัดสินใจอะไรและเพราะเหตุใด
+- Sources: แสดง provenance และข้อจำกัดของข้อมูล
+- โมดูล queue simulation เดิม: queue simulation, what-if, passenger journey และ Safe Time ซึ่งเป็น capability เดิมและไม่ใช่ hero use case ของ pitch รอบนี้
+
+---
+
+## ส่วนที่ 5: การวางตำแหน่งผลิตภัณฑ์
+
+### 5.1 ตำแหน่งเมื่อเทียบกับระบบของ SKY
+
+| ระบบ | บทบาทหลัก | One TrustX ใช้อย่างไร | สิ่งที่ One TrustX เน้นเพิ่ม |
 |---|---|---|---|
-| OurAirports | สูงสำหรับ metadata; ไม่ใช่ operational truth | เป็นฐานข้อมูลสาธารณะที่มี airport/runway reference และดาวน์โหลดซ้ำได้ | ใช้ตรวจชื่อสนามบิน พิกัด runway และ reference data |
-| Open-Meteo | สูงสำหรับ historical weather model/reanalysis; ไม่เท่ากับ sensor | API มีช่วงเวลา หน่วย และพิกัดชัดเจน เหมาะกับ context ที่ reproducible | ใช้เป็น weather context และ feature ที่ต้องติด lineage |
-| OpenSky | สูงสำหรับ aircraft state ที่ provider เห็น; coverage ไม่สมบูรณ์ | ให้ state vector แบบ time-stamped และมี API อ้างอิงชัด | ใช้ movement context เท่านั้น ไม่ใช้แทน manifest หรือ queue |
-| BTS | สูงสำหรับ US air-carrier reporting; ไม่เกี่ยวกับ BKK โดยตรง | มีข้อมูลจำนวนมากและโครงสร้าง historical เหมาะกับ external benchmark | ใช้ศึกษารูปแบบเที่ยวบินและวิธีประเมิน ไม่ใช้เป็น BKK schedule |
-| CBP | สูงสำหรับ US immigration wait reports; ไม่ใช่ security BKK | มี observations รายชั่วโมงและเหมาะกับ benchmark wait distribution | ใช้เป็น plausibility benchmark ภายนอกเท่านั้น |
-| CAAT | สูงในฐานะแหล่งสถิติการบินไทยทางการ; coverage/ความสดมีข้อจำกัด | เป็นแหล่งไทยที่ใกล้บริบทมากที่สุดในชุด public ที่เข้าถึงได้ | ใช้ aggregate aviation context โดยรักษา period และ missingness |
-| UK CAA | สูงสำหรับสถิติ UK ที่เผยแพร่โดยหน่วยงานกำกับ | ใช้เทียบ scale และ pattern ของสนามบินที่มีข้อมูลเปิด | ใช้ external context ไม่ใช่ parameter ของ BKK |
+| BRS | ติดตามและ reconcile กระเป๋าในจุดสำคัญ | รับ milestone/exception เป็น input | มอง disruption ระดับ operation และลำดับ recovery |
+| BHS | ลำเลียง คัดแยก และสถานะอุปกรณ์ | รับ processing/device state | เชื่อมอาการของระบบกับผลต่อ flight deadline |
+| AODB | แหล่งข้อมูลกลางด้านเที่ยวบิน | ใช้ ETA/ETD, gate, flight status | ใช้เป็น deadline และ impact context |
+| A-CDM/TAM | collaborative decision ระดับสนามบิน | อาจเชื่อม milestone ในอนาคต | เจาะ use case กระเป๋า ไม่สร้าง A-CDM ใหม่ |
+| Smart Flows | การไหลและ dwell time ของผู้โดยสาร | future leading signal ที่ check-in | ยังไม่ใช่ input จำเป็นของ prototype แรก |
 
-ความน่าเชื่อถือของแหล่งข้อมูลไม่ได้แปลว่าค่าที่นำไปใช้ตอบโจทย์ BKK จะถูกต้องโดยอัตโนมัติ ความถูกต้องต้องพิจารณา **ความตรงกับกระบวนการ (process match), geography, period, units, freshness และ missingness** ด้วย นี่คือเหตุผลที่ระบบไม่ใช้ CBP หรือ BTS เป็นตัวแทนของ Security checkpoint สุวรรณภูมิ
+คำอธิบายที่ปลอดภัยและตรงไปตรงมา:
 
-## 4. Dataset Demo ที่สร้างขึ้น
+> One TrustX builds on existing BRS/AODB signals and focuses on cross-stakeholder baggage-disruption recovery and prioritisation.
 
-ข้อมูล demo อยู่ใน `data/synthetic/` และสร้างจาก seed/model ภายใน repository ได้แก่:
+ไม่ควรกล่าวว่า BRS ไม่มี alert หรือไม่สามารถวิเคราะห์ได้ เพราะข้อมูลสาธารณะของ SKY ระบุว่า BRS มี alert สำหรับความผิดปกติบางประเภทอยู่แล้ว ความแตกต่างที่ต้องพิสูจน์คือการเชื่อม **baggage + flight + ground resource + connection + external disruption** ให้เป็น recovery view ที่เจ้าหน้าที่ใช้ร่วมกัน
 
-| Dataset | สิ่งที่เก็บ | สถานะ |
-|---|---|---|
-| `flights.csv` | เที่ยวบิน TT401–TT404, gate, เวลาออก | synthetic fixture |
-| `checkpoint.csv` | Security A/B, จำนวนเลนสูงสุด, terminal/zone | synthetic + assumption |
-| `passenger_flow.csv` | arrivals, departures, queue, wait, P95 | generated simulation fixture |
-| `passenger_journey.csv` | ผู้โดยสารนิรนาม เส้นทาง และ gate | synthetic |
-| `lane_status.csv` | สถานะเลน | synthetic |
-| `baggage_events.csv`, `gate_events.csv`, `ground_handling.csv` | เหตุการณ์การปฏิบัติการ | synthetic |
-| `airport_graph.csv` | โหนดและ edge สำหรับ routing | illustrative topology |
-| `recommendations.csv` | ทางเลือกและคะแนน | derived from engine |
-| `training.csv` | ประวัติ queue/arrivals/lanes | deterministic synthetic history |
+### 5.2 Business positioning
 
-ไม่มีชื่อจริง เลขหนังสือเดินทาง หมายเลขเที่ยวบินจริง หรือ itinerary จริง ข้อมูลผู้โดยสารทั้งหมดเป็น anonymous fixture เพื่อเล่า scenario
+One TrustX ไม่ขายคำว่า “AI ที่รู้ทุกอย่าง” แต่เสนอ:
 
-## 5. วิธีสร้างข้อมูล Demo ตั้งแต่ต้นจนจบ
+- Integration-first: ใช้ระบบเดิมให้คุ้มค่า
+- Exception-first: โฟกัสช่วงผิดปกติ ไม่สร้าง dashboard ทุกอย่าง
+- Human-centred: แนะนำและอธิบาย แต่ผู้ปฏิบัติงานตัดสินใจ
+- Evidence-based: ทุกข้อสรุปย้อนกลับไปหา event/source ได้
+- Expandable: เริ่มจาก baggage แล้วค่อยขยายตามผล validation
 
-### 5.1 กำหนด scenario seed
+---
 
-scenario หลักใช้ seed `42` และ frozen demo clock 17:00 ICT:
+## ส่วนที่ 6: ข้อมูลที่ต้องใช้และที่มาของข้อมูล
 
-- Security A มี queue เริ่มต้น 96 คน
-- Security B มี queue เริ่มต้น 12 คน
-- Security A เปิด 4 จาก 5 lanes
-- Security B เปิด 3 lanes
-- service rate สมมติ 2 คนต่อนาทีต่อเลน
-- reserve staff สูงสุด 4 คน
-- redirect สูงสุด 30%
-- มีเที่ยวบินจำลอง 4 เที่ยวและ representative cohort 580 คน
+### 6.1 ข้อมูลปฏิบัติการที่ต้องขอในอนาคต
 
-ค่าทั้งหมดเป็น assumptions ที่ระบุไว้ใน [Assumptions](assumptions.md) ไม่ใช่ข้อมูลจากระบบสนามบิน
-
-### 5.2 สร้าง arrival profile
-
-ในช่วง peak ระบบกำหนด arrivals ของ Security A เป็น 11.2 คนต่อนาทีในช่วงต้น, 19.2 ในช่วง peak สูงสุด, 9 ในช่วงถัดไป และ 1.6 ในช่วงท้าย ส่วนช่วงปกติใช้ 5 คนต่อนาที การใช้ seed เดิมทำให้ผลลัพธ์ reproducible
-
-### 5.3 คำนวณ queue แบบ minute-step
-
-ทุกหนึ่งนาที engine คำนวณ:
-
-```text
-Q(t+1) = max(0, Q(t) + arrivals(t) - lanes(t) × service_rate)
-```
-
-ตัวอย่างค่าประมาณ +30 นาทีของ Security A:
-
-```text
-(96 + 30 × (15.2 - 8)) / 8 = 39 นาที
-```
-
-เลข 8 มาจาก 4 lanes × 2 คนต่อนาที ไม่ใช่ค่าที่วัดจากสนามบินจริง
-
-### 5.4 จำลอง FIFO cohorts
-
-ผู้โดยสารถูกเก็บเป็น cohort ตามเวลาเข้าคิว ระบบให้บริการแบบ FIFO และคำนวณ average wait, passenger-weighted P95, peak queue, passenger-minutes, throughput และ unresolved queue จน queue drain หรือครบ horizon 600 นาที
-
-การ drain ต่อเกิน 60 นาทีมีจุดประสงค์ป้องกันไม่ให้ผลลัพธ์ดูดีเพราะตัดผู้โดยสารที่ยังรออยู่ออกจากช่วงวัด
-
-### 5.5 ทดลอง intervention
-
-ทุกทางเลือกใช้ demand และ initial queue ชุดเดียวกัน แล้วเปลี่ยนเฉพาะ action:
-
-1. No Action
-2. เปิด reserve lane
-3. redirect ผู้โดยสารบางส่วนไป Security B
-4. เปิด lane และ redirect พร้อมกัน
-5. เพิ่ม staff หรือ delay wave ใน what-if simulation
-
-ระบบตรวจ resource constraint เช่น reserve staff, จำนวน lane สูงสุด, redirect cap และ queue ที่ยังไม่ถูก drain หากไม่ผ่านจะติดป้าย `infeasible`
-
-### 5.6 ให้คะแนนทางเลือก
-
-คะแนนใช้สูตรที่เปิดเผยและปรับน้ำหนักได้:
-
-```text
-score = wait reduction
-      + 0.01 × passenger-minutes saved
-      + 50 × risk reduction
-      - additional staff
-      - walking penalty
-      - 0.001 × cost proxy
-```
-
-recommendation จึงเป็นผลจาก constrained weighted comparison ไม่ใช่คำตอบจาก LLM โดยตรง
-
-### 5.7 สร้าง passenger route และ Safe Time
-
-terminal graph เป็น directed graph ที่สร้างขึ้นเอง เช่น Food C → Security B → Immigration → Retail → Gate C8 ระบบใช้ walking time, processing time, boarding deadline และ buffer เพื่อคำนวณ Safe Time การเปลี่ยน Gate E7 เพิ่มเวลาเดินตาม edge ที่สมมติไว้
-
-## 6. หลักการที่ทำให้ Demo ดูสมเหตุสมผล
-
-ความสมเหตุสมผลของ Demo มาจาก consistency และ transparency ไม่ใช่การอ้างว่าเป็น observation จริง:
-
-- scenario เดิมให้ผลเดิมด้วย seed เดิม
-- conservation check ตรวจ arrivals = served + unresolved queue
-- ทุก intervention รันบน demand เดียวกัน
-- resource limit ทำให้ action ที่ทำไม่ได้ถูก reject
-- P95 เป็น passenger-weighted FIFO wait
-- stale data ลด confidence และ block mutation
-- สูตรคะแนนและ assumptions แสดงต่อผู้ใช้
-- UI แยก `REAL_PUBLIC`, `SYNTHETIC`, `ASSUMPTION` และ `SIMULATED`
-- decision มี human accept/reject/override และ audit trail
-
-## 7. เชื่อถือได้มากน้อยแค่ไหน
-
-| คำถาม | ระดับความน่าเชื่อถือ | เหตุผล |
-|---|---|---|
-| Queue mechanics ทำงานตามสูตรหรือไม่ | สูง | สมการชัดเจนและทดสอบ conservation ได้ |
-| เปรียบเทียบทางเลือกอย่างยุติธรรมหรือไม่ | สูง | ใช้ demand/initial condition เดียวกัน |
-| ข้อมูล public มีแหล่งอ้างอิงหรือไม่ | สูงในฐานะ public context | มี URL, period, provenance และ checksum |
-| ตัวเลขคิว BKK เป็นค่าจริงหรือไม่ | ต่ำ | ไม่มี BKK checkpoint telemetry |
-| ค่าความแม่นยำของ forecast | ยังสรุปไม่ได้ | evaluation ส่วนใหญ่เป็น synthetic และ confidence ยัง heuristic |
-| ใช้ควบคุมสนามบินจริงได้หรือไม่ | ไม่ได้ | ยังขาด identity, telemetry, safety case และ validation |
-
-รายงาน evaluation ของ synthetic history อาจมี MAE/RMSE ดี เพราะ generator และ evaluator ใช้กลไกใกล้กัน ผลดังกล่าวยืนยันความสอดคล้องของ code path ได้ แต่ไม่ใช่หลักฐานว่า forecast แม่นในสนามบินจริง
-
-## 8. ถ้าต้องการเปลี่ยนเป็นข้อมูลจริง
-
-แผนที่เหมาะสมคือ:
-
-1. ขอข้อมูล aggregate แบบไม่ระบุตัวบุคคลจากสนามบิน: queue length, arrivals/5 min, departures/5 min, open lanes, service rate และ timestamps
-2. เก็บ source, timestamp, airport/terminal, units, schema version และ quality flags ทุกแถว
-3. แยก train/validation/test ตามเวลา ห้าม random shuffle
-4. calibrate arrival profile, service rate, walking time และ resource limits จาก historical observation
-5. วัด MAE, RMSE, P95 error, interval coverage, false alarm และ lead time บนเหตุการณ์จริง
-6. ทดสอบ peak, lane closure, gate change และ disruption ที่มี ground truth
-7. เริ่ม shadow mode ให้ระบบแนะนำอย่างเดียว และให้ operator ตรวจทุก action
-8. เปรียบเทียบกับ baseline เช่น persistence และ moving average
-9. ค่อยเลื่อนไป pilot ที่ human-approved หลัง validation ผ่าน
-
-ยังไม่ควรใช้ข้อมูล CBP หรือ BTS แทน BKK checkpoint data เพราะเป็นคนละสนามบิน คนละกระบวนการ และคนละ distribution
-
-## 9. ข้อความที่ควรใช้ในการนำเสนอ Hackathon
-
-ข้อความที่ถูกต้อง:
-
-> Airport TimeTwin ใช้ public aviation data เพื่อสร้าง context และใช้ deterministic synthetic scenario เพื่อสาธิตการเปรียบเทียบมาตรการจัดการคิวอย่างโปร่งใส เนื่องจาก checkpoint telemetry จริงของ BKK ไม่เปิดเผย ระบบจึงพิสูจน์ decision workflow, constraints และ auditability ก่อน ไม่ได้อ้างความแม่นยำของสนามบินจริง
-
-ข้อความที่ไม่ควรใช้:
-
-- “โมเดลทำนายคิวสุวรรณภูมิได้จริง”
-- “ลดเวลารอได้ 21 นาทีจริง”
-- “ผ่านการ validate กับสนามบินแล้ว”
-- “ใช้ข้อมูล passenger จริงของ BKK”
-
-## 10. ตัวอย่างการใช้งานจริงตั้งแต่เปิดเว็บจนจบหนึ่งรอบ
-
-### ฉากเหตุการณ์
-
-สมมติผู้ใช้เป็น Airport Operator เข้ามาตรวจช่วงเย็น ระบบกำหนด demo clock ไว้ที่ 17:00 ICT และ session ของ browser มี UUID ของตัวเอง เพื่อไม่ให้การทดลองของผู้ใช้คนหนึ่งปนกับผู้ใช้อื่น
-
-### ขั้นที่ 1 เปิด `/overview`
-
-ผู้ใช้เปิดเว็บและ React เรียก API หลักสี่ชุดพร้อมกัน:
-
-| API | ทำอะไร | ข้อมูลที่ได้ |
-|---|---|---|
-| `GET /api/overview` | โหลดสถานการณ์และ forecast | scenario, checkpoint, queue, wait, risk, journey, feed health |
-| `GET /api/recommendations` | โหลดทางเลือก | options, score, feasibility, reason |
-| `GET /api/flights` | โหลดเที่ยวบินของ scenario | flight number, gate, departure, status |
-| `GET /api/passenger/demo-passenger/journey` | โหลด passenger route | gate, route, walking time, Safe Time |
-
-API อ่าน `DemoSession` จาก database ตาม `X-Demo-Session` header ถ้ายังไม่มี row จะสร้าง session เริ่มต้นให้ จากนั้นสร้าง `Scenario` object และส่งให้ engine คำนวณ ไม่ได้อ่านค่าตัวเลขจากหน้าเว็บโดยตรง
-
-หน้า Overview จะแสดง:
-
-1. สถานะ feed ว่า fresh, stale หรือ context only
-2. Current queue ของ Security A/B
-3. forecast ที่ +15, +30 และ +60 นาที
-4. root causes ที่เป็น model attribution ไม่ใช่ causal proof
-5. เที่ยวบินและ gate ที่อยู่ใน representative scenario
-6. action ที่ recommendation scorer เห็นว่าเหมาะที่สุด
-
-### ขั้นที่ 2 ระบบวิเคราะห์ peak
-
-ถ้า scenario เป็น peak engine ใช้ arrival profile และ service capacity ที่อธิบายในบทที่ 5 แล้วคำนวณ queue แบบหนึ่งนาที ระบบจำลองต่อไปจน queue ระบายหรือถึง 600 นาที จากนั้นบันทึก prediction snapshot เช่น target `security-a`, horizon 30, predicted wait, lower/upper bound, confidence และ `model_version = fluid-v1`
-
-ผล prediction เชื่อมกับ `operational_events` และ `audit` เพื่อย้อนดูได้ว่า forecast นี้เกิดจาก input scenario version ใด
-
-### ขั้นที่ 3 ผู้ใช้กด “Compare interventions”
-
-ผู้ใช้ไปหน้า What-if lab ระบบไม่เปลี่ยนข้อมูลจริงของสนามบิน แต่สร้างผลลัพธ์จำลองสี่ชุดบน demand เดิม:
-
-```text
-No Action
-Open A5
-Redirect 20%
-Open A5 + Redirect 12%
-```
-
-แต่ละชุดจะคำนวณ average wait, P95, peak queue, passenger-minutes saved, additional staff, walking penalty, confidence, cost และ feasibility แล้วนำไปจัดอันดับด้วย scoring formula
-
-หากผู้ใช้ปรับ sliders เช่น lanes=5, redirect=20%, staff=1 ระบบส่ง `POST /api/simulation` พร้อมค่าที่ปรับไปให้ engine ตรวจ constraint และคืนผล simulation ใหม่ โดยยังไม่เขียน decision ลง audit จนกว่าผู้ใช้จะกดส่ง recommendation
-
-### ขั้นที่ 4 ผู้ใช้ตรวจคำแนะนำ
-
-ผู้ใช้ดูว่าทางเลือกใดลด wait ได้เท่าไร ต้องใช้ staff เท่าไร มี walking penalty เท่าไร และ queue drain สำเร็จหรือไม่ ตารางนี้ช่วยให้ผู้ใช้เข้าใจว่าระบบไม่ได้เลือกจากคะแนนอย่างเดียว แต่มีข้อจำกัดด้านทรัพยากรและความเป็นไปได้
-
-ถ้าข้อมูลถูกทำเครื่องหมาย stale ระบบจะลด confidence และปิด action บางประเภท เพื่อไม่ให้ operator กดใช้ recommendation จากข้อมูลเก่า
-
-### ขั้นที่ 5 ผู้ใช้กด Accept, Reject หรือ Override
-
-เมื่อผู้ใช้ตัดสินใจ frontend ส่ง `POST /api/recommendations/{id}/decision` พร้อม:
-
-- `decision`: accept, reject หรือ override
-- `reason`: เหตุผลจากมนุษย์
-- `intervention`: lanes, redirect, staff และ flight delay ที่เลือก
-- `X-Demo-Session`: UUID ของ session
-
-backend ตรวจ role `AIRPORT_OPERATOR` หรือ `ADMIN`, ตรวจ version ของ scenario, ตรวจ resource constraints และเขียน event/audit/recommendation snapshot ลง database การกดปุ่มนี้เปลี่ยนเฉพาะ state ของ Demo ไม่ได้สั่งอุปกรณ์สนามบินจริง
-
-### ขั้นที่ 6 ระบบวัดผลจำลอง
-
-หน้า Decision log โหลด `GET /api/audit` และ `GET /api/results` เพื่อแสดงว่า:
-
-- forecast เดิมคาดการณ์เท่าไร
-- intervention ที่รับรองคืออะไร
-- ผลหลัง intervention ใน simulation เป็นเท่าไร
-- actual value ที่ผู้ใช้กรอกเพื่อการทดสอบเป็น synthetic หรือไม่
-- prediction error เท่าไร
-
-เมื่อผู้ใช้กรอก observed average wait และกดวัดผล ระบบส่ง `POST /api/results/{id}/measure` แต่ field นี้บังคับ `source_type = SIMULATED` ใน Demo จึงไม่ควรเรียกว่า observation จากสนามบินจริง
-
-### ขั้นที่ 7 ผู้ใช้ดู Passenger journey
-
-เมื่อเปลี่ยนไปหน้า Journey ระบบใช้ directed airport graph หาเส้นทางที่ accessible และคำนวณ:
-
-```text
-Safe Time = เวลาถึง boarding deadline
-             - processing time
-             - walking time
-             - safety buffer
-```
-
-ถ้ากด Simulate gate change จาก C8 เป็น E7 ระบบเปลี่ยน session scenario และคำนวณ route ใหม่ แสดงว่าการเปลี่ยน gate ทำให้ walking time และ Safe Time เปลี่ยนอย่างไร ข้อมูลนี้เป็น advisory simulation ไม่ใช่ passenger itinerary จริง
-
-## 11. Database ทำงานอย่างไร
-
-ระบบใช้ SQLAlchemy กับ SQLite ใน local development และออกแบบให้ใช้ PostgreSQL ใน Compose production-style stack การเชื่อมข้อมูลหลักมีดังนี้:
-
-| ตาราง/กลุ่มข้อมูล | หน้าที่ | เขียนเมื่อใด |
-|---|---|---|
-| `demo_sessions` | แยก state ของแต่ละ browser/session | เปิดใช้ session หรือ mutate scenario |
-| `demo_state` | state legacy/global ของ demo | seed และ compatibility |
-| `flights`, `checkpoint`, `lane_status` | fixture operational entities | seed |
-| `passenger_flow`, `passenger_journey` | flow และ route fixtures | seed / read |
-| `airport_graph` | topology และ walking edges | seed / read |
-| `operational_events` | event พร้อม actor, status และ metadata | overview, demo event, decision |
-| `predictions` | forecast snapshot พร้อม bounds/confidence/model version | โหลด overview หรือสร้าง forecast |
-| `recommendations` | option, score, constraints, decision และเหตุผล | โหลด/ตัดสินใจ |
-| `audit` | human decision, event link, outcome และ error | ทุก lifecycle ของ decision |
-| `intervention_results` | before/after และ measurement | รับ action และบันทึกผลจำลอง |
-
-ความสัมพันธ์หลักคือ:
-
-```text
-DemoSession
-  → Scenario
-  → OperationalEvent
-  → Prediction
-  → Recommendation
-  → Audit / InterventionResult
-```
-
-ระบบใช้ session UUID เพื่อแยกผู้ใช้ และใช้ scenario version เพื่อป้องกันการเขียนทับ state ที่ผู้ใช้อื่นเพิ่งเปลี่ยน การ reset จะ reset scenario แต่เก็บ audit history ไว้เพื่อให้ตรวจย้อนหลังได้
-
-## 12. สรุป flow สำหรับผู้ไม่มีพื้นฐานเว็บ
-
-```text
-เปิดเว็บ
-  ↓
-สร้าง/อ่าน session ของผู้ใช้
-  ↓
-อ่าน scenario และ fixture จาก database
-  ↓
-engine คำนวณ queue และ forecast
-  ↓
-สร้าง prediction snapshot + audit event
-  ↓
-ผู้ใช้เห็น Overview
-  ↓
-ผู้ใช้ทดลองหลาย intervention
-  ↓
-engine คำนวณผลลัพธ์ด้วย demand เดิม
-  ↓
-scorer จัดอันดับตาม benefit, staff, walking และ feasibility
-  ↓
-ผู้ใช้ยอมรับ/ปฏิเสธ/override
-  ↓
-database บันทึก human decision และเหตุผล
-  ↓
-ผู้ใช้ตรวจผลและ synthetic measurement
-  ↓
-ผู้โดยสารเห็น route และ Safe Time ที่คำนวณใหม่
-```
-
-กล่าวง่าย ๆ คือเว็บนี้ทำหน้าที่เป็น “ห้องทดลองตัดสินใจ” ผู้ใช้ไม่ได้ป้อนตัวเลขเพื่อให้ระบบเดาคำตอบ แต่ระบบสร้างสถานการณ์ที่มีหลักเกณฑ์ชัด แล้วให้ผู้ใช้เห็นผลลัพธ์ของแต่ละทางเลือกก่อนตัดสินใจ
-
-### หมายเหตุเรื่อง deployment ปัจจุบัน
-
-Repository มี backend สองระดับ: `backend/app/main.py` คือ FastAPI + SQLAlchemy flow แบบเต็มสำหรับ local/Compose และ `backend/api/index.py` คือ serverless demo handler ที่ใช้กับ Vercel ปัจจุบัน URL production ใช้ handler แบบ demo ซึ่งตอบข้อมูล synthetic แบบ deterministic และไม่มีฐานข้อมูล PostgreSQL ถาวรแบบ Compose ดังนั้นเอกสาร database ข้างต้นอธิบาย architecture และ flow ของระบบเต็ม ขณะที่หน้า production ปัจจุบันควรถูกนำเสนอเป็น demo endpoint จนกว่าจะ deploy FastAPI เต็มพร้อม database ที่มี persistence, migration และ authentication
-
-## 13. Architecture ของระบบ
-
-### 13.1 ภาพรวมส่วนประกอบ
-
-```text
-ผู้ใช้ / Browser
-      │
-      ▼
-React + TypeScript Frontend
-  Landing · Overview · Simulator · Passenger · Sources
-      │  JSON over HTTP + session UUID
-      ▼
-FastAPI API Layer
-  validation · demo role · rate limit · route handlers
-      │
-      ├──────────────► Public Context API
-      │                 cached OurAirports / Open-Meteo / BTS / CBP / CAAT / UK CAA
-      │
-      ▼
-Decision & Simulation Engine
-  arrivals → queue_step → FIFO simulation → forecast
-  graph routing → Safe Time
-  compare → constraints → weighted recommendation
-      │
-      ▼
-SQLAlchemy Database
-  operational fixtures · sessions · predictions · recommendations
-  operational events · audit · intervention results
-```
-
-Frontend มีหน้าที่แสดงผลและรับ interaction ไม่ควรเป็นเจ้าของ business rule หลัก ส่วน FastAPI เป็น boundary ที่รับ request, ตรวจ input, ตรวจ demo role, หา session และเรียก engine ส่วน engine เป็น pure/deterministic calculation layer ที่คำนวณผลจาก `Scenario` และ parameters ส่วน database เก็บ fixture, state และหลักฐานการตัดสินใจ
-
-### 13.2 Frontend layer
-
-React entry point ตรวจ route แล้ว render Landing หรือ App หน้าหลักใช้ `api()` client ซึ่งเติม `X-Demo-Session` และ `X-Demo-Role` ให้ทุก request เมื่อผู้ใช้เปลี่ยน tab ระบบใช้ `history.pushState` เพื่อเปลี่ยน route โดยไม่ reload application ทั้งก้อน
-
-หน้าจอแบ่งเป็น 3 กลุ่ม:
-
-1. **Observe**: Overview, Future Flow, Operations, Flights, Passenger Flow
-2. **Decide**: Simulator, Decision Log, Performance
-3. **Explain/Trust**: Passenger Journey, Sources, Integration, Guided Demo และ TrustX
-
-Frontend มี normalization/fallback layer เพื่อให้หน้าเว็บยังแสดงคำอธิบายได้เมื่อ public endpoint ไม่พร้อม แต่ fallback จะติดป้ายว่า data cache unavailable และไม่เปลี่ยน synthetic ให้เป็น real
-
-### 13.3 API layer
-
-API หลักแบ่งตามหน้าที่:
-
-| กลุ่ม endpoint | ตัวอย่าง | หน้าที่ |
-|---|---|---|
-| Read scenario | `GET /api/overview`, `/api/flights` | โหลด state และ forecast |
-| Forecast/simulation | `GET /api/checkpoints`, `POST /api/simulation` | คำนวณผลตาม parameters |
-| Recommendation | `GET /api/recommendations`, `POST /api/recommendations/{id}/decision` | สร้าง option และรับ human decision |
-| Passenger | `GET /api/passenger/{id}/journey` | route และ Safe Time |
-| Demo control | `POST /api/demo/event` | reset, peak, lane closure, gate change, stale |
-| Audit/measurement | `GET /api/audit`, `/api/results`, `POST /api/results/{id}/measure` | ตรวจ lifecycle และ error |
-| Public context | `GET /api/data/context`, `/api/data/catalog` | historical context/provenance |
-
-ทุก mutation ต้องผ่าน validation และ operator role ใน full FastAPI implementation คำสั่งที่ stale หรือทำให้ queue ไม่ feasible จะถูก reject
-
-### 13.4 Engine layer
-
-Engine แยกเป็นหน้าที่เล็ก ๆ:
-
-- `arrivals()` สร้าง demand profile ของ scenario
-- `queue_step()` คำนวณ queue หนึ่งนาที
-- `simulate()` รัน FIFO cohorts จน queue drain และคืน metrics
-- `forecast()` เลือกค่า +15/+30/+60 และสร้าง bounds/confidence
-- `compare()` รันหลาย intervention บน demand เดียวกันแล้วคำนวณ score
-- `graph()` สร้าง directed accessible terminal graph
-- `journey()` หา route และคำนวณ Safe Time
-- `root_causes()` ทำ counterfactual attribution ที่ติดป้ายว่าไม่ใช่ causal proof
-
-Engine ไม่เรียก external API ระหว่างคำนวณ operational scenario และไม่ใช้ LLM เพื่อสร้างตัวเลข queue
-
-### 13.5 Database และ persistence boundary
-
-Full architecture ใช้ SQLAlchemy ORM และรองรับ SQLite สำหรับ isolated local/test กับ PostgreSQL สำหรับ Compose stack การอ่าน overview จะสร้าง/อ่าน `DemoSession`, รัน engine, บันทึก `operational_events` และ `predictions` แล้วจึงคืน JSON ให้ frontend การกด action จะสร้าง `recommendations`, `intervention_results` และ `audit` พร้อม scenario version ใหม่
-
-Public data แยกจาก operational simulation ผ่าน normalized public tables และ provenance fields เช่น source URL, retrieval time, period, geography, checksum และ freshness ไม่อนุญาตให้ public context เขียนทับ synthetic queue fixture โดยอัตโนมัติ
-
-### 13.6 Deployment boundary
-
-```text
-Local / Compose architecture:
-React → FastAPI main.py → SQLAlchemy → SQLite/PostgreSQL
-                         ├→ deterministic engine
-                         └→ public normalized tables
-
-Current Vercel demo:
-React → Vercel rewrite `/api/*` → serverless demo handler
-                                  └→ deterministic synthetic response
-```
-
-ดังนั้นหน้า production ปัจจุบันเหมาะกับการสาธิต UI, flow และ deterministic demo มากกว่าการอ้างว่าเป็นระบบ backend production ที่มี database persistence เต็มรูปแบบ การนำไปใช้งานจริงต้องเพิ่ม managed PostgreSQL, migration, OIDC/JWT, secret management, monitoring, backup, audit retention และ data owner approval
-
-### 13.7 ตัวอย่าง request flow หนึ่งครั้ง
-
-เมื่อเปิด `/overview`:
-
-```text
-1. Browser สร้าง/อ่าน session UUID
-2. Frontend เรียก GET /api/overview
-3. API อ่าน DemoSession และสร้าง Scenario
-4. Engine รัน forecast(), journey() และ root_causes()
-5. API บันทึก prediction/event snapshot ใน full architecture
-6. API คืน JSON
-7. React normalize ข้อมูลและ render KPI, map, chart, flights
-8. PublicContext โหลดแหล่ง context แยกอีก request
-9. ถ้า public cache ใช้ไม่ได้ UI แสดง fallback พร้อม provenance label
-```
-
-## 14. คู่มือแต่ละหน้าจอจากภาพ Demo
-
-ส่วนนี้อธิบายภาพในโฟลเดอร์ `pic/` ตามลำดับการใช้งานจริง ภาพเป็นหลักฐานของ UI prototype และค่าที่เห็นยังอยู่ภายใต้ขอบเขต synthetic/simulated ตามที่ระบุในเอกสารนี้
-
-### 13.1 Landing / Welcome
-
-![Landing page: จุดเริ่มต้นสำหรับเลือก Operations centre หรือดู Demo](../pic/e199d409-da08-498b-b34b-12a8bf4ac4fc.jpeg)
-
-ผู้ใช้ใหม่เริ่มจากหน้า Landing เพื่อเข้าใจคำสัญญาของระบบ: anticipate pressure, test response และ protect passenger time หน้า นี้ไม่ได้คำนวณคิวเอง ปุ่ม `Operations centre` ไปที่ `/overview` ส่วน `View Demo Scenario` ไปยัง guided demonstration
-
-### 13.2 Overview / Airport now
-
-![Overview: ภาพรวม pressure, map, forecast และ priority insight](../pic/ac7abf4b-b7ad-4f51-851b-34c41c0e267a.jpeg)
-
-หน้า `/overview` เป็น command overview สำหรับ operator แสดง KPI, terminal map แบบ illustrative, Security A/B, current wait, +30 forecast, confidence, เที่ยวบิน และ priority insight การตัดสินใจในหน้านี้คือ “ควรไปวิเคราะห์สถานการณ์ใดต่อ” ไม่ใช่การสั่งเปิดเลนทันที
-
-### 13.3 Operations control / Situations
-
-![Operations: ตารางสถานการณ์ที่จัดลำดับตาม priority](../pic/c99d6509-ab9d-40a6-9fc0-52252ce196d7.jpeg)
-
-หน้า `/operations` เปลี่ยน forecast ให้เป็น work queue ของ operator เช่น Security A เป็น `CRITICAL`, Security B เป็น `STABLE` และมี time window +30 นาที ปุ่ม `Investigate` เปิดรายละเอียดเหตุผลเชิง model เช่น demand wave → capacity exceeded → queue accumulation → journey risk ด้านล่างเป็น model attribution ไม่ใช่ causal proof จากโลกจริง
-
-### 13.4 Future Flow / Future map
-
-หน้า `/future` ใช้ map และ horizon selector เพื่อดูผลที่ +15, +30 และ +60 นาที ผู้ใช้เลือก checkpoint เพื่อดู queue pressure ตามอนาคต ค่าในหน้านี้มาจาก `forecast()` และ `AirportMap` ไม่ใช่ภาพ floor plan ที่สำรวจจริง
-
-### 13.5 What-if lab / Simulator
-
-![Simulator: เลือก intervention และเปรียบเทียบผลลัพธ์](../pic/3afd3854-7908-4760-9fea-f747d600c278.jpeg)
-
-หน้า `/simulator` คือพื้นที่ทดลองมาตรการ ผู้ใช้เลือก No Action, Open A5, Redirect 20% หรือแบบผสม จากนั้นดู baseline/proposed, average wait, P95, queue, staff, walking impact, feasibility และ score ระบบใช้ demand เดิมทุกทางเลือกเพื่อให้การเปรียบเทียบยุติธรรม ปุ่ม custom simulation ส่งค่าจาก sliders ไปให้ engine แต่ยังไม่เปลี่ยน state จนกด submit decision
-
-### 13.6 Flights
-
-![Flights: ตารางเที่ยวบินจำลองและ shared checkpoint](../pic/415f2207-1641-4177-b8d2-c57d558d0438.jpeg)
-
-หน้า `/flights` แสดงเที่ยวบิน DEMO401–DEMO404, route, gate, เวลาออก, passenger cohort และสถานะ ตารางนี้ช่วยให้ operator เห็นว่า departure wave ใดแชร์ Security A การกด View เปิด ground handling, baggage และ gate events ทั้งหมดเป็น fixture จำลอง ไม่ใช่ commercial schedule จริง
-
-### 13.7 Passenger flow
-
-![Passenger flow: แผนภาพจำนวนผู้โดยสารผ่านแต่ละ node](../pic/c45e66f1-1f92-4466-af8b-c193fddb7bd5.jpeg)
-
-หน้า `/passenger-flow` แสดง flow จาก terminal arrival → check-in → bag drop → Security A/B → immigration/domestic bypass → concourse → gate ผู้ใช้เลือก +15/+30/+60 เพื่อดู scenario horizon ความหนาของเส้นเป็น simulated passenger volume ไม่ใช่ sensor count
-
-### 13.8 Passenger journey
-
-![Passenger journey: Safe Time, boarding deadline และ accessible route](../pic/cdf16a1c-e5bc-41a3-9083-7402dc2d8b2e.jpeg)
-
-หน้า `/journey` ให้มุมมองของ passenger หน้าการ์ดแสดง deadline, gate, Safe Time และ action ปัจจุบัน ด้านข้างแสดงเส้นทางแบบ step-free จาก node ปัจจุบันไป gate เมื่อกด gate change ระบบคำนวณ route และ Safe Time ใหม่ ตัวอย่าง C8 → E7 เป็นสถานการณ์จำลอง ไม่ใช่ข้อมูล itinerary ของคนจริง
-
-### 13.9 Performance
-
-![Performance: ผลลัพธ์ของ intervention และ synthetic evaluation](../pic/ea3fcbe8-efe0-4b6a-9eeb-06b84de41c9d.jpeg)
-
-หน้า `/performance` ตอบคำถาม “มาตรการที่เลือกสร้างผลอย่างไร” แสดง passenger-minutes saved, P95 before/after, additional staff, resource efficiency และตาราง offline evaluation ค่าเหล่านี้เป็นผลจาก scenario เดียวและ synthetic history ไม่ใช่ KPI ที่วัดจากสนามบินจริง
-
-### 13.10 Sources / Data & sources
-
-![Sources: แยก public context, synthetic operations และ data lineage](../pic/bfc4521b-ec53-4086-aedb-7112a1cebe12.jpeg)
-
-หน้า `/sources` ทำหน้าที่สร้างความเข้าใจเรื่อง provenance แยก `REAL_PUBLIC`, `SYNTHETIC`, `SIMULATED`, `ASSUMPTION` และ `DERIVED` พร้อมแสดง provider, freshness, record count และ source link ผู้ใช้ควรเปิดหน้านี้ก่อนตีความตัวเลขใน Overview
-
-### 13.11 Decision log / Audit
-
-![Audit: ประวัติการตัดสินใจและ event trail](../pic/34d580c9-510e-4d16-bdce-80a12b2eae97.jpeg)
-
-หน้า `/app/audit` แสดงว่าใครตัดสินใจอะไร เหตุผลอะไร scenario version ใดถูกใช้ และผลจำลองหลัง action เป็นเท่าไร ส่วน measurement เป็น synthetic observation ใน Demo เพื่อทดลอง error tracking ไม่ใช่ผลการตรวจวัดจริง
-
-### 13.12 System Integration
-
-![System Integration: แนวทางเชื่อมต่อ source systems กับ TimeTwin](../pic/88adcee1-1b12-4ce2-902a-e7861c55003d.jpeg)
-
-หน้า `/integration` อธิบายขอบเขตการเชื่อมต่อในอนาคต เช่น AODB/FIDS, baggage, gate และ human operator โดยแยก integration concept ออกจากระบบที่เชื่อมต่อจริงใน prototype หน้า นี้เป็น roadmap และ contract ไม่ใช่หลักฐานว่า connector production มีอยู่แล้ว
-
-### 13.13 Guided demonstration
-
-![Guided demo: ลำดับ presenter-controlled ตั้งแต่ forecast ถึง passenger action](../pic/38d8ea44-d64d-416d-bc44-2a69eff88cf0.jpeg)
-
-หน้า `/demo` ใช้เล่าเรื่องตามลำดับ: normal operation → departure wave → future congestion → compare interventions → recommended response → human approval → passenger Safe Time → gate change/re-plan → measured impact เหมาะสำหรับการนำเสนอ เพราะผู้พูดควบคุม step และอธิบาย data boundary ได้ทีละจุด
-
-### 13.14 หน้า data catalog แบบละเอียด
-
-![Data quality and lineage: ตาราง records, missingness, benchmark และ public cache](../pic/08c4718c-a943-4ddf-88c7-4b76d157bb81.jpeg)
-
-ภาพนี้เป็นมุมมอง Sources แบบละเอียด แสดง quality table, period, geography, missing/duplicate และ benchmark charts เป็นหลักฐาน provenance ของ public context ไม่ใช่หลักฐานว่า operational queue เป็นข้อมูลจริง
-
-## 15. Database lineage: ตาราง, field และกระบวนการที่นำไปใช้
-
-### 13.1 กติกาการอ่าน schema
-
-ทุก operational table มี `id` และ `source_type` เป็น field กลาง `source_type` ใช้บอก provenance ของแถวนั้น ส่วน field ที่เขียนเป็น `@table` ใน schema คือ foreign key ไปยัง `table.id` ตารางหลักจึงไม่ได้เก็บค่าในหน้าเว็บแบบลอย ๆ แต่ถูก seed → อ่านเข้า engine → แปลงเป็น API response → แสดงผลบน UI
-
-### 13.2 ตาราง reference และ operational input
-
-| ตาราง | Field สำคัญ | ข้อมูลมาจากไหน | ใช้ทำอะไร |
+| กลุ่มข้อมูล | Field ขั้นต่ำ | เจ้าของ/แหล่งที่คาดหวัง | ใช้ตอบคำถาม |
 |---|---|---|---|
-| `airports` | `iata`, `icao`, `airport_name`, `latitude`, `longitude`, `timezone` | seed synthetic (`TWT/ZZTW`) หรือ public adapter ใน full pipeline | ระบุ airport context และผูก weather/metadata |
-| `flights` | `flight_number`, `origin`, `destination`, `scheduled_departure`, `estimated_departure`, `gate`, `status` | seed สี่เที่ยวบิน DEMO401–404 | สร้าง departure wave, แสดง flight board และผูก passenger/baggage/gate |
-| `aircraft_positions` | `timestamp`, `flight_id`, `latitude`, `longitude`, `altitude`, `ground_speed`, `heading` | synthetic fixture; OpenSky เป็น optional context | แสดง movement context; ไม่คำนวณ passenger queue |
-| `weather` | `timestamp`, `airport_id`, `temperature`, `precipitation`, `wind_speed`, `visibility`, `weather_risk_score` | synthetic seed หรือ Open-Meteo cache | context เท่านั้น; ไม่เปลี่ยน Security capacity โดยอัตโนมัติ |
-| `checkpoint` | `checkpoint_type`, `terminal`, `zone`, `maximum_lanes` | seed illustrative terminal | กำหนดจุดบริการและเพดาน lane |
-| `lane_status` | `timestamp`, `checkpoint_id`, `lane_id`, `status`, `capacity_pax_min`, `staff_count` | seed; lane A5 เริ่ม unavailable | ใช้ตรวจ open lanes และ capacity |
-| `passenger_flow` | `timestamp`, `checkpoint_id`, `passenger_arrivals`, `passenger_departures`, `queue_length`, `average_wait_min`, `p95_wait_min` | seed historical fixture | flow history และหน้า Passenger Flow; engine peak ใช้ arrival profile ที่กำหนดใน `engine.py` |
-| `passenger_journey` | `anonymous_passenger_id`, `flight_id`, `current_node`, `journey_state`, `boarding_deadline`, `safe_time_min`, `risk_level` | สร้าง 580 anonymous journeys | เลือก passenger ตัวอย่างและคำนวณ route/Safe Time ใหม่ |
-| `airport_graph` | `from_node`, `to_node`, `distance_m`, `walking_time_min`, `accessible`, `direction`, `capacity` | edges illustrative ใน `engine.py` และ seed | สร้าง directed accessible route ไป gate |
+| Baggage event | pseudonymous bag ID, event, timestamp, station/location, flight, container | BRS/BHS/DCS | ผ่าน milestone หรือยัง ค้างที่ใด |
+| Flight | flight ID, ETA/ETD, gate/stand, status, update time | AODB | deadline และผลกระทบต่อเที่ยวบิน |
+| Ground task | task, owner, planned/actual time, status | Ground Handler | งานใดช้าและใครรับผิดชอบ |
+| Resource | staff availability, cart/tug/ULD availability | Ground Handler | คอขวดเกิดจากคนหรืออุปกรณ์ |
+| Equipment | belt/chute/conveyor status, fault code | BHS operator | คอขวดเกิดจากระบบหรือไม่ |
+| Connection | inbound/outbound flight, connection cutoff, priority class | Airline | กลุ่ม transfer ใดเร่งด่วน |
+| Disruption | weather, flood, access restriction, incident | แหล่งทางการ | ปัจจัยภายนอกและ early warning |
 
-### 13.3 ตารางเหตุการณ์และผลลัพธ์
+### 6.2 หลักการลดข้อมูลส่วนบุคคล
 
-| ตาราง | Field สำคัญ | เขียนเมื่อใด | ใช้ต่อในขั้นตอนใด |
-|---|---|---|---|
-| `operational_events` | `timestamp`, `event_type`, `entity_type`, `entity_id`, `actor`, `status`, `metadata` | โหลด forecast, simulation, demo event และ human decision | เก็บ input snapshot, session UUID, output และ lineage ของเหตุการณ์ |
-| `predictions` | `target`, `forecast_horizon`, `predicted_value`, `lower_bound`, `upper_bound`, `confidence`, `model_version`, `event_id` | เมื่อสร้าง overview/checkpoint/recommendation/journey prediction | แสดง forecast +30 และผูก prediction กับ event ต้นทาง |
-| `recommendations` | `prediction_id`, `action`, `expected_impact`, `cost`, `constraints`, `score`, `accepted`, `decision`, `reason`, `actor` | เมื่อเรียก `/api/recommendations` | เก็บทางเลือกและ human decision lifecycle |
-| `intervention_results` | `recommendation_id`, `before`, `after_predicted`, `after_actual`, `passenger_minutes_saved`, `prediction_error`, `result` | เมื่อ Accept/Override และเมื่อวัดผล | แสดง before/after และ prediction error |
-| `audit` | `prediction_id`, `event_id`, `human_decision`, `action_taken`, `actual_outcome`, `prediction_error`, `result` | ทุก demo event และ decision | หน้า Decision Log, audit trail และ review ย้อนหลัง |
+Prototype แรกไม่ต้องใช้ชื่อผู้โดยสาร เลขหนังสือเดินทาง หรือรายละเอียดที่ไม่จำเป็นต่อ operations สามารถใช้:
 
-### 13.4 ตาราง state ของผู้ใช้และ demo
+- pseudonymous bag identifier
+- aggregate bag count
+- stage throughput
+- time-to-cutoff
+- resource readiness
+- connection-risk category
 
-| ตาราง | Field | หน้าที่ |
+หากต้องเชื่อมข้อมูลที่ระบุตัวบุคคลในอนาคต ต้องมี purpose limitation, access control, retention policy, encryption, audit และ PDPA review
+
+### 6.3 ข้อมูลที่มีอยู่ใน repository ตอนนี้
+
+ข้อมูลแบ่งเป็น 5 ประเภทเพื่อป้องกันการอ้างเกินจริง:
+
+| ประเภท | ความหมาย | ตัวอย่างในโครงการ |
 |---|---|---|
-| `demo_sessions` | `id`, `peak`, `lanes`, `redirect`, `gate`, `version`, `stale`, `updated_at` | state แยกตาม browser session; ใช้สร้าง `Scenario` ก่อนคำนวณทุก request |
-| `demo_state` | `peak`, `lanes`, `redirect`, `gate`, `version`, `updated_at` | legacy/global compatibility state และ health check |
+| `REAL_PUBLIC` | ข้อมูลจริงจากแหล่งสาธารณะ | Open-Meteo, OurAirports, OpenSky, CAAT, BTS, CBP, UK CAA |
+| `SYNTHETIC` | ข้อมูลที่ทีมสร้างเพื่อ demo | TT401, baggage events, ground tasks, gates, passengers |
+| `ASSUMPTION` | ค่าที่ตั้งเพื่อจำลอง | capacity, severity, service rate, resource limit |
+| `DERIVED` | ค่าที่คำนวณจาก input | shared state, aggregate, risk feature |
+| `SIMULATED` | ผลการทดลอง engine | predicted delay, recommendation, KPI proxy |
 
-### 13.5 Data lineage ของค่าในหน้า Overview
+ข้อมูลจริงสาธารณะใช้เป็น context และ benchmark เท่านั้น ไม่ถูกเปลี่ยนชื่อให้เป็น operational data ของ BKK
 
-| ค่าที่ผู้ใช้เห็น | อ่านจาก | คำนวณ/แปลงอย่างไร | แสดงที่ไหน |
-|---|---|---|---|
-| Current wait | `DemoSession` + `engine.forecast()` | queue เริ่มต้น ÷ lanes × service rate | metric Security A/B |
-| +15/+30/+60 forecast | `Scenario` + `arrivals()` + `simulate()` | minute-step queue และ horizon row | forecast card/map |
-| Lower/upper bound | prediction output | heuristic spread; fresh/stale confidence | uncertainty interval |
-| Risk level | simulated wait | threshold GREEN/YELLOW/ORANGE/RED | priority/situations |
-| Root causes | `Scenario` counterfactual | two-factor model attribution | priority insight |
-| Best feasible action | `compare()` | weighted score + constraints | recommendation card |
-| Flights | `flights` | serialize fixture ตาม session scenario | flight table |
-| Safe Time | `passenger_journey` + `airport_graph` + `Scenario` | deadline − processing − walking − buffer | Passenger Journey |
-| Public context | public normalized tables/cache | server-side aggregates | Sources/Overview context panel |
+### 6.4 แหล่งข้อมูลสาธารณะ
 
-### 13.6 Data lineage ของ recommendation
+| แหล่ง | ใช้สำหรับ | ข้อจำกัด |
+|---|---|---|
+| SKY ICT BRS/AODB product pages | เข้าใจ capability สาธารณะและกำหนด positioning | ไม่ยืนยันรายละเอียด implementation ภายใน |
+| IATA Resolution 753 | tracking points, custody/handoff framework | เป็นมาตรฐานอุตสาหกรรม ไม่ใช่ข้อมูลเหตุการณ์ BKK |
+| SITA Baggage IT Insights | ขนาดปัญหาและ benchmark อุตสาหกรรม | เป็นข้อมูลภาพรวมโลก ไม่ใช่ KPI ของ SKY |
+| AOT public notice | reference incident เรื่อง delayed baggage | ใช้ยืนยันว่าปัญหามีจริง ไม่ใช่ผลของระบบเรา |
+| Open-Meteo | historical weather context | ไม่ใช่ sensor ภายในสนามบิน |
+| OpenSky | aircraft-state context | ไม่ใช่ manifest, baggage หรือ complete schedule |
+| OurAirports | airport/runway metadata | ไม่ใช่ operational telemetry |
+| CAAT | aggregate aviation statistics ของไทย | coverage ไม่ต่อเนื่องและไม่ใช่ baggage telemetry |
+| BTS/CBP/UK CAA | external benchmark และวิธีประเมิน | คนละประเทศ/กระบวนการ ห้ามใช้แทนข้อมูล BKK |
 
-```text
-DemoSession
-  ├─ peak, lanes, redirect, gate, version, stale
-  ↓
-Scenario
-  ├─ arrivals()          → demand profile
-  ├─ simulate()           → queue, wait, P95, throughput, cost
-  ├─ journey()            → accessible route, walking, Safe Time
-  └─ compare()            → options + score + feasible
-       ↓
-operational_events (input_snapshot + predicted_outcome)
-       ↓
-predictions (target + horizon + bounds + confidence)
-       ↓
-recommendations (action + constraints + score)
-       ↓ human Accept / Reject / Override
-intervention_results + audit
-```
+### 6.5 ตัวเลขอุตสาหกรรมที่ใช้ได้
 
-### 13.7 ตัวอย่างการคำนวณจาก field ไปถึงหน้าจอ
+- SITA Baggage IT Insights 2026 ระบุว่าในปี 2025 มีกระเป๋า mishandled ราว 24 ล้านใบ และต้นทุนอุตสาหกรรมประมาณ 6.3 พันล้านดอลลาร์ต่อปี
+- ถ้าใช้ตัวเลขเดียวกับ Kick-off: ปี 2024 คือ 33.4 ล้านใบและประมาณ 5 พันล้านดอลลาร์ ต้องระบุว่าเป็นคนละปี
+- ใช้คำว่า `mishandled` หรือ “จัดการผิดพลาด/ล่าช้า/ส่งผิด/เสียหาย” ไม่ใช้คำว่า “หายทั้งหมด”
+- ตัวเลข global ใช้เพื่ออธิบายขนาด pain point ไม่ใช้คำนวณผลตอบแทนของ SKY โดยตรง
 
-สมมติ row state มี `lanes=4`, `peak=true`, และ engine ใช้ `service_rate=2`:
+---
 
-```text
-capacity = lanes × service_rate = 4 × 2 = 8 pax/min
-queue_next = max(0, queue_current + arrivals - capacity)
-```
+## ส่วนที่ 7: ระบบทำงานอย่างไรสำหรับคนไม่ใช่สายเทค
 
-ถ้าผู้ใช้เลือก redirect 20% ระบบแบ่ง arrival เป็น:
+### 7.1 เปรียบเทียบกับห้องควบคุม
+
+ให้นึกว่าแต่ละระบบเป็นพนักงานที่ถือข้อมูลคนละชิ้น:
+
+- BRS บอกว่ากระเป๋าผ่านจุดไหน
+- AODB บอกว่าเครื่องออกเมื่อไรและ gate ไหน
+- Ground Handler บอกว่ามีคนและรถพร้อมเท่าไร
+- BHS บอกว่าสายพานหรือเครื่องคัดแยกทำงานหรือไม่
+- Airline บอกว่ากระเป๋าใดมีเที่ยวบินต่อและเหลือเวลาเท่าไร
+
+One TrustX ทำหน้าที่เหมือนโต๊ะกลางที่รวบรวมรายงาน ตรวจว่าข้อมูลสอดคล้องกันหรือไม่ สรุปสถานการณ์ และเสนอรายการที่ควรจัดการก่อน โดยยังให้หัวหน้าปฏิบัติการเป็นผู้ตัดสินใจ
+
+### 7.2 Journey ตั้งแต่เกิดเหตุถึงปิดงาน
 
 ```text
-Security A arrivals = arrivals × (1 - 0.20)
-Security B arrivals = Security B baseline + arrivals × 0.20
+รับ event จากระบบเดิม
+        ↓
+ตรวจ source, timestamp, schema, duplicate และ freshness
+        ↓
+จัด event เข้ากับเที่ยวบิน กระเป๋า ขั้นตอน และทรัพยากร
+        ↓
+สร้างสถานะรายขั้นและ Common Operational State
+        ↓
+ตรวจ exception, conflict และ bottleneck
+        ↓
+ประเมิน deadline และ downstream impact
+        ↓
+จัดลำดับ recovery action
+        ↓
+เจ้าหน้าที่ Accept / Reject / Override
+        ↓
+บันทึกเหตุผลและติดตามผลลัพธ์
 ```
 
-จากนั้น `simulate()` คำนวณ wait ของแต่ละ FIFO cohort, รวม queue area เป็น passenger-minutes และส่งค่าไป `compare()` เพื่อหาคะแนน เมื่อผู้ใช้กด Accept ระบบเก็บ `before`, `after_predicted`, action และ reason ลง `intervention_results`/`audit` ก่อนเพิ่ม `version` ของ session
+### 7.3 ถ้าข้อมูลขัดแย้งหรือเก่า
 
-## 16. รายการอ้างอิง
+ระบบไม่ควรซ่อนปัญหา หากแหล่งหนึ่งแจ้ง boarding complete แต่ baggage loading ยังไม่ครบ ระบบต้อง:
 
-1. Airport TimeTwin, [Data sources and provenance matrix](data-sources.md)
-2. Airport TimeTwin, [Data Quality Report](data-quality-report.md)
-3. Airport TimeTwin, [Assumptions and known limitations](assumptions.md)
-4. Airport TimeTwin, [Architecture and implementation contract](architecture.md)
-5. [OurAirports open data](https://ourairports.com/data/)
+- แสดง conflict
+- ระบุ source ของแต่ละข้อความ
+- ใช้กฎ dependency ที่ประกาศไว้ล่วงหน้า
+- ลด confidence เมื่อข้อมูล stale หรือขาด
+- ห้าม action ที่มีความเสี่ยงเมื่อข้อมูลไม่สดพอ
+- ส่งให้เจ้าหน้าที่ตรวจและเก็บผลการ reconcile
+
+---
+
+## ส่วนที่ 8: สิ่งที่ทำไปแล้วในระบบ
+
+### 8.1 การเปลี่ยนแปลงล่าสุด
+
+- เปลี่ยนหน้า One TrustX หลักเป็น Baggage Delay Control View
+- เพิ่มสถานะ Check-in, Screening, Sorting, Loading, Transfer และ Arrival
+- เพิ่ม overall status, bottleneck, evidence, impact, owner, deadline และ human approval
+- เพิ่ม data-scope cards ว่าข้อมูลมาจากฝ่ายใด
+- ระบุ `N/A` สำหรับจำนวนที่ต้องใช้ protected feed เช่น critical transfer-bag count
+- ปรับ README และ pitch outline ให้ positioning ไม่ทับ BRS/AODB/A-CDM
+- คง Event Explorer, Shared State, Conflict, Intelligence, Coordination, Scenario, Performance และ Audit เดิม
+- เพิ่ม API payload `baggage_control` ใน shared operational state
+- เพิ่ม automated tests ตรวจ stage, bottleneck, human approval และ unknown-data handling
+
+### 8.2 สิ่งที่ตรวจสอบแล้ว
+
+- Frontend production build ผ่าน
+- Frontend automated tests ผ่าน 2 tests
+- Backend automated tests ผ่าน 26 tests
+- Baggage-specific API tests ผ่าน
+- ไม่มีการลบ queue/passenger modules เดิม
+
+### 8.3 สิ่งที่ยังไม่ได้ทำ
+
+- ยังไม่เชื่อม BRS/AODB/BHS หรือ Ground Handler API จริง
+- ยังไม่ validate root-cause rules กับ baggage-domain expert
+- ยังไม่มีข้อมูลเที่ยวบิน กระเป๋า คน หรืออุปกรณ์จริงของ BKK
+- ยังไม่มี production identity, safety case หรือ operational SLA
+- ยังไม่มีผลพิสูจน์ว่าลด delayed bags หรือ coordination time ในสนามบินจริง
+- ยังไม่ควบคุมอุปกรณ์หรือส่งคำสั่งไปยังสนามบิน
+
+---
+
+## ส่วนที่ 9: ความเป็นไปได้และแผนพัฒนา
+
+### 9.1 เหตุผลที่แนวทางนี้เป็นไปได้
+
+- ใช้ระบบและ event ที่มีอยู่แล้วเป็นฐาน ไม่ต้องติด sensor ใหม่ทั้งสนามบินเพื่อเริ่ม PoC
+- เริ่มด้วย aggregate/pseudonymous data จึงลดความเสี่ยงด้าน privacy
+- แยก connector ออกจาก decision layer ทำให้ระบบต้นทางยังทำงานได้แม้ One TrustX หยุด
+- เริ่มใน shadow mode: ระบบแนะนำแต่ไม่สั่งการจริง
+- วัดผลด้วย workflow KPI ก่อนผลทางการเงิน
+
+### 9.2 Roadmap
+
+| ระยะ | งาน | ผลลัพธ์ |
+|---|---|---|
+| Phase 0: Discovery | ยืนยัน workflow, owner, cutoff และเหตุของ delay กับผู้เชี่ยวชาญ | validated process map และ data dictionary |
+| Phase 1: Controlled prototype | scenario ปกติ/คนไม่พอ/BHS failure/transfer risk/weather | หน้าจอและ decision workflow ที่ทดสอบซ้ำได้ |
+| Phase 2: Expert validation | tabletop exercise กับ operator | feedback, false alarm, action usefulness |
+| Phase 3: Shadow mode | feed anonymised/aggregate แบบ read-only | วัด lead time และ coordination กับข้อมูลจริง |
+| Phase 4: Limited pilot | human-approved recommendations | operational KPI ภายใต้ขอบเขตและ governance |
+| Phase 5: Expansion | turnaround, gate, passenger, cargo | ขยายเฉพาะ use case ที่พิสูจน์คุณค่าแล้ว |
+
+### 9.3 KPI ที่ควรวัด
+
+| KPI | ความหมาย | วิธีวัดในอนาคต |
+|---|---|---|
+| Detection lead time | เห็น backlog ก่อน cutoff เร็วแค่ไหน | เวลา event แรกถึง alert เทียบ baseline |
+| Bottleneck identification time | ใช้เวลาหาสาเหตุนานเท่าไร | tabletop/shadow-mode timestamp |
+| Coordination time | จากตรวจพบถึงมี action owner | audit timestamps |
+| Critical bags exposed | จำนวนกระเป๋าที่เข้า risk window | authorised connection/bag feed |
+| Recovery time | เวลาที่ backlog กลับต่ำกว่า threshold | throughput timeline |
+| Recommendation acceptance | operator เห็นว่าคำแนะนำใช้ได้หรือไม่ | accept/reject/override พร้อมเหตุผล |
+| False alert rate | แจ้งปัญหาแต่ operation ปกติบ่อยแค่ไหน | independent operational outcome |
+| Bags/flights protected | ผลลัพธ์สุดท้ายหลัง intervention | matched before/after or controlled pilot |
+
+ไม่ควรใช้เปอร์เซ็นต์จาก synthetic simulation เป็น headline benefit ของสนามบินจริง
+
+---
+
+## ส่วนที่ 10: ความเสี่ยง ความปลอดภัย และธรรมาภิบาล
+
+### 10.1 ความเสี่ยงหลัก
+
+- ข้อมูลจากแต่ละฝ่ายอาจมาช้า หน่วยไม่ตรง หรือมี timestamp ต่างกัน
+- root cause อาจเป็นเพียง correlation ถ้าไม่มี evidence เพียงพอ
+- recommendation อาจจัดลำดับผิดเมื่อข้อมูล resource ไม่ครบ
+- operator อาจพึ่งระบบมากเกินไปหาก UI แสดง confidence เกินจริง
+- การเชื่อมหลายองค์กรเพิ่มความเสี่ยงด้านสิทธิ์และ privacy
+- ระบบกลางอาจกลายเป็นจุดล้มเหลวใหม่หากออกแบบ dependency ไม่ดี
+
+### 10.2 มาตรการควบคุม
+
+- source timestamp, ingest timestamp, schema version และ lineage ทุก event
+- freshness SLA และ stale-data marker
+- idempotency, duplicate detection และ sequence validation
+- role-based access และ least privilege
+- encryption in transit/at rest
+- human approval สำหรับ operational action
+- immutable/traceable audit records
+- fail-safe: ระบบต้นทางทำงานต่อได้หาก One TrustX ล่ม
+- shadow mode ก่อน pilot
+- independent outcome label สำหรับวัด accuracy และ benefit
+
+---
+
+## ส่วนที่ 11: สิ่งที่ใช้ Pitch และสิ่งที่ห้ามอ้าง
+
+### 11.1 ข้อความที่ใช้ได้
+
+> One TrustX ช่วยทีม baggage และ ground operations รวมสถานะกระเป๋า เที่ยวบิน และทรัพยากรเป็น recovery view เดียว เพื่อเห็นคอขวด ประเมินผลกระทบ และจัดลำดับ action ที่เจ้าหน้าที่ต้องอนุมัติ
+
+> เราต่อยอดจาก BRS, BHS และ AODB ที่มีอยู่ ไม่ได้สร้างระบบติดตามกระเป๋าหรือฐานข้อมูลเที่ยวบินใหม่
+
+> Prototype ปัจจุบันใช้ controlled synthetic scenario เพื่อพิสูจน์ workflow, data contract, auditability และ human decision loop
+
+### 11.2 ข้อความที่ห้ามอ้างในรอบนี้
+
+- ใช้ข้อมูล operational จริงของ SKY หรือ BKK แล้ว
+- ลด delayed baggage ได้จริงเป็นเปอร์เซ็นต์ใดเปอร์เซ็นต์หนึ่ง
+- AI accuracy 100%
+- Risk detection accuracy 86% โดยไม่อธิบายว่าเป็น proxy จำลอง
+- Data consistency 100% ในสนามบินจริง
+- สร้างมูลค่า 117.39 พันล้านบาท
+- กระเป๋า 33.4 ล้านใบ “หาย” ทั้งหมด
+- BRS ไม่มี alert หรือไม่มี analytics
+- One TrustX แก้เหตุการณ์ delayed baggage ที่เกิดขึ้นจริงแล้ว
+
+### 11.3 โครง Pitch 7 นาที
+
+| เวลา | เนื้อหา |
+|---|---|
+| 0:00–1:00 | ปัญหาเดียว: delayed outbound baggage และ handoff fragmentation |
+| 1:00–1:30 | ผู้ใช้หลักและผู้ได้รับประโยชน์ |
+| 1:30–2:30 | Baggage Delay Control View |
+| 2:30–3:45 | Data journey และวิธีทำงาน |
+| 3:45–4:30 | แตกต่างจาก BRS/AODB/A-CDM |
+| 4:30–5:15 | Feasibility และข้อมูลที่ต้องขอ |
+| 5:15–6:00 | Expected KPI และวิธีวัด |
+| 6:00–7:00 | Prototype plan และ future expansion |
+
+---
+
+## ส่วนที่ 12: Technical Appendix
+
+### 12.1 Architecture ภาพรวม
+
+```text
+BRS / BHS       AODB       Ground Handler       Airline       Weather
+    │              │              │                 │             │
+    └──────────────┴──────────────┴─────────────────┴─────────────┘
+                                   ↓
+                         Integration adapters
+                                   ↓
+                   Validation / Normalisation / Lineage
+                                   ↓
+                         Trusted Event Layer
+                                   ↓
+               Reconciliation + Common Operational State
+                                   ↓
+         Stage status / Bottleneck / Impact / Priority engine
+                                   ↓
+                      Recommendation + Explanation
+                                   ↓
+                       Human decision and Audit
+```
+
+### 12.2 Technology stack
+
+| Layer | Technology | บทบาท |
+|---|---|---|
+| Frontend | React, TypeScript, Vite | operator UI, scenario, audit และ data boundary |
+| API | FastAPI, Python | REST interface, validation และ orchestration |
+| Decision logic | deterministic rules, simulation, NetworkX บางโมดูล | state, scenario, comparison และ routing |
+| Persistence | PostgreSQL, SQLAlchemy, Alembic; SQLite local preview | event, state, decision และ audit |
+| Evaluation | Python และ optional scikit-learn | baseline/model comparison แบบ offline |
+| Deployment | Docker Compose/local runner; frontend deployment config | reproducible demo environment |
+
+### 12.3 Core domain objects
+
+| Object | ความหมาย |
+|---|---|
+| `TrustOrganization` | หน่วยงานเจ้าของ event |
+| `TrustActor` | ผู้ใช้หรือบทบาทที่ดำเนินการ |
+| `TrustScenario` | นิยามสถานการณ์และ parameter |
+| `TrustEvent` | เหตุการณ์พร้อม source, timestamp, checksum และ lineage |
+| `TrustConflict` | กลุ่ม event ที่ขัดแย้งกัน |
+| `CommonOperationalState` | สถานะร่วมที่ derive จาก evidence |
+| `TrustRecommendation` | action, owner, deadline, dependency และ confidence |
+| `TrustDecision` | accept/reject/override พร้อมเหตุผล |
+| `GroundTruth` | label สำหรับ controlled test ไม่ใช่ production truth |
+| `ExperimentRun/KpiResult` | ผลการทดลองและ KPI ที่ติด provenance |
+
+### 12.4 API ที่เกี่ยวข้อง
+
+| Endpoint | หน้าที่ |
+|---|---|
+| `GET /api/trustx/flights/{flight_id}/shared-state` | สถานะร่วมและ `baggage_control` |
+| `GET /api/trustx/events` | event stream ตาม scenario |
+| `GET /api/trustx/conflicts` | conflict ที่ต้องตรวจ |
+| `POST /api/trustx/events/reconcile` | บันทึกผล reconciliation |
+| `GET /api/trustx/predictions` | risk prediction ของ controlled fixture |
+| `GET /api/trustx/recommendations` | action recommendations |
+| `POST /api/trustx/recommendations/{id}/approve` | human approval |
+| `POST /api/trustx/recommendations/{id}/reject` | human rejection |
+| `POST /api/trustx/scenarios/{id}/run` | รันเงื่อนไขทดลอง |
+| `GET /api/trustx/kpis` | KPI พร้อม definition และ limitation |
+
+### 12.5 `baggage_control` contract ปัจจุบัน
+
+```text
+baggage_control
+  overall_status
+  stages[]
+    id, label, status, source
+  bottleneck
+    stage, reason, evidence[]
+  impact
+    flight, predicted_readiness_delay_min,
+    affected_flights, critical_transfer_bags, note
+  next_action
+    action, owner, deadline, approval
+  data_scope[]
+    owner, data
+  privacy
+  source_type
+```
+
+`critical_transfer_bags` เป็น `null` ใน fixture ปัจจุบัน เพราะไม่มี authorised airline connection feed การใช้ null เป็นส่วนหนึ่งของ design เพื่อป้องกัน fabricated precision
+
+### 12.6 Event validation และ reconciliation
+
+แต่ละ event ควรมีอย่างน้อย:
+
+- event ID และ entity ID
+- event type/state
+- source system และ organisation
+- source timestamp และ ingest timestamp
+- payload checksum
+- lineage/reference
+- verification status และ rule result
+- conflict status และ trust status
+- source type
+
+กฎตัวอย่างใน fixture คือ baggage completion เป็น dependency ของ departure readiness ดังนั้น event `BOARDING_COMPLETE` ไม่สามารถทำให้เที่ยวบินเป็น ready หาก `BAGGAGE_LOADING` ยังอยู่ที่ 82%
+
+### 12.7 Scenario และ validation pack
+
+repository มี scenario เดิม S1–S8 และ disaster/compound S9–S14 รวมถึง flood+baggage backlog, geopolitical disruption, fire, health screening, BHS/trust-pipeline degradation และ power disruption ชุด validation สร้างแบบ deterministic หลาย seed เพื่อทดสอบ reproducibility และ workflow direction
+
+อย่างไรก็ตาม parameter และ improvement ratio หลายค่าเป็น `ASSUMPTION/SYNTHETIC` ใช้ตรวจ code path ไม่ใช่หลักฐาน operational performance ตัวเลข 61%, 78%, 74%, 50%, 85.7% หรือ 0.91 ต้องไม่ถูกนำไปเรียกเป็นผลสนามบินจริง
+
+### 12.8 Data quality contract สำหรับ production
+
+ก่อนรับ event จากระบบจริง connector ต้องตรวจ:
+
+1. schema และ units
+2. airport/terminal/station identity
+3. source และ event timestamp
+4. freshness และ latency
+5. sequence/version
+6. duplicate/idempotency key
+7. missing/contradictory event
+8. timezone
+9. lineage และ quality flag
+10. authorisation และ purpose
+
+### 12.9 การประเมินที่ถูกต้องเมื่อได้ข้อมูลจริง
+
+- แยก train/validation/test ตามเวลา ไม่ random shuffle
+- เปรียบเทียบกับ baseline เช่น current SOP, persistence หรือ rule baseline
+- ใช้ independent outcome ไม่ใช้ label ที่ generator สร้างเอง
+- รายงาน precision, recall, false alarm, lead time และ calibration
+- วัด operator response และ override reason
+- แยก technical performance ออกจาก operational benefit
+- เริ่ม read-only/shadow mode
+- ใช้ matched episode หรือ controlled rollout ก่อนสรุป causal impact
+
+### 12.10 Non-functional requirements ก่อน production
+
+- High availability และ graceful degradation
+- Observability: logs, metrics, traces และ feed health
+- Access control, SSO/MFA และ separation of duties
+- Encryption และ key management
+- Backup, recovery และ audit retention
+- PDPA/data-sharing agreement
+- Change management และ rule/model versioning
+- Safety and human-factors review
+- Incident response และ rollback
+- SLA ระหว่าง data owner และ operator
+
+### 12.11 Repository map
+
+| Path | เนื้อหา |
+|---|---|
+| `frontend/` | หน้าจอ One TrustX, queue simulation และ passenger modules |
+| `backend/app/trust_service.py` | seed, shared state, baggage-control payload และ experiment logic |
+| `backend/app/trust_api.py` | One TrustX REST endpoints |
+| `backend/app/trust_models.py` | database models |
+| `data/synthetic/` | fixture สำหรับ demo |
+| `data/scenarios/` | scenario library และ provenance |
+| `scripts/experiments/` | validation-pack generator |
+| `docs/preliminary-pitch-th.md` | โครง pitch 7 นาทีล่าสุด |
+| `docs/onetrustx-pitch.md` | narrative Baggage Disruption Recovery |
+| `docs/data-sources.md` | source/provenance matrix |
+| `docs/validation-data-contract.md` | schema และข้อจำกัดของ validation |
+| `docs/security.md` | security boundaries |
+| `docs/decisions/` | เหตุผลการตัดสินใจและการเปลี่ยน scope |
+
+### 12.12 โครงสร้างโปรเจกต์แบบละเอียด
+
+```text
+onetrustx/
+├── README.md                     ภาพรวม วิธีรัน ขอบเขตและข้อจำกัด
+├── Makefile                      คำสั่งมาตรฐานสำหรับ boot/test/down
+├── run-local.sh                  เปิด local preview แบบไม่ใช้ Docker
+├── schema.sql                    schema อ้างอิงระดับโครงการ
+├── infra/
+│   └── docker-compose.yml        PostgreSQL + API + frontend stack
+├── frontend/
+│   ├── src/
+│   │   ├── App.tsx               routing และ application shell
+│   │   ├── components/
+│   │   │   ├── TrustXPages.tsx   Baggage Control, state, event, conflict,
+│   │   │   │                    intelligence, coordination, audit
+│   │   │   ├── Landing.tsx       หน้าแนะนำระบบ
+│   │   │   ├── GuidedDemo.tsx    presenter-controlled demo
+│   │   │   ├── DecisionWorkspace.tsx
+│   │   │   ├── AirportMap.tsx
+│   │   │   ├── DataSources.tsx
+│   │   │   └── PilotPanels.tsx   pilot/evaluation panels
+│   │   ├── services/api.ts       client สำหรับเรียก backend
+│   │   ├── i18n.tsx              Thai/English helper
+│   │   ├── locales/th.json       คำแปลภาษาไทย
+│   │   ├── trustx.css            style ของ One TrustX/Baggage view
+│   │   └── executive.css         style ของ executive aviation UI
+│   ├── e2e/                      Playwright browser tests
+│   ├── package.json              frontend dependencies/scripts
+│   └── vite.config.ts            build และ local proxy
+├── backend/
+│   ├── app/
+│   │   ├── main.py               FastAPI หลักของ queue simulation/demo
+│   │   ├── engine.py             queue/simulation/routing logic เดิม
+│   │   ├── trust_api.py          REST API ของ One TrustX
+│   │   ├── trust_service.py      seed, shared state, baggage control,
+│   │   │                          experiment และ KPI service
+│   │   ├── trust_models.py       ORM ของ event/conflict/state/decision
+│   │   ├── models.py             ORM ของ queue simulation/demo
+│   │   ├── db.py                 database session และ connection
+│   │   ├── seed.py               seed data หลัก
+│   │   ├── public_api.py         API สำหรับข้อมูล public context
+│   │   ├── public_context.py     aggregate/transform public data
+│   │   ├── public_models.py      ORM ของ public datasets
+│   │   └── ingest_public.py      import normalized data
+│   ├── migrations/               database schema migration
+│   ├── tests/
+│   │   ├── test_trustx.py        baggage/shared-state/API tests
+│   │   ├── test_engine.py        simulation invariants
+│   │   ├── test_api.py           endpoint behaviour
+│   │   └── test_pilot.py         pilot workflow tests
+│   ├── Dockerfile
+│   ├── pyproject.toml
+│   └── uv.lock
+├── data/
+│   ├── raw/                       raw public responses/cache
+│   ├── normalized/                standardized public tables
+│   ├── synthetic/                 demo flights, baggage, ground, gate,
+│   │                              passenger, predictions, recommendations
+│   ├── scenarios/
+│   │   └── scenario_library.json  scenario, causal chain และ provenance
+│   ├── cache/                     validation runs/summary/manifest
+│   ├── seeds/                     deterministic starting fixtures
+│   └── dataset_manifest.json      track/type ของแต่ละ dataset
+├── scripts/
+│   ├── data/                      fetch, normalize, quality-report scripts
+│   ├── experiments/               validation-pack/experiment runners
+│   ├── generate_synthetic.py      สร้าง synthetic operational fixtures
+│   ├── seed_database.py           โหลด fixture เข้า database
+│   ├── render_data_pdf.py         สร้าง PDF ภาษาไทยจาก Markdown
+│   ├── run_demo.py                demo automation
+│   └── verify_live.py             live-stack verification
+├── ml/
+│   └── evaluation/evaluate.py     offline baseline/model evaluation
+└── docs/
+    ├── data-provenance-th.md/pdf  Project Bible ฉบับนี้
+    ├── preliminary-pitch-th.md    deck structure 7 นาที
+    ├── onetrustx-pitch.md         baggage narrative
+    ├── architecture.md            technical architecture
+    ├── api.md                     API documentation
+    ├── data-dictionary.md         field/table definitions
+    ├── data-sources.md            source and provenance matrix
+    ├── data-quality-report.md     coverage/missingness/checksum
+    ├── validation-data-contract.md
+    ├── security.md                security/privacy boundary
+    ├── deployment.md              environments/integration roadmap
+    ├── evaluation.md              evaluation results and caveats
+    └── decisions/                 Architecture Decision Records
+```
+
+ไฟล์ `.env`, database local, cache, build output และ virtual environment เป็น runtime/development artifact ไม่ใช่ source of truth ของข้อมูลหรือผลลัพธ์
+
+### 12.13 ความสัมพันธ์ระหว่างส่วนประกอบ
+
+| จาก | ไป | สิ่งที่ส่ง |
+|---|---|---|
+| Source systems/fixtures | Backend adapters | event และ context พร้อม timestamp/source |
+| Adapters | Trusted Event Layer | normalized event, lineage, checksum, quality flag |
+| Trusted Event Layer | Reconciliation | ordered evidence และ conflicts |
+| Reconciliation | Common Operational State | readiness, blocking dependency, confidence |
+| Shared State | Baggage Control | stage, bottleneck, evidence และ impact |
+| Recommendation service | Frontend | action, owner, deadline, dependency |
+| Frontend/operator | Decision API | approve/reject และเหตุผล |
+| Decision API | Database/Audit | immutable decision history และ outcome reference |
+| Scenario/evaluation scripts | Cache/docs | synthetic runs, summary, manifest และ limitations |
+
+### 12.14 Runtime flow เมื่อเปิดหน้ากระเป๋า
+
+1. Browser เปิด `/trustx`
+2. Frontend เรียก shared state, events, conflicts, KPIs, scenarios, predictions และ recommendations
+3. FastAPI เปิด database session และอ่าน controlled scenario S5/flight-1
+4. `trust_service.shared_state()` คืน state เดิมพร้อม `baggage_control`
+5. Frontend แสดง stage status ก่อน แล้วค่อยแสดง evidence/impact/action
+6. ถ้าผู้ใช้เปิด Conflict Center ระบบแสดง event ที่ขัดแย้งพร้อม source
+7. ถ้าผู้ใช้ reconcile ระบบบันทึก rule result และ actor
+8. ถ้าผู้ใช้ approve recommendation ระบบสร้าง `TrustDecision`
+9. การเรียก approve ซ้ำให้ผลเดิมเพื่อป้องกัน duplicate decision
+10. Audit view แสดงวงจรตั้งแต่ event ถึง decision
+
+### 12.15 เส้นทางข้อมูลสำหรับ production ในอนาคต
+
+```text
+Authorised read-only connectors
+  BRS/BHS + AODB + Ground + Airline + Weather
+                       ↓
+Schema validation and quarantine
+                       ↓
+Identity/time/unit normalisation
+                       ↓
+Event store and lineage
+                       ↓
+Rules/model in shadow mode
+                       ↓
+Operator review (no automatic control)
+                       ↓
+Independent outcome capture
+                       ↓
+Evaluation and governance gate
+```
+
+Production connector ต้องไม่เขียนกลับไปยังระบบต้นทางใน Phase แรก และถ้า One TrustX unavailable ระบบต้นทางต้องปฏิบัติงานต่อได้ตามเดิม
+
+### 12.16 การทดสอบและการส่งมอบ
+
+| ระดับ | สิ่งที่ตรวจ | เครื่องมือ/ไฟล์ |
+|---|---|---|
+| Unit/API | queue balance, scenario, shared state, recommendation idempotency | `backend/tests/` + pytest |
+| Frontend | routing/rendering และ UI behaviour | Vitest |
+| Browser | presenter flow และ user experience | Playwright `frontend/e2e/` |
+| Data | schema, provenance, missingness, checksum | data scripts และ quality report |
+| Reproducibility | same scenario/seed ให้ผลเดิม | experiment scripts/manifests |
+| Build | TypeScript และ production bundle | `npm run build` |
+| Stack | API/database/frontend connectivity | Docker Compose/verify scripts |
+
+ผลตรวจล่าสุดหลังเพิ่ม Baggage Delay Control View: frontend build ผ่าน, frontend tests 2/2 และ backend tests 26/26 ผลนี้ยืนยันว่า code path ที่ทดสอบไม่แตก แต่ไม่ใช่การรับรองผลปฏิบัติการสนามบิน
+
+---
+
+## ส่วนที่ 13: Q&A สำหรับกรรมการ
+
+### ต่างจาก BRS อย่างไร
+
+BRS เป็นระบบสำคัญสำหรับ tracking/reconciliation และมี alert บางประเภทอยู่แล้ว One TrustX ไม่ติดตามซ้ำ แต่เชื่อม baggage signal กับ flight deadline, ground resource, connection และ disruption เพื่อสร้าง recovery priority ข้ามฝ่าย ความแตกต่างนี้ต้องยืนยันกับ capability จริงของ SKY ในช่วง discovery
+
+### ต่างจาก A-CDM อย่างไร
+
+A-CDM ครอบคลุม collaboration และ milestone ระดับสนามบิน/เที่ยวบิน One TrustX รอบนี้เป็น use case เฉพาะด้าน baggage disruption และไม่อ้างว่าสร้าง A-CDM ใหม่
+
+### เป็นเพียง dashboard หรือไม่
+
+ถ้ามีเพียงการแสดง KPI ก็จะเป็น dashboard ความตั้งใจของระบบคือมี event validation, conflict reconciliation, dependency rules, impact calculation, prioritised recommendation, human decision และ audit แต่คุณค่าของ logic เหล่านี้ยังต้องพิสูจน์กับ expert และข้อมูลจริง
+
+### AI อยู่ตรงไหน
+
+Prototype ปัจจุบันใช้ deterministic/rule-based logic เป็นหลักเพื่อให้ตรวจสอบย้อนกลับได้ ML/AI เป็น candidate สำหรับ anomaly, risk และ prioritisation ในอนาคต แต่จะไม่ promote จนกว่าจะชนะ baseline และผ่าน validation ด้วยข้อมูลจริง
+
+### ถ้าไม่มีข้อมูล Ground Handler จะทำอย่างไร
+
+รอบ preliminary ใช้ synthetic scenario และระบุช่องว่างตรงไปตรงมา Phase แรกต้องทำ data discovery กับ Ground Handler หากไม่มี resource feed ระบบยังแสดง baggage milestone ได้ แต่ไม่ควรสรุป root cause ว่าเกิดจากคนหรืออุปกรณ์
+
+### ทำไมไม่เริ่มจาก passenger tracking
+
+เพราะ SKY มี Smart Flows และ biometric/passenger systems อยู่แล้ว ขณะที่ feedback รอบนี้ต้องการปัญหาหนึ่งเรื่องที่ชัด กระเป๋ามี milestone และ handoff ที่กำหนดได้ จึงเหมาะกับการพิสูจน์ coordination architecture มากกว่า
+
+### ระบบตัดสินใจแทนคนหรือไม่
+
+ไม่ ระบบแนะนำพร้อม evidence, confidence และ limitation ผู้มีอำนาจเป็นผู้อนุมัติ ปฏิเสธ หรือแก้ไข และทุกการตัดสินใจถูก audit
+
+### จะรู้ได้อย่างไรว่าระบบมีประโยชน์จริง
+
+ต้องทดลองกับ operator และข้อมูลจริงใน shadow mode วัด detection lead time, bottleneck identification, coordination time, false alert, recovery time และ bags/flights protected เทียบกับ baseline ก่อนสรุป benefit
+
+---
+
+## ส่วนที่ 14: แหล่งอ้างอิงหลัก
+
+1. [SKY ICT — Baggage Reconciliation System](https://www.skyict.co.th/en/project-showcase/brs)
+2. [SKY ICT — Airport Operational Database](https://www.skyict.co.th/en/project-showcase/aodb)
+3. [IATA — Baggage Tracking and Resolution 753](https://www.iata.org/en/programs/ops-infra/baggage/baggage-tracking/)
+4. [SITA — Baggage IT Insights 2026](https://www.sita.aero/about-us/pressroom/news-releases/tech-drove-down-mishandled-bag-rates-by-23-in-2025-but-mishandling-still-costs-the-industry-%246.3-billion-a-year)
+5. [Airports of Thailand — Baggage Status Information, 26–29 September 2026](https://www.airportthai.co.th/)
 6. [Open-Meteo documentation](https://open-meteo.com/en/docs)
 7. [OpenSky REST API](https://openskynetwork.github.io/opensky-api/rest.html)
-8. [US BTS TranStats](https://transtats.bts.gov/)
-9. [US CBP Airport Wait Times](https://awt.cbp.gov/)
-10. [CAAT](https://www.caat.or.th/)
-11. [UK Civil Aviation Authority data](https://www.caa.co.uk/data-and-analysis/)
+8. [OurAirports open data](https://ourairports.com/data/)
+9. [CAAT](https://www.caat.or.th/)
+10. เอกสารภายใน repository: `data-sources.md`, `data-quality-report.md`, `validation-data-contract.md`, `security.md`, `architecture.md`, `preliminary-pitch-th.md` และ ADR ใน `docs/decisions/`
 
-**สถานะเอกสาร:** เอกสารนี้แยกข้อเท็จจริงจากข้อสมมติอย่างชัดเจน และไม่ควรใช้เป็น approval สำหรับการ deploy ในสนามบินจริงโดยไม่มี data owner, security review, operational validation และ safety governance
+---
 
-## 17. One TrustX: ชุด validation หลายสถานการณ์
+## ข้อสรุปสุดท้าย
 
-เพื่อให้ผลประเมินไม่ขึ้นกับเดโมเพียงสถานการณ์เดียว repository มีชุด validation แบบจับคู่ (paired) ที่สร้างด้วย `scripts/experiments/generate_validation_pack.py` ประกอบด้วย 8 สถานการณ์, 100 seeds ต่อสถานการณ์ และ 4 เงื่อนไข (`BASELINE`, `SHARED_DATA`, `ONE_TRUSTX`, `ONE_TRUSTX_AI`) รวม **3,200 episodes** ทุกเงื่อนไขใช้ scenario และ seed เดียวกัน แล้วสรุปด้วย median, P25 และ P75
+One TrustX ในทิศทางล่าสุดไม่ใช่แนวคิด “รวมทุกข้อมูลแล้วให้ AI ตัดสินใจทุกอย่าง” แต่เป็นระบบช่วยกู้สถานการณ์ที่เริ่มจากปัญหาเดียว มีผู้ใช้ชัด ข้อมูลชัด ขอบเขตชัด และสามารถตรวจสอบเหตุผลได้:
 
-ผลรวม median ของ `BASELINE` เทียบกับ `ONE_TRUSTX_AI`:
+> **เริ่มจาก delayed baggage ใช้ระบบที่ SKY มีอยู่แล้ว เชื่อมเฉพาะสัญญาณที่จำเป็น แสดงคอขวดและผลกระทบ จัดลำดับ action ให้เจ้าหน้าที่ตัดสินใจ และพิสูจน์คุณค่าด้วย shadow-mode evidence ก่อนขยายไป use case อื่น**
 
-| ตัวชี้วัด | Baseline | One TrustX + AI | ผลต่าง |
-|---|---:|---:|---:|
-| Coordination time | 19.66 วินาที | 7.67 วินาที | ลด 61.0% |
-| Reconciliation time | 15.29 วินาที | 3.36 วินาที | ลด 78.0% |
-| Risk visibility time | 45.88 วินาที | 11.93 วินาที | ลด 74.0% (เห็นเร็วขึ้นประมาณ 34 วินาที) |
-| Event traceability | 42.0% | 100.0% | coverage ที่ตรวจได้ |
-| Event verification rate | 0.0% | 85.7% | อัตราผ่านกฎตรวจสอบ |
-| Delay risk proxy | 1.00 | 0.50 | ลด 50.0% |
-
-ตัวเลขชุดนี้เป็น **ผล validation ของ prototype จากข้อมูล SYNTHETIC** ใช้ตรวจความสม่ำเสมอของ engine และทิศทางของ workflow เท่านั้น ไม่ใช่ผลการดำเนินงานจริง, ความน่าจะเป็นเที่ยวบินล่าช้าจริง หรือมูลค่าความเสียหายที่ลดลง ค่า delay เป็น proxy ที่สร้างจากกฎจำลอง และยังไม่ควรเรียก recommendation success ว่า AI accuracy เพราะยังไม่มีผลลัพธ์จริงที่มี label อิสระเพียงพอ
-
-ไฟล์หลักของชุดข้อมูลคือ `data/cache/onetrustx-validation-runs.csv`, `data/cache/onetrustx-validation-summary.csv` และ `data/cache/onetrustx-validation-manifest.json` ส่วน schema สำหรับนำ telemetry จริงที่ได้รับอนุญาตเข้ามาวัดผลอยู่ใน [`validation-data-contract.md`](validation-data-contract.md)
+สถานะปัจจุบันคือ prototype สำหรับพิสูจน์แนวคิดและ workflow ไม่ใช่ระบบ production หรือหลักฐานผลลัพธ์ของสนามบินจริง ความน่าเชื่อถือของโครงการจึงมาจากการแยกข้อเท็จจริง ข้อมูลจำลอง สมมติฐาน และผลคำนวณออกจากกันอย่างโปร่งใส

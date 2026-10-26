@@ -4,7 +4,7 @@ Updated 2026-09-13 following the user's Flynext reference:
 https://elements.envato.com/flynext-private-airlines-charters-html-template-3VFRLE6
 
 Flynext is a visual reference only. No template code, photographs, commercial
-claims, testimonials or airline branding are copied into TimeTwin.
+claims, testimonials or airline branding are copied into One TrustX.
 
 The brand uses deep navy, white and slate, with restrained champagne accents.
 Space, clear typography and consistent alignment establish an aviation identity.
