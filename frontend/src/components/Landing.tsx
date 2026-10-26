@@ -17,7 +17,7 @@ export default function Landing() {
         ? "One TrustX | คาดการณ์และวางแผนการเดินทางในสนามบิน"
         : "One TrustX | Airport decision intelligence";
     try {
-      localStorage.setItem("timetwin-language", language);
+      localStorage.setItem("onetrustx-language", language);
     } catch {
       /* Storage is optional. */
     }

@@ -2,7 +2,7 @@ import { useSyncExternalStore } from "react";
 import translations from "./locales/th.json";
 let language: "en" | "th" = "en";
 try {
-  language = localStorage.getItem("timetwin-language") === "th" ? "th" : "en";
+  language = localStorage.getItem("onetrustx-language") === "th" ? "th" : "en";
 } catch {
   /* optional storage */
 }
@@ -11,7 +11,7 @@ export function setLanguage(next: "en" | "th") {
   language = next;
   document.documentElement.lang = next;
   try {
-    localStorage.setItem("timetwin-language", next);
+    localStorage.setItem("onetrustx-language", next);
   } catch {
     /* optional storage */
   }
@@ -72,7 +72,7 @@ export function LanguageSwitch() {
   );
 }
 window.addEventListener("storage", (e) => {
-  if (e.key === "timetwin-language")
+  if (e.key === "onetrustx-language")
     setLanguage(e.newValue === "th" ? "th" : "en");
 });
 document.documentElement.lang = language;

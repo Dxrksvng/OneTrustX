@@ -1561,3 +1561,241 @@ html[lang="th"] .landing h2 {
   color: #5b6773;
   margin-top: 8px;
 }
+
+/* Baggage flow control */
+.baggage-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 18px;
+  background: #fff;
+  border-radius: 5px;
+  padding: 20px 25px;
+  margin-top: 26px;
+}
+.baggage-toolbar label {
+  display: flex;
+  flex-direction: column;
+  gap: 7px;
+  font-size: 11px;
+  letter-spacing: 0.6px;
+  color: #5b6773;
+}
+.baggage-toolbar select {
+  min-width: 220px;
+  padding: 10px;
+  border: 1px solid #d9e0e5;
+  background: #fff;
+  border-radius: 4px;
+  font: inherit;
+  font-size: 14px;
+  color: #0d2942;
+}
+.baggage-toolbar .baggage-check {
+  flex-direction: row;
+  align-items: center;
+  padding-bottom: 10px;
+  font-size: 13px;
+  letter-spacing: 0;
+}
+.baggage-toolbar p {
+  flex-basis: 100%;
+  margin: 0;
+  font-size: 13px;
+  color: #5b6773;
+}
+.baggage-status {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  background: #fff;
+  border-left: 5px solid #8a98a3;
+  border-radius: 5px;
+  padding: 24px 28px;
+  margin-top: 18px;
+  transition: border-color 0.25s ease;
+}
+.baggage-status > div {
+  flex: 1;
+}
+.baggage-status small {
+  font-size: 10px;
+  letter-spacing: 1.6px;
+  color: #5b6773;
+}
+.baggage-status h2 {
+  font-size: 25px;
+  margin: 6px 0 0;
+  color: #0d2942;
+}
+.baggage-status .situation-priority {
+  font-size: 12px;
+  padding: 8px 14px;
+  letter-spacing: 1px;
+}
+.baggage-status.tone-GREEN {
+  border-left-color: #14664e;
+}
+.baggage-status.tone-GREEN svg {
+  color: #14664e;
+}
+.baggage-status.tone-YELLOW,
+.baggage-status.tone-ORANGE {
+  border-left-color: #b9852f;
+}
+.baggage-status.tone-RED {
+  border-left-color: #a03832;
+}
+.baggage-status.tone-RED svg {
+  color: #a03832;
+}
+.baggage-tile-value {
+  font-size: 24px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+.baggage-stages-panel {
+  padding: 4px 25px 26px;
+}
+.baggage-stages {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 12px;
+}
+.baggage-stages li {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  min-height: 150px;
+  padding: 16px;
+  background: #f6f8f9;
+  border-top: 4px solid #8a98a3;
+  border-radius: 4px;
+  transition:
+    border-color 0.25s ease,
+    background 0.25s ease;
+}
+.baggage-stages li:not(:last-child)::after {
+  content: "→";
+  position: absolute;
+  right: -11px;
+  top: 14px;
+  color: #8a98a3;
+  font-size: 12px;
+}
+.baggage-stages li .situation-priority {
+  align-self: flex-start;
+}
+.baggage-stages strong {
+  font-size: 16px;
+  color: #0d2942;
+}
+.baggage-stages b {
+  font-size: 12px;
+  font-weight: 600;
+}
+.baggage-stages em {
+  font-size: 11px;
+  font-style: normal;
+  color: #8b5b18;
+}
+.baggage-stages small {
+  margin-top: auto;
+  font-size: 10px;
+  color: #5b6773;
+  line-height: 1.4;
+}
+.baggage-stages .tone-GREEN {
+  border-top-color: #14664e;
+}
+.baggage-stages .tone-YELLOW,
+.baggage-stages .tone-ORANGE {
+  border-top-color: #b9852f;
+  background: #fdf8ee;
+}
+.baggage-stages .tone-RED {
+  border-top-color: #a03832;
+  background: #fbf1f0;
+}
+.baggage-two {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+  margin-top: 18px;
+}
+.baggage-action {
+  border-top: 3px solid #c58a2a !important;
+}
+.baggage-page {
+  min-width: 0;
+}
+.baggage-two .panel,
+.baggage-inputs {
+  padding: 24px 28px;
+}
+.baggage-two h2 {
+  font-size: 19px;
+  margin: 8px 0 12px;
+  line-height: 1.35;
+}
+.baggage-two ul,
+.baggage-inputs ul {
+  padding-left: 18px;
+  font-size: 13px;
+  line-height: 1.8;
+  color: #3d4c59;
+}
+.baggage-two small,
+.baggage-inputs small {
+  display: block;
+  margin-top: 10px;
+  color: #5b6773;
+  font-size: 11px;
+}
+.baggage-inputs {
+  margin-top: 28px;
+}
+.baggage-inputs h2 {
+  font-size: 19px;
+}
+.baggage-page .data-table td small {
+  display: block;
+  color: #5b6773;
+}
+@media (max-width: 1100px) {
+  .baggage-stages {
+    grid-template-columns: repeat(3, 1fr);
+  }
+  .baggage-stages li::after {
+    display: none;
+  }
+}
+@media (max-width: 700px) {
+  .baggage-stages,
+  .baggage-two {
+    grid-template-columns: 1fr;
+  }
+  .baggage-status {
+    flex-wrap: wrap;
+  }
+  .baggage-toolbar select {
+    min-width: 0;
+    width: 100%;
+  }
+  .baggage-toolbar label {
+    width: 100%;
+  }
+  .baggage-status h2 {
+    font-size: 20px;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .baggage-status,
+  .baggage-stages li {
+    transition: none;
+  }
+}

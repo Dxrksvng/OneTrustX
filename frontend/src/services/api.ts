@@ -1,8 +1,8 @@
 import { registerTranslation } from "../i18n";
 let sessionId = "";
 try {
-  sessionId = sessionStorage.getItem("timetwin-session") || crypto.randomUUID();
-  sessionStorage.setItem("timetwin-session", sessionId);
+  sessionId = sessionStorage.getItem("onetrustx-session") || crypto.randomUUID();
+  sessionStorage.setItem("onetrustx-session", sessionId);
 } catch {
   sessionId = crypto.randomUUID();
 }

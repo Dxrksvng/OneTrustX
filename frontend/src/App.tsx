@@ -15,6 +15,7 @@ import {
   FlaskConical,
   Layers3,
   LayoutDashboard,
+  Luggage,
   Map,
   Plane,
   ShieldCheck,
@@ -47,8 +48,10 @@ import ExtraPages from "./components/ExtraPages";
 import ComparisonReveal from "./components/ComparisonReveal";
 import DecisionWorkspace from "./components/DecisionWorkspace";
 import Situations from "./components/Situations";
+import BaggageControl from "./components/BaggageControl";
 const routes: Record<string, string> = {
   "Airport now": "/overview",
+  Baggage: "/baggage",
   "Future map": "/future",
   "Operations control": "/operations",
   "What-if lab": "/simulator",
@@ -62,6 +65,7 @@ const routes: Record<string, string> = {
 };
 const aliases: Record<string, string> = {
   "/app": "/overview",
+  "/trustx": "/baggage",
   "/app/future": "/future",
   "/app/operations": "/operations",
   "/app/simulator": "/simulator",
@@ -84,6 +88,7 @@ const routeTab = () =>
 const notice = "Simulated MVP Result — Not actual airport performance.";
 const tabs = [
   { name: "Airport now", icon: Map },
+  { name: "Baggage", icon: Luggage },
   { name: "Future map", icon: Layers3 },
   { name: "Operations control", icon: LayoutDashboard },
   { name: "What-if lab", icon: FlaskConical },
@@ -212,7 +217,7 @@ export default function App() {
     [measured, setMeasured] = useState(12);
   useEffect(() => {
     if (window.location.pathname.startsWith("/trustx"))
-      window.history.replaceState({}, "", "/overview");
+      window.history.replaceState({}, "", "/baggage");
   }, []);
   const refresh = useCallback(async () => {
     const [o, c, f] = await Promise.all([
@@ -445,6 +450,7 @@ export default function App() {
                 .filter((x) =>
                   [
                     "Airport now",
+                    "Baggage",
                     "Operations control",
                     "Future map",
                     "What-if lab",
@@ -463,6 +469,7 @@ export default function App() {
                     {text(
                       {
                         "Airport now": "Overview",
+                        Baggage: "Baggage",
                         "Operations control": "Operations",
                         "Future map": "Future Flow",
                         "What-if lab": "Simulator",
@@ -541,6 +548,8 @@ export default function App() {
                 {text(
                   tab === "Airport now"
                     ? "Good evening, Operations Control"
+                    : tab === "Baggage"
+                      ? "Baggage Flow Control"
                     : tab === "Operations control"
                       ? "Operational Situations"
                       : tab === "What-if lab"
@@ -565,6 +574,8 @@ export default function App() {
                 {text(
                   tab === "Airport now"
                     ? "A connected view of passenger flow — now and one step ahead."
+                    : tab === "Baggage"
+                      ? "Is the baggage flow normal, where is it blocked, what is affected, and what should happen first?"
                     : tab === "Passenger journey"
                       ? "A personalized route through an illustrative terminal."
                       : "Explainable intelligence for a human in control.",
@@ -694,6 +705,7 @@ export default function App() {
                       />
                     ),
                   )}
+                  {tab === "Baggage" && <BaggageControl />}
                   {text(
                     tab === "Operations control" && (
                       <Situations

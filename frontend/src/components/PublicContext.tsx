@@ -301,7 +301,7 @@ export default function PublicContext({
                   </tr>
                 </thead>
                 <tbody>
-                  {benchmark?.results.map((r: any) => (
+                  {(benchmark?.results || []).map((r: any) => (
                     <tr key={r.model + r.split}>
                       <td>{r.model}</td>
                       <td>{text(r.split)}</td>
