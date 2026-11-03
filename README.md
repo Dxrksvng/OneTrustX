@@ -1,4 +1,14 @@
+<div align="center">
+
 # One TrustX
+
+![SKY Innovation Spark 2026 top 15 teams](https://img.shields.io/badge/SKY_Innovation_Spark-2026_top_15_teams-E11D48?style=for-the-badge) ![React 19](https://img.shields.io/badge/React-19-61DAFB?style=for-the-badge&logo=react&logoColor=white) ![FastAPI Python 3.12](https://img.shields.io/badge/FastAPI-Python_3.12-009688?style=for-the-badge&logo=fastapi&logoColor=white) ![PostgreSQL 16](https://img.shields.io/badge/PostgreSQL-16-4169E1?style=for-the-badge&logo=postgresql&logoColor=white) ![Data synthetic simulation](https://img.shields.io/badge/Data-synthetic_simulation-F59E0B?style=for-the-badge)
+
+<p align="center">
+  <img src="https://skillicons.dev/icons?i=react,ts,vite,py,fastapi,postgres,docker,vercel&perline=10" alt="Tech stack" />
+</p>
+
+</div>
 
 **Trusted airport decision platform. Hero use case: baggage disruption recovery.**
 
